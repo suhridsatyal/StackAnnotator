@@ -6,4 +6,4 @@ sudo apt-get update
 sudo apt-get install python python-dev python-pip build-essential git nodejs python3-dev
 
 # todo: postgres
-
+sudo apt-get install libpq-dev
