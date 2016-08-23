@@ -1,0 +1,14 @@
+Django==1.10
+
+# Postgres
+psycopg2==2.6.2
+
+# Django Rest Framework
+djangorestframework==3.4.5
+markdown==2.6.6
+django-filter==0.14.0
+
+# Dev Tools
+ipython
+ipdb
+werkzeug

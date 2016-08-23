@@ -1,0 +1,15 @@
+{
+  "generator-backbone": {
+    "appPath": "app",
+    "appName": "Static",
+    "testFramework": "mocha",
+    "templateFramework": "lodash",
+    "sassBootstrap": true,
+    "coffee": false,
+    "includeRequireJS": true
+  },
+  "generator-mocha": {
+    "ui": "tdd",
+    "rjs": false
+  }
+}
