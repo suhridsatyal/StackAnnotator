@@ -1,20 +1,51 @@
 Docker container setup
 ----------------------
 
-The host needs to have essential libraries like
-`git` and `docker`.
+Test, Demo, or Production
+-------------------------
+`TODO`
 
-To install this app's docker container, first pull ubuntu image:
-`docker pull ubuntu:16.04`
+Development Environment
+-----------------------
 
-Then, build the application container:
-`make`
+**Pre-requisite**: The host needs to have essential libraries like `git` and `docker`.
 
-Then, run `./docker-run.sh` to start a development container.
-This script takes care of setting up the development environment.
-It installs all essential libraries in container, and configures the
-application to run.
-The repository on your host will be mounted in docker. Therefore,
-you can code in your host, and test it inside the container.
-After running this command, you will be able access command line of
-the container. Here, you will be able to use tmux.
+
+**Setup**
+
+ - `docker pull ubuntu:16.04`
+ - `cd devops; make`
+ - `./run-dev.sh`
+
+
+**General Information**
+
+ - Git repository on your host is mounted on the container at `/opt/StackAnnotator`.
+ - Container exposes port 80 and 9000, these are mapped to host ports
+   8000 and 9000 respectively
+
+
+Development Workflow
+--------------------
+
+- Start the container
+- Change code in your machine
+- Perform general deployment operations inside container
+  e.g. `grunt build`
+- Visit `0.0.0.0:8000` to access the application.
+  If you want to work with django development server,
+  run `python manage.py runserver_plus` and visit `0.0.0.0:9000`
+
+
+Troubleshooting
+---------------
+- > `0.0.0.0:8000` cannot be accessed.
+  >> Inside the container, execute `service nginx start; supervisorctl start uwsgi`
+
+
+TODOS
+-----
+- Postgres setup
+- Mechanism for db backup restoration
+- Upload image to docker registry
+
