@@ -14,6 +14,7 @@ Development Environment
 **Setup**
 
  - `docker pull ubuntu:16.04`
+ - `docker build -t comp9323/stackannotator .` 
  - `cd devops; make`
  - `./run-dev.sh`
 
@@ -39,8 +40,9 @@ Development Workflow
 
 Troubleshooting
 ---------------
-- > `0.0.0.0:8000` cannot be accessed.
-  >> Inside the container, execute `service nginx start; supervisorctl start uwsgi`
+1. Application at **`0.0.0.0:8000` cannot be accessed.**
+     
+    Inside the container, execute `service nginx start; supervisorctl start uwsgi`
 
 
 TODOS
