@@ -109,3 +109,5 @@ temp
 .tmp
 bower_components/
 
+# Others
+db.sqlite*

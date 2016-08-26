@@ -32,4 +32,22 @@ RUN /etc/init.d/postgresql start &&\
     createdb -O django django
 
 USER root
-RUN ln -sf /opt/StackAnnotator/devops/cmd_config/.vimrc ~/.vimrc 
+RUN ln -sf /opt/StackAnnotator/devops/cmd_config/.vimrc ~/.vimrc
+
+#Setup Nginx
+RUN ln -sf /opt/StackAnnotator/devops/server_config/stackannotator_nginx.conf /etc/nginx/sites-enabled/default
+
+# Setup uWSGI
+RUN mkdir /etc/uwsgi &&\
+    mkdir /etc/uwsgi/vassals &&\
+    ln -sf /opt/StackAnnotator/devops/server_config/stackannotator_uwsgi.ini /etc/uwsgi/vassals/ &&\ 
+    mkdir /var/log/uwsgi 
+
+RUN pip install supervisor &&\
+    ln -sf /opt/StackAnnotator/devops/server_config/supervisord.conf /etc/supervisord.conf
+
+EXPOSE 80
+
+CMD ["sudo service nginx start"]
+CMD ["sudo supervisord"]
+CMD ["/bin/bash"]
