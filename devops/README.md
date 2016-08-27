@@ -42,7 +42,7 @@ Troubleshooting
 ---------------
 1. Application at **`0.0.0.0:8000` cannot be accessed.**
      
-    Inside the container, execute `service nginx start; supervisorctl start uwsgi`
+    Inside the container, execute `supervisord; service nginx start`
 
 
 TODOS
