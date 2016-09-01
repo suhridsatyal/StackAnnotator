@@ -144,7 +144,7 @@ module.exports = function (grunt) {
       dist: {
         files: [{
           expand: true,
-          cwd: '<%= yeoman.app %>/static/styles',
+          cwd: '<%= yeoman.app %>/styles',
           src: ['*.{scss,sass}'],
           dest: '.tmp/styles',
           ext: '.css'
@@ -222,8 +222,7 @@ module.exports = function (grunt) {
       dist: {
         files: {
           '<%= yeoman.dist %>/styles/main.css': [
-             // Combine these file to the one above
-            '.tmp/concat/static/styles/{,*/}*.css',
+            '.tmp/styles/{,*/}*.css',
             '<%= yeoman.app %>/styles/{,*/}*.css'
           ]
         }
@@ -364,7 +363,7 @@ module.exports = function (grunt) {
     'useminPrepare',
     'imagemin',
     'htmlmin',
-    'concat',
+    //'concat',
     'cssmin',
     'requirejs',
     'uglify',
