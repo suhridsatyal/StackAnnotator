@@ -1,0 +1,2 @@
+all:
+	grunt build --force

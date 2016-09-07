@@ -5,18 +5,22 @@ require.config({
   shim: {
     bootstrap: {
       deps: ['jquery'],
-      exports: 'jquery'
-    },
+      exports: 'bootstrap'
+    }
   },
   paths: {
     jquery: '../bower_components/jquery/dist/jquery',
     backbone: '../bower_components/backbone/backbone',
     underscore: '../bower_components/lodash/dist/lodash',
+    text: '../bower_components/requirejs-text/text',
     bootstrap: '../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap'  }
 });
 
 require([
-  'backbone'
-], function (Backbone) {
-  Backbone.history.start();
+  'jquery',
+  'underscore',
+  'backbone',
+  'app'
+], function ($, _, Backbone, App) {
+  App.initialize();
 });
