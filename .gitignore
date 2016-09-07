@@ -111,3 +111,4 @@ bower_components/
 
 # Others
 db.sqlite*
+*.sock*
