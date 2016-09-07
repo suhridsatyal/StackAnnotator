@@ -42,7 +42,7 @@ Troubleshooting
 ---------------
 1. Application at **`0.0.0.0:8000` cannot be accessed.**
      
-    Inside the container, execute `supervisord; service nginx start`
+    Inside the container, execute `supervisord` then `service nginx start`
 
 
 TODOS
