@@ -13,6 +13,7 @@ require.config({
     backbone: '../bower_components/backbone/backbone',
     underscore: '../bower_components/lodash/dist/lodash',
     text: '../bower_components/requirejs-text/text',
+    backboneValidation: '../bower_components/backbone-validation',
     bootstrap: '../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap'  }
 });
 

@@ -9,7 +9,7 @@ define([
     routes: {
       // Define some URL routes
       '': 'showHome',
-      'question': 'showQuestion', //#question
+      'question/:post(/:keyword)': 'showQuestion', //#question
 
       // Default
       '*actions': 'showHome'
@@ -17,15 +17,15 @@ define([
   });
 
   var initialize = function(){
-    var app_router = new AppRouter;
+    var appRouter = new AppRouter;
 
-    app_router.on('route:showHome', function(){
+    appRouter.on('route:showHome', function(){
       var homeView = new HomeView();
       homeView.render();
     });
 
-    app_router.on('route:showQuestion', function(){
-      var questionView = new QuestionView();
+    appRouter.on('route:showQuestion', function(post, keyword){
+      var questionView = new QuestionView({post: post, keyword:keyword});
       questionView.render();
     });
 

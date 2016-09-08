@@ -1,6 +1,24 @@
 <div id="home">
-  <h1> If you smelllllllllllllaw! </h2>
-  <h2> when the </h2>
-  <h1> <a href="#question"> ROCK! ... </a></h1>
+  <form class="form-horizontal" role="form">
+    <div class="form-group" id="urlFormGroup">
+    <label for="url" class="col-lg-2 control-label">StackOverflow URL</label>
+    <div class="col-lg-10">
+        <input type="text" class="form-control" id="urlField" name="urlField" aria-describedby="inputErrorStatus"/>
 
+        <!-- Failure Indicators -->
+        <span class="glyphicon glyphicon-remove form-control-feedback hidden" id="urlErrorIcon" aria-hidden="true"></span>
+        <span id="inputErrorStatus" class="sr-only">(error)</span>
+        <span class="help-block hidden" id="urlHelpBlock">Enter a Valid StackOverflow Post URL and Click View Button</span>
+
+        <!-- Success Indicators -->
+        <span class="glyphicon glyphicon-ok form-control-feedback hidden" id="urlSuccessIcon" aria-hidden="true"></span>
+        <span id="inputSuccess2Status" class="sr-only">(success)</span>
+    </div>
+    </div>
+   <div class="form-group">
+        <div class="col-lg-offset-2 col-lg-10">
+            <button type="button" id="viewButton" disabled="true" class="btn btn-success">View</button>
+        </div>
+    </div>
+  </form>
 </div>
