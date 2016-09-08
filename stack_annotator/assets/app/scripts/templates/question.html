@@ -1,3 +1,13 @@
 <div id="question">
-  <h1> Is Cooking! </h2>
+  <h1> Question </h1>
+  <div class="col-md-12">
+  <h3> <%= question %> </h3>
+  <h3> <%= questionBody %> </h3>
+  </div>
+  <div class="col-md-12">
+    <h2> Answer: </h2>
+    <% _.each(answers, function(answer){ %>
+    <div style="margin: 20px; background: beige none repeat scroll 0% 0%;"> <%= answer.body %> </div>
+    <% }); %>
+  </div>
 </div>
