@@ -44,7 +44,9 @@ define([
         e.preventDefault();
         var url = $('#urlField').val();
         var match = this.urlRegex.exec(url);
-        console.log(match[2]);
+        var nextURL = 'question/' + match[2];
+        console.log("Navigating to : " + nextURL);
+        Backbone.history.navigate(nextURL, true);
       },
       render: function() {
           var data = {};
