@@ -12,35 +12,33 @@ define([
   var QuestionView = Backbone.View.extend({
       initialize: function(options) {
           this.options = options || {};
-          this.options.selectedString = "";
+          this.options.selectedText = "";
       },
       el: $('.container'),
       events: {
           'mouseup #answers': 'onHighlight',
-          'mousedown #answers': 'onDeselect',
-          'click #crowdsourceBtn': 'onCrowdsource',
-          'click #commentBtn': 'onComment',
-          'click #helpBtn': 'onHelp'
+          'mousedown #answers': 'onDeselect'
       },
       onHighlight: function(evt){
         var rects = [];
-        var selectedString = "";
+        var selectedText = "";
         if (window.getSelection) {
-          selectedString = window.getSelection().toString().trim();
+          selectedText = window.getSelection().toString().trim();
 
           var box = window.getSelection().getRangeAt(0).getBoundingClientRect();
           rects = this.getHighlightOffset(box);
         } else if (document.selection) {
-          selectedString = document.getSelection().toString().trim();
+          selectedText = document.getSelection().toString().trim();
 
           var box = document.getSelection().getRangeAt(0).getBoundingClientRect();
           rects = this.getHighlightOffset(box);
         } else {
           return;
         }
-        this.options.selectedString = selectedString;
+        this.options.selectedText = selectedText;
+        var self=this;
 
-        if (selectedString.length > 0) {
+        if (selectedText.length > 0) {
           //show popover
           $("#annotate-tooltip").popover({
               trigger: 'focus',
@@ -52,6 +50,14 @@ define([
               html: true
           }).popover('show');
           $(".popover").css({top: rects.bottom, left: rects.left, transform: ''}).show();
+
+          // Attach events to popover buttons.
+          // This cannot be done through backbone view because the DOM is created by popover here
+          // This is somewhat dirty. But at this stage, it is simple enough.
+          // TODO: make this cleaner.
+          $("#crowdsourceBtn").on("click", function(event) {self.onCrowdsource()});
+          $("#commentBtn").on("click", function(event) {self.onComment()});
+          $("#helpBtn").on("click", function(event) {self.onHelp()});
         };
       },
       getHighlightOffset: function(box) {
@@ -79,15 +85,14 @@ define([
         $("#annotate-tooltip").popover('hide');
       },
       onCrowdsource: function () {
-          console.log("hello");
-          console.log(this.options.selectedText);
-          /*TODO*/
+          console.log("TODO: call backend to create crowdsourcing request");
+          console.log("Selected Text: " + this.options.selectedText);
       },
       onComment: function () {
-          /*TODO*/
+          console.log("TODO: allow users to comment");
       },
       onHelp: function () {
-          /*TODO*/
+          console.log("TODO: show help");
       },
       render: function() {
           var self = this;
