@@ -25,7 +25,6 @@ define([
               data.question = question.get("title");
               data.questionBody = question.get("body");
               data.answers = self.sortAnswers(answers.toJSON());
-              console.log(data);
               var compiledTemplate = _.template(self.questionTemplate);
               self.$el.empty().append(compiledTemplate(data));
           });
@@ -36,7 +35,9 @@ define([
         var acceptedAnswer = _.find(unsortedAnswers, function(answer){return answer.is_accepted==true});
         var otherAnswers = _.reject(unsortedAnswers, function(answer){return answer.is_accepted==true});
 
-        sortedEntries.push(acceptedAnswer);
+        if (!(typeof acceptedAnswer == "undefined")) {
+            sortedEntries.push(acceptedAnswer);
+        };
         var sortedAnswers = sortedEntries.concat(
             _.sortBy(otherAnswers, function(answer) {return -answer.score;}));
 

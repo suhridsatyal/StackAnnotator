@@ -7,15 +7,17 @@
   <h2> Answers </h2>
   <div id="answers" style="margin-top:25px">
     <% _.each(answers, function(answer){ %>
-      <div class="row">
-        <div class="col-md-1" >
-          <% if(answer.is_accepted === true) { %>
-            <h3> <span class="glyphicon glyphicon-ok" id="urlSuccessIcon"></span> </h3>
-          <% } %>
-          <h3> <%= answer.score %> </h3>
+      <% if(!(typeof answer === "string")) { %> <!-- Ignore post id. Better approach than using 'delete' in view. -->
+        <div class="row">
+          <div class="col-md-1" >
+            <% if(answer.is_accepted === true) { %>
+              <h3> <span class="glyphicon glyphicon-ok" id="urlSuccessIcon"></span> </h3>
+            <% }; %>
+            <h3> Score: <%= answer.score %> </h3>
+          </div>
+          <div class="col-md-11" style="margin-bottom:100px; background: beige none repeat scroll 0% 0%;"> <%= answer.body %> </div>
         </div>
-        <div class="col-md-11" style="margin-bottom:100px; background: beige none repeat scroll 0% 0%;"> <%= answer.body %> </div>
-      </div>
+      <% }; %>
     <% }); %>
   </div>
 </div>
