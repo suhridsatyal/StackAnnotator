@@ -16,7 +16,6 @@ define([
                          ),
       onURLChange: function(e) {
         e.preventDefault();
-        console.log("URL Changed");
         var url = $('#urlField').val();
         if (!this.urlRegex.test(url)) {
             // Make Success Indicators invisible
@@ -45,7 +44,6 @@ define([
         var url = $('#urlField').val();
         var match = this.urlRegex.exec(url);
         var nextURL = 'question/' + match[2];
-        console.log("Navigating to : " + nextURL);
         Backbone.history.navigate(nextURL, true);
       },
       render: function() {
