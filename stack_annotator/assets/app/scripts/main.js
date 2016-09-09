@@ -3,10 +3,9 @@
 
 require.config({
   shim: {
-    bootstrap: {
-      deps: ['jquery'],
-      exports: 'bootstrap'
-    }
+    'bootstrap': {deps: ['jquery'], exports: 'bootstrap'}//,
+    //'bootstrap/bootstrap-popover': { deps: ['jquery', 'jquery/bootstrap-tooltip'], exports: '$.fn.popover'},
+    //'bootstrap/bootstrap-tooltip': { deps: ['jquery'], exports: '$.fn.tooltip'}
   },
   paths: {
     jquery: '../bower_components/jquery/dist/jquery',
@@ -14,14 +13,20 @@ require.config({
     underscore: '../bower_components/lodash/dist/lodash',
     text: '../bower_components/requirejs-text/text',
     backboneValidation: '../bower_components/backbone-validation',
-    bootstrap: '../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap'  }
+    bootstrap: '../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.min',
+    'bootstrap/popover':    '../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/popover',
+    'bootstrap/tooltip':    '../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip'
+    }
+
 });
 
 require([
   'jquery',
   'underscore',
   'backbone',
+  'bootstrap',
   'app'
-], function ($, _, Backbone, App) {
+   //others
+], function ($, _, Backbone, Bootstrap, App) {
   App.initialize();
 });
