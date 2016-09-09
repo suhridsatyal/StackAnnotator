@@ -1,3 +1,20 @@
 $icon-font-path: "/bower_components/bootstrap-sass-official/assets/fonts/bootstrap/";
 
 @import 'bootstrap-sass-official/assets/stylesheets/bootstrap.scss';
+
+.icon-link {
+    font-size:25px;
+}
+
+.question {
+    margin-bottom: 100px;
+}
+
+.answers {
+    margin-top:25px;
+}
+
+.answer-item {
+    margin-bottom:100px;
+    background: beige none repeat scroll 0% 0%;
+}

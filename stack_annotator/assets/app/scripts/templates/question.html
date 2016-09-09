@@ -1,11 +1,11 @@
 <div id="questionview">
   <h1> Question </h1>
-  <div id="question" style="margin-bottom:100px">
+  <div id="question" class="question">
     <h3> <%= question %> </h3>
     <p> <%= questionBody %> </p>
   </div>
   <h2> Answers </h2>
-  <div id="answers" style="margin-top:25px">
+  <div id="answers" class="answers">
     <% _.each(answers, function(answer){ %>
       <% if(!(typeof answer === "string")) { %> <!-- Ignore post id. Better approach than using 'delete' in view. -->
         <div class="row">
@@ -15,9 +15,10 @@
             <% }; %>
             <h3> Score: <%= answer.score %> </h3>
           </div>
-          <div class="col-md-11" style="margin-bottom:100px; background: beige none repeat scroll 0% 0%;"> <%= answer.body %> </div>
+          <div class="col-md-11 answer-item"> <%= answer.body %> </div>
         </div>
       <% }; %>
     <% }); %>
   </div>
+  <div id="annotate-tooltip" data-toggle="popover"> </div>
 </div>
