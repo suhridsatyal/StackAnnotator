@@ -17,7 +17,6 @@ define([
           var self = this;
           self.questionTemplate = questionTemplate;
           var data = {};
-          console.log(this.options.post);
 
           var question = new QuestionModel({post: this.options.post});
           var answers = new AnswerCollection({post: this.options.post});
@@ -25,13 +24,24 @@ define([
             .done(function () {
               data.question = question.get("title");
               data.questionBody = question.get("body");
-              data.answers = answers.toJSON();
+              data.answers = self.sortAnswers(answers.toJSON());
               console.log(data);
               var compiledTemplate = _.template(self.questionTemplate);
               self.$el.empty().append(compiledTemplate(data));
           });
+      },
+   sortAnswers: function(unsortedAnswers) {
+        var sortedEntries = [];
 
-      }
+        var acceptedAnswer = _.find(unsortedAnswers, function(answer){return answer.is_accepted==true});
+        var otherAnswers = _.reject(unsortedAnswers, function(answer){return answer.is_accepted==true});
+
+        sortedEntries.push(acceptedAnswer);
+        var sortedAnswers = sortedEntries.concat(
+            _.sortBy(otherAnswers, function(answer) {return -answer.score;}));
+
+        return sortedAnswers;
+   }
   });
   return QuestionView;
 });
