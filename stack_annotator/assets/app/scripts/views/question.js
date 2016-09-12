@@ -19,7 +19,7 @@ define([
           'mouseup #answers': 'onHighlight',
           'mousedown #answers': 'onDeselect'
       },
-      onHighlight: function(evt){
+      onHighlight: function(){
         var rects = [];
         var selectedText = "";
         if (window.getSelection) {
@@ -107,6 +107,29 @@ define([
               data.answers = self.sortAnswers(answers.toJSON());
               var compiledTemplate = _.template(questionTemplate);
               self.$el.empty().append(compiledTemplate(data));
+              console.log(self.options);
+              if (self.options.answerID) {
+                  // TODO: set id of each answeritem as answerid
+                  // Keyword should be answerid-keyword-position
+                  // scroll down to answerid div by executing this:
+                  // var pos = $("#answerid").offset();
+                  // $('html, body').animate({scrollTop: pos.top}, "slow");
+                  // do range.select on like this:
+                  // http://jsfiddle.net/edelman/KcX6A/1507/
+                  // show comment menu below the selection
+                  var answerElem = "#" + self.options.answerID;
+                  console.log(answerElem);
+                  var answerElemOffset = $(answerElem).offset();
+                  $('html,body').animate({scrollTop: answerElemOffset.top}, "fast");
+                  console.log("scrolling");
+                  if (self.options.keyword) {
+                    console.log("find");
+                    window.find(self.options.keyword);
+                    self.onHighlight();
+                  }
+                  //console.log(keywordElem);
+                  //keywordElem.css("text-decoration", "underline");
+              }
           });
       },
    sortAnswers: function(unsortedAnswers) {

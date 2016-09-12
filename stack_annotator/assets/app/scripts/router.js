@@ -9,7 +9,7 @@ define([
     routes: {
       // Define some URL routes
       '': 'showHome',
-      'question/:post(/:keyword)': 'showQuestion', //#question
+      'question/:post(/:answerID/:keyword)': 'showQuestion', //#question
 
       // Default
       '*actions': 'showHome'
@@ -24,8 +24,8 @@ define([
       homeView.render();
     });
 
-    appRouter.on('route:showQuestion', function(post, keyword){
-      var questionView = new QuestionView({post: post, keyword:keyword});
+    appRouter.on('route:showQuestion', function(post, answerID, keyword){
+      var questionView = new QuestionView({post: post, answerID:answerID, keyword:keyword});
       questionView.render();
     });
 
