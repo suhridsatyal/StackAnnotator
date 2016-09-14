@@ -67,6 +67,7 @@ class AnnotationView(generics.ListCreateAPIView):
 
     def post(self, request, format=None):
         serializer = AnnotationSerializer(data=request.data)
+        #Should call twitter api to post the annotation here
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

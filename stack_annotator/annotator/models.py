@@ -4,6 +4,6 @@ from django.db import models
 class Annotation(models.Model):
     question_id = models.IntegerField()
     answer_id = models.IntegerField()
-    annotation = models.URLField()
+    annotation = models.URLField(blank=True)
     position = models.IntegerField()
 
