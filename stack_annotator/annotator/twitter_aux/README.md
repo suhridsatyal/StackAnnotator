@@ -11,7 +11,8 @@ Twitter Aux Documentation
 Set Up
 -----------------------
 **Python libraries**
-Run `pip install -r requirements.txt`
+
+Run `pip install -r requirements.txt` to install requests and requests_oauthlib
 
 **Environment Variables**
 
