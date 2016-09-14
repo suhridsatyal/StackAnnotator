@@ -21,6 +21,6 @@ from annotator.views import index
 urlpatterns = [
 	#url(r'^annotator/', include('annotator.urls')),
     url(r'^admin/', admin.site.urls),
-	url(r'^api/annotator/', include('annotator.urls')),
+	url(r'^api/', include('annotator.urls')),
     url(r'^$', index),
 ]

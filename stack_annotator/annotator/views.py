@@ -23,7 +23,7 @@ class AnnotationListView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         queryset = Annotation.objects.all()
-        
+
         # Check what we received
         question_id = self.request.query_params.get('question_id')
         answer_id = self.request.query_params.get('answer_id')
@@ -47,7 +47,7 @@ class AnnotationListView(generics.ListCreateAPIView):
         return queryset
 
 class AnnotationView(generics.ListCreateAPIView):
-    
+
     model = Annotation
     serializer_class = AnnotationSerializer
 
@@ -67,10 +67,7 @@ class AnnotationView(generics.ListCreateAPIView):
 
     def post(self, request, format=None):
         serializer = AnnotationSerializer(data=request.data)
-        #Should call twitter api to post the annotation here
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-
