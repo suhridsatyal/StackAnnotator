@@ -10,6 +10,9 @@ Twitter Aux Documentation
 
 Set Up
 -----------------------
+**Python libraries**
+Run `pip install -r requirements.txt`
+
 **Environment Variables**
 
 Must set up the following variables that can be accessed at https://apps.twitter.com/ (use the developer account)
