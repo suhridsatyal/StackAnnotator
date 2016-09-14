@@ -82,6 +82,18 @@ class AnnotationTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content, '[{"question_id":1,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","position":7},{"question_id":2,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=g7zO1MBu8SQ","position":3}]')
 
+    def test_get_all_annotations(self):
+        """
+        Call get on all annotations
+        """
+        create_annotation(1, 1, "https://www.youtube.com/watch?v=0MjdyurrP6c", 7)
+        create_annotation(2, 1, "https://www.youtube.com/watch?v=g7zO1MBu8SQ", 3)
+        create_annotation(1, 2, "https://www.youtube.com/watch?v=3BxYqjzMz-U", 12)
+        response = self.client.get('/api/annotator/annotations')
+        #print(response)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.content, '[{"question_id":1,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","position":7},{"question_id":2,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=g7zO1MBu8SQ","position":3},{"question_id":1,"answer_id":2,"annotation":"https://www.youtube.com/watch?v=3BxYqjzMz-U","position":12}]')
+
     def test_get_fail_annotation_question(self):
         """
         Call get with a id that doesn't exist
