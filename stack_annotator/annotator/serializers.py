@@ -9,9 +9,9 @@ class AnnotationSerializer(serializers.ModelSerializer):
         Check that the URL is valid
         """
         if not re.match(r'^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$', data['annotation']):
-            raise serializers.ValidationError("URL is not valid")
+            raise serializers.ValidationError("URL must be a valid youtube url")
         return data    
 	
     class Meta:
         model = Annotation
-        fields = ('questionID', 'answerID', 'annotation', 'position')
+        fields = ('question_id', 'answer_id', 'annotation', 'position')

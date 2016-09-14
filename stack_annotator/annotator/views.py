@@ -10,104 +10,66 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
 from rest_framework.exceptions import APIException
+import re
 
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
 
-class JSONResponse(HttpResponse):
-
-    def __init__(self, data, **kwargs):
-        content = JSONRenderer().render(data)
-        kwargs['content_type'] = 'application/json'
-        super(JSONResponse, self).__init__(content, **kwargs)
-
-class AnnotationListByQuestion(generics.ListCreateAPIView):
-
-    model = Annotation
-    #queryset = Annotation.objects.all()
-    serializer_class = AnnotationSerializer
-
-    def get_queryset(self):
-        #print("Got request param", self.kwargs)
-        queryset = Annotation.objects.all()
-        questionID = self.request.query_params.get('questionID', self.kwargs['questionID'])
-        #print("Got question param", questionID)
-        if questionID is not None:
-            queryset = queryset.filter(questionID=questionID)
-            if queryset.count() < 1:
-                raise Http404
-        return queryset
-
-class AnnotationListByAnswer(generics.ListCreateAPIView):
+class AnnotationListView(generics.ListCreateAPIView):
 
     model = Annotation
     serializer_class = AnnotationSerializer
 
     def get_queryset(self):
         queryset = Annotation.objects.all()
-        answerID = self.request.query_params.get('answerID', self.kwargs['answerID'])
+        
+        # Check what we received
+        question_id = self.request.query_params.get('question_id')
+        answer_id = self.request.query_params.get('answer_id')
 
-        if answerID is not None:
-            queryset = queryset.filter(answerID=answerID)
+        if question_id is not None:
+            try:
+                question_id = int(question_id)
+            except ValueError:
+                raise Http404
+            queryset = queryset.filter(question_id=question_id)
+            if queryset.count() < 1:
+                raise Http404
+        elif answer_id is not None:
+            try:
+                answer_id = int(answer_id)
+            except ValueError:
+                raise Http404
+            queryset = queryset.filter(answer_id=answer_id)
             if queryset.count() < 1:
                 raise Http404
         return queryset
 
-#Currently using primary key to find annotation urls
-class AnnotationQuery(generics.RetrieveAPIView):
+class AnnotationView(generics.ListCreateAPIView):
     
     model = Annotation
-    queryset = Annotation.objects.all()
     serializer_class = AnnotationSerializer
 
-    #def get_queryset(self):
-        #print("Got request param", self.kwargs)
-        #queryset = Annotation.objects.all()
-        #annotation = self.request.query_params.get('id', self.kwargs['pk'])
+    def get_queryset(self):
+        queryset = Annotation.objects.all()
+        pk = self.request.query_params.get('pk')
 
-        #if annotation is not None:
-        #queryset = queryset.filter(id=pk)
-        #if queryset.count() < 1:
-        #    raise Http404
-        #return queryset
+        if pk is not None:
+            try:
+                pk = int(pk)
+            except ValueError:
+                raise Http404
+            queryset = queryset.filter(id=pk)
+            if queryset.count() < 1:
+                raise Http404
+        return queryset
 
-class AnnotationNew(generics.CreateAPIView):
     def post(self, request, format=None):
         serializer = AnnotationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
-"""
-@csrf_exempt
-def annotation_list(request, stackID):
-    
-    List all annotations
-    
-    if request.method == 'GET':
-        annotations = Annotation.objects.filter(stackID=stackID)
-        if annotations.count() < 1:
-            return HttpResponse(status=404)
-        serializer = AnnotationSerializer(annotations, many=True)
-        return JSONResponse(serializer.data)
-    else:
-        return HttpResponse(status=405)
-
-@csrf_exempt
-def annotation_new(request):
-    
-	Post an annotation
-	
-	
-	if request.method == 'POST':
-		data = JSONParser().parse(request)
-		serializer = AnnotationSerializer(data=data)
-		if serializer.is_valid():
-			serializer.save()
-			return JSONResponse(serializer.data, status=201)
-		return JSONResponse(serializer.errors, status=400)
-	else:
-		return HttpResponse(status=405)
-"""
