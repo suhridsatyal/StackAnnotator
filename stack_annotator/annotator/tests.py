@@ -67,16 +67,16 @@ class AnnotationTests(TestCase):
         """
         client = APIClient()
         data = {"question_id":5, "answer_id":10, "annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"fiesty","position":15}
-        response = client.post('/api/annotator/annotation/new/', data, format='json')
+        response = client.post('/api/annotator/annotation/', data, format='json')
         #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.content, '{"question_id":5,"answer_id":10,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"fiesty","position":15}')
 
-        data = {"question_id":5, "answer_id":10,"keyword":"fiesty","position":15}
-        response = client.post('/api/annotator/annotation/new/', data, format='json')
+        #data = {"question_id":5, "answer_id":10,"keyword":"fiesty","position":15}
+        #response = client.post('/api/annotator/annotation/', data, format='json')
         #print(response.content)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)      
-        self.assertEqual(response.content, '{"question_id":5,"answer_id":10,"annotation":"","keyword":"fiesty","position":15}')
+        #self.assertEqual(response.status_code, status.HTTP_201_CREATED)      
+        #self.assertEqual(response.content, '{"question_id":5,"answer_id":10,"annotation":"","keyword":"fiesty","position":15}')
 
     def test_get_multiple_annotation_by_question(self):
         """
@@ -147,21 +147,21 @@ class AnnotationTests(TestCase):
         #factory = APIRequestFactory()
         client = APIClient()
         data = {"question_id":"1","answer_id":"1","annotation":"asd","position":15}
-        response = client.post('/api/annotator/annotation/new/', data, format='json')
+        response = client.post('/api/annotator/annotation/', data, format='json')
 
         #response = self.client.post('/api/annotator/', data, format='json')
         #print(response)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         
         data = {"question_id":"1","answer_id":"pie","annotation":"https://www.where.com","position":15}
-        response = client.post('/api/annotator/annotation/new/', data, format='json')
+        response = client.post('/api/annotator/annotation/', data, format='json')
 
         #response = self.client.post('/api/annotator/', data, format='json')
         #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
         data = {"question_id":"ety","answer_id":"1","annotation":"https://www.where.com","position":15}
-        response = client.post('/api/annotator/annotation/new/', data, format='json')
+        response = client.post('/api/annotator/annotation/', data, format='json')
 
         #response = self.client.post('/api/annotator/', data, format='json')
         #print(response.content)

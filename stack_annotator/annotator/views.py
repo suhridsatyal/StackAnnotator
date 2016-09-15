@@ -46,7 +46,7 @@ class AnnotationListView(generics.ListCreateAPIView):
                 raise Http404
         return queryset
 
-class AnnotationView(generics.RetrieveAPIView):
+class AnnotationView(generics.RetrieveAPIView, generics.CreateAPIView):
     model = Annotation
     serializer_class = AnnotationSerializer
 
@@ -66,11 +66,12 @@ class AnnotationView(generics.RetrieveAPIView):
                 raise Http404
         annotation = queryset.first()
         return Response(AnnotationSerializer(annotation).data, status=status.HTTP_200_OK)
-    
-class AnnotationCreateView(generics.CreateAPIView):
+ 
     def post(self, request, format=None):
         serializer = AnnotationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    

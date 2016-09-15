@@ -8,8 +8,6 @@ class AnnotationSerializer(serializers.ModelSerializer):
         """
         Check that the URL is valid
         """
-        if not 'annotation' in data:
-            return data
         if not re.match(r'^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$', data['annotation']):
             raise serializers.ValidationError("URL must be a valid youtube url")
         return data    
