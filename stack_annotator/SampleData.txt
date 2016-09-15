@@ -3,6 +3,7 @@ pk:13
 question_id:218384
 answer_id:218510
 annotation:https://www.youtube.com/watch?v=M8pv52yV0rM
+keyword:reference
 position:19
 
 annotation word should be reference
@@ -13,6 +14,7 @@ pk:14
 question_id:218384
 answer_id:218510
 annotation:https://www.youtube.com/watch?v=4XRy-TdfU0I
+keyword:object
 position:47
 
 annotation word should be object
@@ -23,6 +25,7 @@ pk:15
 question_id:218384
 answer_id:218390
 annotation:https://www.youtube.com/watch?v=K_-3OLkXkzY
+keyword:exceptions
 position:8
 
 annotation word should be exceptions
@@ -33,6 +36,7 @@ pk:16
 question_id:36932
 answer_id:1695250
 annotation:https://www.youtube.com/watch?v=6sKWWlo6GW8
+keyword:Enums
 position:0
 
 annotation word should be Enums

@@ -17,7 +17,6 @@ def index(request):
     return render(request, 'index.html')
 
 class AnnotationListView(generics.ListCreateAPIView):
-
     model = Annotation
     serializer_class = AnnotationSerializer
 
@@ -28,6 +27,7 @@ class AnnotationListView(generics.ListCreateAPIView):
         question_id = self.request.query_params.get('question_id')
         answer_id = self.request.query_params.get('answer_id')
 
+        #if question_id is not None and answer_id is not None:
         if question_id is not None:
             try:
                 question_id = int(question_id)
@@ -36,7 +36,7 @@ class AnnotationListView(generics.ListCreateAPIView):
             queryset = queryset.filter(question_id=question_id)
             if queryset.count() < 1:
                 raise Http404
-        elif answer_id is not None:
+        if answer_id is not None:
             try:
                 answer_id = int(answer_id)
             except ValueError:
@@ -46,14 +46,15 @@ class AnnotationListView(generics.ListCreateAPIView):
                 raise Http404
         return queryset
 
-class AnnotationView(generics.ListCreateAPIView):
-
+class AnnotationView(generics.RetrieveAPIView):
     model = Annotation
     serializer_class = AnnotationSerializer
 
-    def get_queryset(self):
+    def get(self, request):
         queryset = Annotation.objects.all()
-        pk = self.request.query_params.get('pk')
+
+        #Check what we received
+        pk = request.query_params.get('pk', None)
 
         if pk is not None:
             try:
@@ -63,8 +64,10 @@ class AnnotationView(generics.ListCreateAPIView):
             queryset = queryset.filter(id=pk)
             if queryset.count() < 1:
                 raise Http404
-        return queryset
-
+        annotation = queryset.first()
+        return Response(AnnotationSerializer(annotation).data, status=status.HTTP_200_OK)
+    
+class AnnotationCreateView(generics.CreateAPIView):
     def post(self, request, format=None):
         serializer = AnnotationSerializer(data=request.data)
         if serializer.is_valid():

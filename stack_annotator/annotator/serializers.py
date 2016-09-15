@@ -8,7 +8,6 @@ class AnnotationSerializer(serializers.ModelSerializer):
         """
         Check that the URL is valid
         """
-        print(data)
         if not 'annotation' in data:
             return data
         if not re.match(r'^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$', data['annotation']):
@@ -17,4 +16,4 @@ class AnnotationSerializer(serializers.ModelSerializer):
 	
     class Meta:
         model = Annotation
-        fields = ('question_id', 'answer_id', 'annotation', 'position')
+        fields = ('question_id', 'answer_id', 'annotation', 'keyword', 'position')
