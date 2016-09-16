@@ -24,10 +24,10 @@ class AnnotationListView(generics.ListCreateAPIView):
         queryset = Annotation.objects.all()
 
         # Check what we received
-        question_id = self.request.query_params.get('question_id')
-        answer_id = self.request.query_params.get('answer_id')
+        question_id = self.request.query_params.get('question_id', None)
+        answer_id = self.request.query_params.get('answer_id', None)
+        pk = self.request.query_params.get('pk', None)
 
-        #if question_id is not None and answer_id is not None:
         if question_id is not None:
             try:
                 question_id = int(question_id)
@@ -44,6 +44,14 @@ class AnnotationListView(generics.ListCreateAPIView):
             queryset = queryset.filter(answer_id=answer_id)
             if queryset.count() < 1:
                 raise Http404
+        if pk is not None:
+            try:
+                pk = int(pk)
+            except ValueError:
+                raise Http404
+            queryset = queryset.filter(id=pk)
+            if queryset.count() < 1:
+                raise Http404
         return queryset
 
 class AnnotationView(generics.RetrieveAPIView, generics.CreateAPIView):
@@ -55,7 +63,25 @@ class AnnotationView(generics.RetrieveAPIView, generics.CreateAPIView):
 
         #Check what we received
         pk = request.query_params.get('pk', None)
+        question_id = self.request.query_params.get('question_id', None)
+        answer_id = self.request.query_params.get('answer_id', None)
 
+        if question_id is not None:
+            try:
+                question_id = int(question_id)
+            except ValueError:
+                raise Http404
+            queryset = queryset.filter(question_id=question_id)
+            if queryset.count() < 1:
+                raise Http404
+        if answer_id is not None:
+            try:
+                answer_id = int(answer_id)
+            except ValueError:
+                raise Http404
+            queryset = queryset.filter(answer_id=answer_id)
+            if queryset.count() < 1:
+                raise Http404
         if pk is not None:
             try:
                 pk = int(pk)
