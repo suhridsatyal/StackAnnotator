@@ -26,7 +26,7 @@ class AnnotationListView(generics.ListCreateAPIView):
         # Check what we received
         question_id = self.request.query_params.get('question_id', None)
         answer_id = self.request.query_params.get('answer_id', None)
-        pk = self.request.query_params.get('pk', None)
+        annotation_id = self.request.query_params.get('annotation_id', None)
 
         if question_id is not None:
             try:
@@ -44,12 +44,12 @@ class AnnotationListView(generics.ListCreateAPIView):
             queryset = queryset.filter(answer_id=answer_id)
             if queryset.count() < 1:
                 raise Http404
-        if pk is not None:
+        if annotation_id is not None:
             try:
-                pk = int(pk)
+                annotation_id = int(annotation_id)
             except ValueError:
                 raise Http404
-            queryset = queryset.filter(id=pk)
+            queryset = queryset.filter(id=annotation_id)
             if queryset.count() < 1:
                 raise Http404
         return queryset
@@ -62,7 +62,7 @@ class AnnotationView(generics.RetrieveAPIView, generics.CreateAPIView):
         queryset = Annotation.objects.all()
 
         #Check what we received
-        pk = request.query_params.get('pk', None)
+        annotation_id = request.query_params.get('annotation_id', None)
         question_id = self.request.query_params.get('question_id', None)
         answer_id = self.request.query_params.get('answer_id', None)
 
@@ -82,12 +82,12 @@ class AnnotationView(generics.RetrieveAPIView, generics.CreateAPIView):
             queryset = queryset.filter(answer_id=answer_id)
             if queryset.count() < 1:
                 raise Http404
-        if pk is not None:
+        if annotation_id is not None:
             try:
-                pk = int(pk)
+                annotation_id = int(annotation_id)
             except ValueError:
                 raise Http404
-            queryset = queryset.filter(id=pk)
+            queryset = queryset.filter(id=annotation_id)
             if queryset.count() < 1:
                 raise Http404
         annotation = queryset.first()
