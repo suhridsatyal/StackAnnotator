@@ -8,6 +8,10 @@ djangorestframework==3.4.5
 markdown==2.6.6
 django-filter==0.14.0
 
+# Python Libraries
+requests==2.11.1
+requests_oauthlib==0.6.2
+
 # Dev Tools
 ipython
 ipdb
