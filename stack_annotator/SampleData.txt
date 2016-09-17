@@ -1,5 +1,5 @@
 Sample1
-pk:13
+annotation_id:13
 question_id:218384
 answer_id:218510
 annotation:https://www.youtube.com/watch?v=M8pv52yV0rM
@@ -10,7 +10,7 @@ annotation word should be reference
 
 //Same question, same answer different position
 Sample2
-pk:14
+annotation_id:14
 question_id:218384
 answer_id:218510
 annotation:https://www.youtube.com/watch?v=4XRy-TdfU0I
@@ -21,7 +21,7 @@ annotation word should be object
 
 //Sample question, different Answer
 Sample3
-pk:15
+annotation_id:15
 question_id:218384
 answer_id:218390
 annotation:https://www.youtube.com/watch?v=K_-3OLkXkzY
@@ -32,7 +32,7 @@ annotation word should be exceptions
 
 //Different Question, Different Answer
 Sample4
-pk:16
+annotation_id:16
 question_id:36932
 answer_id:1695250
 annotation:https://www.youtube.com/watch?v=6sKWWlo6GW8
