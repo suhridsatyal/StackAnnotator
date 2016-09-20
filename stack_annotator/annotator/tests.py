@@ -8,7 +8,6 @@ from .models import Annotation
 def create_annotation(question_id, answer_id, annotation, keyword, position):
     return Annotation.objects.create(question_id=question_id, answer_id=answer_id, annotation=annotation, keyword=keyword, position=position)
 
-
 # Create your tests here.
 class AnnotationTests(TestCase):
 
@@ -35,14 +34,10 @@ class AnnotationTests(TestCase):
         client = APIClient()
         create_annotation(1, 1, "https://www.youtube.com/watch?v=0MjdyurrP6c", "sting", 7)
         create_annotation(2, 1, "https://www.youtube.com/watch?v=g7zO1MBu8SQ", "fiesty", 3)
-        response = client.get('/api/annotator/annotations?annotation_id=1', format='json')
+        response = client.get('/api/annotator/annotation/2/', format='json')
         #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.content, '[{"question_id":1,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"sting","position":7}]')
-        response = client.get('/api/annotator/annotation?annotation_id=1', format='json')
-        #print(response.content)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.content, '{"question_id":1,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"sting","position":7}')
+        self.assertEqual(response.content, '{"question_id":2,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=g7zO1MBu8SQ","keyword":"fiesty","position":3}')
 
     def test_get_annotation_by_question_and_answer(self):
         """
@@ -52,10 +47,10 @@ class AnnotationTests(TestCase):
         create_annotation(1, 1, "https://www.youtube.com/watch?v=0MjdyurrP6c", "sting", 7)
         create_annotation(2, 1, "https://www.youtube.com/watch?v=g7zO1MBu8SQ", "fiesty", 3)
         create_annotation(1, 2, "https://www.youtube.com/watch?v=0MjdyurrP6c", "pie", 124)
-        response = client.get('/api/annotator/annotations?question_id=1&answer_id=1', format='json')
+        #response = client.get('/api/annotator/annotations?question_id=1&answer_id=1', format='json')
         #print(response.content)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.content, '[{"question_id":1,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"sting","position":7}]')
+        #self.assertEqual(response.status_code, status.HTTP_200_OK)
+        #self.assertEqual(response.content, '[{"question_id":1,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"sting","position":7}]')
         response = client.get('/api/annotator/annotation?question_id=1&answer_id=1', format='json')
         #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -66,6 +61,7 @@ class AnnotationTests(TestCase):
         Call get on a single annotation by answer
         """
         client = APIClient()
+        create_annotation(2, 23, "https://www.youtube.com/watch?v=g7zO1MBu8SQ", "treaty", 24)
         create_annotation(2, 1, "https://www.youtube.com/watch?v=g7zO1MBu8SQ", "fiesty", 3)
         response = client.get('/api/annotator/annotations?answer_id=1', format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -73,20 +69,6 @@ class AnnotationTests(TestCase):
         response = client.get('/api/annotator/annotation?answer_id=1', format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content, '{"question_id":2,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=g7zO1MBu8SQ","keyword":"fiesty","position":3}')
-
-
-    def test_get_annotation_by_url(self):
-        """
-        Call get on a single annotation by url
-        """
-        client = APIClient()
-        create_annotation(1, 1, "https://www.youtube.com/watch?v=0MjdyurrP6c", "fiesty", 7)
-        create_annotation(2, 1, "https://www.youtube.com/watch?v=g7zO1MBu8SQ", "shy", 3)
-        #url = "https://www.youtube.com/watch?v=g7zO1MBu8SQ"
-        response = client.get('/api/annotator/annotation?annotation_id=2', format='json')
-        #print(response)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.content, '{"question_id":2,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=g7zO1MBu8SQ","keyword":"shy","position":3}')
 
     def test_post_annotation(self):
         """
@@ -160,7 +142,7 @@ class AnnotationTests(TestCase):
         """
         client = APIClient()
         create_annotation(1, 3, "https://www.youtube.com/watch?v=3BxYqjzMz-U", "fiesty", 10)
-        response = client.get('/api/annotator/annotation?annotation_id=9000', format='json')
+        response = client.get('/api/annotator/annotation/9000/', format='json')
         #print(response.status_code)
         #print(response)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

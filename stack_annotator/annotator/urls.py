@@ -4,7 +4,8 @@ from annotator import views
 
 urlpatterns = [
     url(r'annotations/?$', views.AnnotationListView.as_view()),
-    url(r'annotations', views.AnnotationListView.as_view()),
+    url(r'annotations', views.AnnotationListView.as_view()), 
     url(r'annotation/?$', views.AnnotationView.as_view()),
+    url(r'annotation/[0-9]+/$', views.AnnotationView.as_view()),
     url(r'annotation/$', views.AnnotationView.as_view()),
 ]

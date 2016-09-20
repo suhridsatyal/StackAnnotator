@@ -12,6 +12,8 @@ from rest_framework import generics
 from rest_framework.exceptions import APIException
 import re
 
+DEFAULT_LENGTH = 4
+
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
@@ -20,14 +22,13 @@ class AnnotationListView(generics.ListCreateAPIView):
     model = Annotation
     serializer_class = AnnotationSerializer
 
-    def get_queryset(self):
+    def get_queryset(self, **kwargs):
         queryset = Annotation.objects.all()
 
         # Check what we received
         question_id = self.request.query_params.get('question_id', None)
         answer_id = self.request.query_params.get('answer_id', None)
-        annotation_id = self.request.query_params.get('annotation_id', None)
-
+        
         if question_id is not None:
             try:
                 question_id = int(question_id)
@@ -42,14 +43,6 @@ class AnnotationListView(generics.ListCreateAPIView):
             except ValueError:
                 raise Http404
             queryset = queryset.filter(answer_id=answer_id)
-            if queryset.count() < 1:
-                raise Http404
-        if annotation_id is not None:
-            try:
-                annotation_id = int(annotation_id)
-            except ValueError:
-                raise Http404
-            queryset = queryset.filter(id=annotation_id)
             if queryset.count() < 1:
                 raise Http404
         return queryset
@@ -58,7 +51,7 @@ class AnnotationView(generics.RetrieveAPIView, generics.CreateAPIView):
     model = Annotation
     serializer_class = AnnotationSerializer
 
-    def get(self, request):
+    def get(self, request, **kwargs):
         queryset = Annotation.objects.all()
 
         #Check what we received
@@ -66,6 +59,18 @@ class AnnotationView(generics.RetrieveAPIView, generics.CreateAPIView):
         question_id = self.request.query_params.get('question_id', None)
         answer_id = self.request.query_params.get('answer_id', None)
 
+        #Support annotation/4/
+        full_url_split = str(self.request.get_full_path()).split("/")
+        #print(self.request.get_full_path().split("/"), len(full_url_split))
+
+        if len(full_url_split) > DEFAULT_LENGTH:
+            try:
+                annotation_id = full_url_split[DEFAULT_LENGTH]
+            except ValueError:
+                raise Http404
+            queryset = queryset.filter(id=annotation_id)
+            if queryset.count() < 1:
+                raise Http404
         if question_id is not None:
             try:
                 question_id = int(question_id)
@@ -82,14 +87,7 @@ class AnnotationView(generics.RetrieveAPIView, generics.CreateAPIView):
             queryset = queryset.filter(answer_id=answer_id)
             if queryset.count() < 1:
                 raise Http404
-        if annotation_id is not None:
-            try:
-                annotation_id = int(annotation_id)
-            except ValueError:
-                raise Http404
-            queryset = queryset.filter(id=annotation_id)
-            if queryset.count() < 1:
-                raise Http404
+        
         annotation = queryset.first()
         return Response(AnnotationSerializer(annotation).data, status=status.HTTP_200_OK)
  
