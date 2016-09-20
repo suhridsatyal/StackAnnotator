@@ -34,10 +34,15 @@ class AnnotationTests(TestCase):
         client = APIClient()
         create_annotation(1, 1, "https://www.youtube.com/watch?v=0MjdyurrP6c", "sting", 7)
         create_annotation(2, 1, "https://www.youtube.com/watch?v=g7zO1MBu8SQ", "fiesty", 3)
+        response = client.get('/api/annotator/annotation/2', format='json')
+        #print(response.content)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.content, '{"question_id":2,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=g7zO1MBu8SQ","keyword":"fiesty","position":3}')
         response = client.get('/api/annotator/annotation/2/', format='json')
         #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content, '{"question_id":2,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=g7zO1MBu8SQ","keyword":"fiesty","position":3}')
+
 
     def test_get_annotation_by_question_and_answer(self):
         """
@@ -142,7 +147,7 @@ class AnnotationTests(TestCase):
         """
         client = APIClient()
         create_annotation(1, 3, "https://www.youtube.com/watch?v=3BxYqjzMz-U", "fiesty", 10)
-        response = client.get('/api/annotator/annotation/9000/', format='json')
+        response = client.get('/api/annotator/annotation/9000', format='json')
         #print(response.status_code)
         #print(response)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

@@ -59,9 +59,9 @@ class AnnotationView(generics.RetrieveAPIView, generics.CreateAPIView):
         question_id = self.request.query_params.get('question_id', None)
         answer_id = self.request.query_params.get('answer_id', None)
 
-        #Support annotation/4/
+        #Support annotation/4/ and annotation/4
         full_url_split = str(self.request.get_full_path()).split("/")
-        #print(self.request.get_full_path().split("/"), len(full_url_split))
+        #print(full_url_split[DEFAULT_LENGTH])
 
         if len(full_url_split) > DEFAULT_LENGTH:
             try:
