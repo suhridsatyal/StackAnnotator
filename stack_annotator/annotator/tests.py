@@ -21,11 +21,11 @@ class AnnotationTests(TestCase):
         response = client.get('/api/annotator/annotations?question_id=1', format='json')
         #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.content, '[{"question_id":1,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"sting","position":7}]')
+        self.assertEqual(response.content, '[{"id":1,"question_id":1,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"sting","position":7}]')
         response = client.get('/api/annotator/annotation?question_id=1', format='json')
         #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.content, '{"question_id":1,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"sting","position":7}')
+        self.assertEqual(response.content, '{"id":1,"question_id":1,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"sting","position":7}')
 
     def test_get_annotation_by_annotation_id(self):
         """
@@ -37,11 +37,11 @@ class AnnotationTests(TestCase):
         response = client.get('/api/annotator/annotation/2', format='json')
         #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.content, '{"question_id":2,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=g7zO1MBu8SQ","keyword":"fiesty","position":3}')
+        self.assertEqual(response.content, '{"id":2,"question_id":2,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=g7zO1MBu8SQ","keyword":"fiesty","position":3}')
         response = client.get('/api/annotator/annotation/2/', format='json')
         #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.content, '{"question_id":2,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=g7zO1MBu8SQ","keyword":"fiesty","position":3}')
+        self.assertEqual(response.content, '{"id":2,"question_id":2,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=g7zO1MBu8SQ","keyword":"fiesty","position":3}')
 
 
     def test_get_annotation_by_question_and_answer(self):
@@ -59,7 +59,7 @@ class AnnotationTests(TestCase):
         response = client.get('/api/annotator/annotation?question_id=1&answer_id=1', format='json')
         #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.content, '{"question_id":1,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"sting","position":7}')
+        self.assertEqual(response.content, '{"id":1,"question_id":1,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"sting","position":7}')
 
     def test_get_annotation_by_answer(self):
         """
@@ -70,10 +70,10 @@ class AnnotationTests(TestCase):
         create_annotation(2, 1, "https://www.youtube.com/watch?v=g7zO1MBu8SQ", "fiesty", 3)
         response = client.get('/api/annotator/annotations?answer_id=1', format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.content, '[{"question_id":2,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=g7zO1MBu8SQ","keyword":"fiesty","position":3}]')
+        self.assertEqual(response.content, '[{"id":2,"question_id":2,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=g7zO1MBu8SQ","keyword":"fiesty","position":3}]')
         response = client.get('/api/annotator/annotation?answer_id=1', format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.content, '{"question_id":2,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=g7zO1MBu8SQ","keyword":"fiesty","position":3}')
+        self.assertEqual(response.content, '{"id":2,"question_id":2,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=g7zO1MBu8SQ","keyword":"fiesty","position":3}')
 
     def test_post_annotation(self):
         """
@@ -84,7 +84,7 @@ class AnnotationTests(TestCase):
         response = client.post('/api/annotator/annotation/', data, format='json')
         #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.content, '{"question_id":5,"answer_id":10,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"fiesty","position":15}')
+        self.assertEqual(response.content, '{"id":1,"question_id":5,"answer_id":10,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"fiesty","position":15}')
 
     def test_get_multiple_annotation_by_question(self):
         """
@@ -96,7 +96,7 @@ class AnnotationTests(TestCase):
         response = self.client.get('/api/annotator/annotations?question_id=1')
         #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.content, '[{"question_id":1,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"fiesty","position":7},{"question_id":1,"answer_id":2,"annotation":"https://www.youtube.com/watch?v=3BxYqjzMz-U","keyword":"fiesty","position":12}]')
+        self.assertEqual(response.content, '[{"id":1,"question_id":1,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"fiesty","position":7},{"id":3,"question_id":1,"answer_id":2,"annotation":"https://www.youtube.com/watch?v=3BxYqjzMz-U","keyword":"fiesty","position":12}]')
 
     def test_get_multiple_annotation_by_answer(self):
         """
@@ -108,7 +108,7 @@ class AnnotationTests(TestCase):
         response = self.client.get('/api/annotator/annotations?answer_id=1')
         #print(response)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.content, '[{"question_id":1,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"fiesty","position":7},{"question_id":2,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=g7zO1MBu8SQ","keyword":"fiesty","position":3}]')
+        self.assertEqual(response.content, '[{"id":1,"question_id":1,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"fiesty","position":7},{"id":2,"question_id":2,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=g7zO1MBu8SQ","keyword":"fiesty","position":3}]')
 
     def test_get_all_annotations(self):
         """
@@ -120,7 +120,7 @@ class AnnotationTests(TestCase):
         response = self.client.get('/api/annotator/annotations')
         #print(response)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.content, '[{"question_id":1,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"fiesty","position":7},{"question_id":2,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=g7zO1MBu8SQ","keyword":"fiesty","position":3},{"question_id":1,"answer_id":2,"annotation":"https://www.youtube.com/watch?v=3BxYqjzMz-U","keyword":"fiesty","position":12}]')
+        self.assertEqual(response.content, '[{"id":1,"question_id":1,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=0MjdyurrP6c","keyword":"fiesty","position":7},{"id":2,"question_id":2,"answer_id":1,"annotation":"https://www.youtube.com/watch?v=g7zO1MBu8SQ","keyword":"fiesty","position":3},{"id":3,"question_id":1,"answer_id":2,"annotation":"https://www.youtube.com/watch?v=3BxYqjzMz-U","keyword":"fiesty","position":12}]')
 
     def test_get_fail_annotation_question(self):
         """
