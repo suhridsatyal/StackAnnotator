@@ -1,0 +1,42 @@
+Sample1
+annotation_id:13
+question_id:218384
+answer_id:218510
+annotation:https://www.youtube.com/watch?v=M8pv52yV0rM
+keyword:reference
+position:19
+
+annotation word should be reference
+
+//Same question, same answer different position
+Sample2
+annotation_id:14
+question_id:218384
+answer_id:218510
+annotation:https://www.youtube.com/watch?v=4XRy-TdfU0I
+keyword:object
+position:47
+
+annotation word should be object
+
+//Sample question, different Answer
+Sample3
+annotation_id:15
+question_id:218384
+answer_id:218390
+annotation:https://www.youtube.com/watch?v=K_-3OLkXkzY
+keyword:exceptions
+position:8
+
+annotation word should be exceptions
+
+//Different Question, Different Answer
+Sample4
+annotation_id:16
+question_id:36932
+answer_id:1695250
+annotation:https://www.youtube.com/watch?v=6sKWWlo6GW8
+keyword:Enums
+position:0
+
+annotation word should be Enums
