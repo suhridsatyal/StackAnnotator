@@ -31,15 +31,20 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-	'annotator.apps.AnnotatorConfig',
-	'rest_framework',
+    # Default
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #'django_extensions',
+
+    # Plugins
+    'django_extensions',
+    'rest_framework',
+
+    # App
+    'annotator.apps.AnnotatorConfig',
 ]
 
 MIDDLEWARE = [
@@ -58,7 +63,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         # Use html templates from compiled backbone app. Need to build UI every time a template is changed.
-        'DIRS': [os.path.join(BASE_DIR, "static")],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -123,6 +128,3 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
-#STATICFILES_DIRS = [
-#        os.path.join(BASE_DIR, "static")
-#]

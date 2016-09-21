@@ -15,11 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from annotator.views import index
 
 urlpatterns = [
     # StackAnnotator
-    url(r'^$', index),
     url(r'^api/', include('annotator.urls')),
 
     # Django Plugins
