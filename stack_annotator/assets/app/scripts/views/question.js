@@ -100,6 +100,7 @@ define([
       },
       render: function() {
           var self = this;
+          self.options =this.options;
           var data = {};
 
           var question = new QuestionModel({post: this.options.post});
@@ -107,13 +108,14 @@ define([
           var annotations = new AnnotationCollection();
           $.when(question.fetch(),
                  answers.fetch(),
-                 annotations.fetch({'question_id': this.options.questionID}))
+                 annotations.fetch({data: {'question_id': self.options.post}}))
             .done(function () {
               data.question = question.get("title");
               data.questionBody = question.get("body");
-              data.answers = self.sortAnswers(answers.toJSON());
-              debugger;
-              console.log(annotations);
+              var annotationList = annotations.toJSON();
+              var annotatedAnswers = self.annotateAnswers(answers.toJSON(), annotationList);
+              data.answers = self.sortAnswers(annotatedAnswers);
+
               var compiledTemplate = _.template(questionTemplate);
               self.$el.empty().append(compiledTemplate(data));
               console.log(self.options);
@@ -157,6 +159,24 @@ define([
               }
           });
       },
+   annotateAnswers: function(answers, annotations){
+       // Surrounds annotated text with span, with id=annotation id
+       _.each(annotations, function(annotation) {
+         _.each(answers, function(answer) {
+            if (answer.answer_id == annotation.answer_id) {
+              var replacer = function(match, offset) {
+                  if (offset==annotation.position) {
+                      return "<span class='highlighted annotation_text' id=" + annotation.id + ">" + match + "</span>";
+                  } else {
+                      return match;
+                  }
+              }
+              answer.body = answer.body.replace(annotation.keyword, replacer);
+           }
+         });
+       });
+       return answers;
+   },
    sortAnswers: function(unsortedAnswers) {
         var sortedEntries = [];
 
