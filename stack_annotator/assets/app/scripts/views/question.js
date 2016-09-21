@@ -117,6 +117,22 @@ define([
                   // do range.select on like this:
                   // http://jsfiddle.net/edelman/KcX6A/1507/
                   // show comment menu below the selection
+
+                  // Better idea. Modify answers collection s.t. all keywords with annotations are
+                  // wrapped in <span> tag. That way, we can just jump to that specific tag
+                  // Like this:
+                  // var text= "<div> hello this is a hello text  </div>"
+                  // var obj = {answer_id: 1, text: text};
+                  // var annotation_offset = 6;
+                  // function replacer(match, offset) {
+                  //         console.log(offset, annotation_offset);
+                  //   if (offset==annotation_offset) {
+                  //           return "<span class='highlighted annotation_text'>" + match + "</span>";
+                  //   } else {return match;}
+                  // }
+                  // var result = obj.text.replace('hello', replacer);
+                  // console.log(result);
+
                   var answerElem = "#" + self.options.answerID;
                   console.log(answerElem);
                   var answerElemOffset = $(answerElem).offset();
