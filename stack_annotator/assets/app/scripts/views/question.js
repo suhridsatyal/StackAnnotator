@@ -5,10 +5,14 @@ define([
   // Models
   '../models/question',
   '../models/answers',
+  '../models/annotations',
   // Templates
   'text!../templates/question.html',
   'text!../templates/tooltip_menu.html'
-], function($, _, Backbone, QuestionModel, AnswerCollection, questionTemplate, tooltipTemplate){
+], function($, _, Backbone,
+            QuestionModel, AnswerCollection, AnnotationCollection,
+            questionTemplate, tooltipTemplate){
+
   var QuestionView = Backbone.View.extend({
       initialize: function(options) {
           this.options = options || {};
@@ -100,11 +104,16 @@ define([
 
           var question = new QuestionModel({post: this.options.post});
           var answers = new AnswerCollection({post: this.options.post});
-          $.when(question.fetch(),answers.fetch())
+          var annotations = new AnnotationCollection();
+          $.when(question.fetch(),
+                 answers.fetch(),
+                 annotations.fetch({'question_id': this.options.questionID}))
             .done(function () {
               data.question = question.get("title");
               data.questionBody = question.get("body");
               data.answers = self.sortAnswers(answers.toJSON());
+              debugger;
+              console.log(annotations);
               var compiledTemplate = _.template(questionTemplate);
               self.$el.empty().append(compiledTemplate(data));
               console.log(self.options);

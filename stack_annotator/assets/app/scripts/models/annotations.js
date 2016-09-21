@@ -4,11 +4,9 @@ define([
   'backbone'
 ], function($, _, Backbone){
     var Annotations = Backbone.Model.extend({
-        urlRoot: '/api/annotations',
+        urlRoot: 'http://stackannotator.com',
         url: function() {
-            var url = this.urlRoot +
-              this.get("post") +
-              '/answers?order=desc&sort=activity&site=stackoverflow&filter=withbody&key=L30zaZ1PnRBr57w8wAxBMQ((';
+            var url = this.urlRoot + '/api/annotations';
             return url;
         }
         ,
@@ -17,5 +15,5 @@ define([
         }
     });
 
-    return Answers;
+    return Annotations;
 });
