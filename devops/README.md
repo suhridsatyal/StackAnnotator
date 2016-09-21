@@ -41,8 +41,9 @@ Development Workflow
   Then visit `stackannotator.com`.
 
 - If you want to work with django development server,
-  run `python manage.py runserver_plus 0.0.0.0:9000` inside container,
-  and visit `0.0.0.0:9000`
+  run `stack_annotator/run_dev` inside container. Make sure that
+  nginx service is stopped. Using dev server is essential if you
+  want to work with front-end independently on your host.
 
 - If you want to work on the front-end independently, go to
   `stack_annotator/assets` on your host, and execute `grunt serve`.
