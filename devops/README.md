@@ -23,19 +23,29 @@ Development Environment
 
  - Git repository on your host is mounted on the container at `/opt/StackAnnotator`.
  - Container exposes port 80 and 9000, these are mapped to host ports
-   8000 and 9000 respectively
+   80 and 9000 respectively
 
 
 Development Workflow
 --------------------
 
 - Start the container
-- Change code in your machine
+
+- Change code on your host
+
 - Perform general deployment operations inside container
-  e.g. `grunt build`
-- Visit `0.0.0.0:8000` to access the application.
-  If you want to work with django development server,
-  run `python manage.py runserver_plus` and visit `0.0.0.0:9000`
+  e.g. `make`, `python manage.py collectstatic`
+
+- Put the following line in `/etc/hosts`
+  `127.0.1.1	stackannotator.com www.stackannotator.com`
+  Then visit `stackannotator.com`.
+
+- If you want to work with django development server,
+  run `python manage.py runserver_plus 0.0.0.0:9000` inside container,
+  and visit `0.0.0.0:9000`
+
+- If you want to work on the front-end independently, go to
+  `stack_annotator/assets` on your host, and execute `grunt serve`.
 
 
 Troubleshooting
