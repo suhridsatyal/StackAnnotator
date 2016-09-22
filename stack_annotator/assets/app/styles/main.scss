@@ -18,3 +18,11 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/assets/fonts/bootstr
     margin-bottom:100px;
     background: beige none repeat scroll 0% 0%;
 }
+
+.highlighted {
+    background-color:yellow;
+}
+
+.annotation_text:hover {
+    background-color:lightgreen;
+}
