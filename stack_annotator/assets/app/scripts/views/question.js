@@ -105,7 +105,7 @@ define([
       },
       render: function() {
           var self = this;
-          self.options =this.options;
+          self.options = this.options;
           var data = {};
 
           var question = new QuestionModel({post: this.options.post});
@@ -133,28 +133,9 @@ define([
                       // Scroll to annotation
                       var annotationElem = "#" + self.options.highlightID + ".annotation_text";
                       var annotationElemOffset = $(annotationElem).offset();
-                      annotationElemOffset.bottom = annotationElemOffset.top + $(annotationElem).outerHeight(true);
-                      annotationElemOffset.right = annotationElemOffset.left + $(annotationElem).outerWidth(true);
                       $('html,body').animate({scrollTop: annotationElemOffset.top}, "fast");
 
-                      // Show comment box with annotations
-                      var youtubeURL =  annotations.get(self.options.highlightID).
-                                        get('annotation').
-                                        replace("watch?v=", "embed/");
-
-                      var annotationData = {id: self.options.highlightID,
-                                            annotation: youtubeURL };
-                      var annotationLinks = _.template(annotationsTemplate)(annotationData);
-                      $("#annotate-tooltip").popover({
-                          trigger: 'focus',
-                          container: 'body',
-                          placement: 'right',
-                          content: function() {
-                              return annotationLinks;
-                          },
-                          html: true
-                      }).popover('show');
-                      $(".popover").css({top: annotationElemOffset.top, left: annotationElemOffset.right, 'max-width': '640px', transform: ''}).show();
+                      self.showYoutubeURL(self.options.highlightID, annotations);
                   } else if (self.options.highlightType == 'task') {
                       // Scroll to Task
                       var annotationElem = "#" + self.options.highlightID + ".task_text";
@@ -165,7 +146,32 @@ define([
                   }
               }
           });
+          this.annotations = annotations;
       },
+   showYoutubeURL: function(annotationID, annotations){
+      // Shows Annotations (Youtube URLS) next to highlighted text
+      var annotationElem = "#" + annotationID + ".annotation_text";
+      var annotationElemOffset = $(annotationElem).offset();
+      annotationElemOffset.bottom = annotationElemOffset.top + $(annotationElem).outerHeight(true);
+      annotationElemOffset.right = annotationElemOffset.left + $(annotationElem).outerWidth(true);
+      var youtubeURL =  annotations.get(annotationID).
+                      get('annotation').
+                      replace("watch?v=", "embed/");
+
+      var annotationData = {id: annotationID,
+                          annotation: youtubeURL };
+      var annotationLinks = _.template(annotationsTemplate)(annotationData);
+      $("#annotate-tooltip").popover({
+          trigger: 'focus',
+          container: 'body',
+          placement: 'right',
+          content: function() {
+              return annotationLinks;
+          },
+          html: true
+      }).popover('show');
+      $(".popover").css({top: annotationElemOffset.top, left: annotationElemOffset.right, 'max-width': '640px', transform: ''}).show();
+   },
    annotateAnswers: function(answers, annotations){
        // Surrounds annotated text with span, with id=annotation id
        _.each(annotations, function(annotation) {
