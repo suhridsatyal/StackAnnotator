@@ -8,10 +8,11 @@ define([
   '../models/annotations',
   // Templates
   'text!../templates/question.html',
-  'text!../templates/tooltip_menu.html'
+  'text!../templates/tooltip_menu.html',
+  'text!../templates/annotations.html'
 ], function($, _, Backbone,
             QuestionModel, AnswerCollection, AnnotationCollection,
-            questionTemplate, tooltipTemplate){
+            questionTemplate, tooltipTemplate, annotationsTemplate){
 
   var QuestionView = Backbone.View.extend({
       initialize: function(options) {
@@ -21,24 +22,25 @@ define([
       el: $('.container'),
       events: {
           'mouseup #answers': 'onHighlight',
-          'mousedown #answers': 'onDeselect'
+          'mousedown #questionView': 'onDeselect',
+          'mouseover .annotation_text': 'onAnnotationHover'
       },
       onHighlight: function(){
         var rects = [];
         var selectedText = "";
-        if (window.getSelection) {
-          selectedText = window.getSelection().toString().trim();
 
+        if (window.getSelection) {
+          selectedText = window.getSelection().toString();
           var box = window.getSelection().getRangeAt(0).getBoundingClientRect();
           rects = this.getHighlightOffset(box);
         } else if (document.selection) {
-          selectedText = document.getSelection().toString().trim();
-
+          selectedText = document.getSelection().toString();
           var box = document.getSelection().getRangeAt(0).getBoundingClientRect();
           rects = this.getHighlightOffset(box);
         } else {
           return;
         }
+
         this.options.selectedText = selectedText;
         var self=this;
 
@@ -56,9 +58,6 @@ define([
           $(".popover").css({top: rects.bottom, left: rects.left, transform: ''}).show();
 
           // Attach events to popover buttons.
-          // This cannot be done through backbone view because the DOM is created by popover here
-          // This is somewhat dirty. But at this stage, it is simple enough.
-          // TODO: make this cleaner.
           $("#crowdsourceBtn").on("click", function(event) {self.onCrowdsource()});
           $("#commentBtn").on("click", function(event) {self.onComment()});
           $("#helpBtn").on("click", function(event) {self.onHelp()});
@@ -87,6 +86,12 @@ define([
       },
       onDeselect: function() {
         $("#annotate-tooltip").popover('hide');
+      },
+      onAnnotationHover:function(evt) {
+          debugger;
+          var id=evt.target.id;
+          // Show annotation
+          console.log("Hovered");
       },
       onCrowdsource: function () {
           console.log("TODO: call backend to create crowdsourcing request");
@@ -118,44 +123,46 @@ define([
 
               var compiledTemplate = _.template(questionTemplate);
               self.$el.empty().append(compiledTemplate(data));
-              console.log(self.options);
               if (self.options.answerID) {
-                  // TODO: set id of each answeritem as answerid
-                  // Keyword should be answerid-keyword-position
-                  // scroll down to answerid div by executing this:
-                  // var pos = $("#answerid").offset();
-                  // $('html, body').animate({scrollTop: pos.top}, "slow");
-                  // do range.select on like this:
-                  // http://jsfiddle.net/edelman/KcX6A/1507/
-                  // show comment menu below the selection
-
-                  // Better idea. Modify answers collection s.t. all keywords with annotations are
-                  // wrapped in <span> tag. That way, we can just jump to that specific tag
-                  // Like this:
-                  // var text= "<div> hello this is a hello text  </div>"
-                  // var obj = {answer_id: 1, text: text};
-                  // var annotation_offset = 6;
-                  // function replacer(match, offset) {
-                  //         console.log(offset, annotation_offset);
-                  //   if (offset==annotation_offset) {
-                  //           return "<span class='highlighted annotation_text'>" + match + "</span>";
-                  //   } else {return match;}
-                  // }
-                  // var result = obj.text.replace('hello', replacer);
-                  // console.log(result);
-
+                  // Scroll to answer
                   var answerElem = "#" + self.options.answerID;
-                  console.log(answerElem);
                   var answerElemOffset = $(answerElem).offset();
                   $('html,body').animate({scrollTop: answerElemOffset.top}, "fast");
-                  console.log("scrolling");
-                  if (self.options.keyword) {
-                    console.log("find");
-                    window.find(self.options.keyword);
-                    self.onHighlight();
+
+                  if (self.options.highlightType == 'annotation') {
+                      // Scroll to annotation
+                      var annotationElem = "#" + self.options.highlightID + ".annotation_text";
+                      var annotationElemOffset = $(annotationElem).offset();
+                      annotationElemOffset.bottom = annotationElemOffset.top + $(annotationElem).outerHeight(true);
+                      annotationElemOffset.right = annotationElemOffset.left + $(annotationElem).outerWidth(true);
+                      $('html,body').animate({scrollTop: annotationElemOffset.top}, "fast");
+
+                      // Show comment box with annotations
+                      var youtubeURL =  annotations.get(self.options.highlightID).
+                                        get('annotation').
+                                        replace("watch?v=", "embed/");
+
+                      var annotationData = {id: self.options.highlightID,
+                                            annotation: youtubeURL };
+                      var annotationLinks = _.template(annotationsTemplate)(annotationData);
+                      $("#annotate-tooltip").popover({
+                          trigger: 'focus',
+                          container: 'body',
+                          placement: 'right',
+                          content: function() {
+                              return annotationLinks;
+                          },
+                          html: true
+                      }).popover('show');
+                      $(".popover").css({top: annotationElemOffset.top, left: annotationElemOffset.right, 'max-width': '640px', transform: ''}).show();
+                  } else if (self.options.highlightType == 'task') {
+                      // Scroll to Task
+                      var annotationElem = "#" + self.options.highlightID + ".task_text";
+                      var annotationElemOffset = $(annotationElem).offset();
+                      $('html,body').animate({scrollTop: annotationElemOffset.top}, "fast");
+                      // Show comment box
+                      // TODO
                   }
-                  //console.log(keywordElem);
-                  //keywordElem.css("text-decoration", "underline");
               }
           });
       },

@@ -3,7 +3,12 @@ define([
   'underscore',
   'backbone'
 ], function($, _, Backbone){
-    var Annotations = Backbone.Model.extend({
+    var Annotation = Backbone.Model.extend({
+        idAttribute: "id"
+    });
+
+    var Annotations = Backbone.Collection.extend({
+        model: Annotation,
         urlRoot: 'http://stackannotator.com',
         url: function() {
             var url = this.urlRoot + '/api/annotations';
