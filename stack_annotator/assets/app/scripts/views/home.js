@@ -3,8 +3,10 @@ define([
   'underscore',
   'backbone',
   // Templates
-  'text!../templates/home.html'
-], function($, _, Backbone, homeTemplate){
+  'text!../templates/home.html',
+  // Utils
+  '../views/common_utils'
+], function($, _, Backbone, homeTemplate, CommonUtils){
   var HomeView = Backbone.View.extend({
       el: $('.container'),
       events: {
@@ -12,32 +14,10 @@ define([
           'input #urlField': 'onURLChange'
       },
       urlRegex: new RegExp(
-                         '^(https?:\/\/)?stackoverflow\.com\/questions\/([0-9]+)?(\/[-a-z\d%_.~+]*)*'
+                         '^(https?:\/\/)?stackoverflow\.com\/questions\/([0-9]+)(\/[-a-z\d%_.~+]*)*'
                          ),
       onURLChange: function(e) {
-        e.preventDefault();
-        var url = $('#urlField').val();
-        if (!this.urlRegex.test(url)) {
-            // Make Success Indicators invisible
-            $('#urlFormGroup').removeClass('has-success');
-            $('#viewButton').prop('disabled', true);
-            $('#urlSuccessIcon').addClass('hidden');
-
-            // Make Error Indicators visible
-            $('#urlFormGroup').addClass('has-error');
-            $('#urlHelpBlock').removeClass('hidden');
-            $('#urlErrorIcon').removeClass('hidden');
-        } else {
-            // Make Success Indicators visible
-            $('#urlFormGroup').addClass('has-success');
-            $('#urlSuccessIcon').removeClass('hidden');
-            $('#viewButton').prop('disabled', false);
-
-            // Make Error Indicators invisible
-            $('#urlFormGroup').removeClass('has-error');
-            $('#urlHelpBlock').addClass('hidden');
-            $('#urlErrorIcon').addClass('hidden');
-        }
+        CommonUtils.onURLChange('#urlField', this.urlRegex);
       },
       onSubmitURL: function(e) {
         e.preventDefault();

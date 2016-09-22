@@ -9,10 +9,14 @@ define([
   // Templates
   'text!../templates/question.html',
   'text!../templates/tooltip_menu.html',
-  'text!../templates/annotations.html'
+  'text!../templates/annotations.html',
+  'text!../templates/commentbox.html',
+  // Utils
+  '../views/common_utils'
 ], function($, _, Backbone,
   QuestionModel, AnswerCollection, AnnotationCollection,
-  questionTemplate, tooltipTemplate, annotationsTemplate) {
+  questionTemplate, tooltipTemplate, annotationsTemplate, commentboxTemplate,
+  CommonUtils) {
 
   var QuestionView = Backbone.View.extend({
     el: $('.container'),
@@ -92,29 +96,17 @@ define([
     },
 
     onHighlight: function() {
-      var rects = [];
-      var selectedText = "";
-
-      if (window.getSelection) {
-        selectedText = window.getSelection().toString();
-        var box = window.getSelection().getRangeAt(0).getBoundingClientRect();
-        rects = this._getHighlightOffset(box);
-      } else if (document.selection) {
-        selectedText = document.getSelection().toString();
-        var box = document.getSelection().getRangeAt(0).getBoundingClientRect();
-        rects = this._getHighlightOffset(box);
-      } else {
-        return;
+      var rects = this._getSelectionRects();
+      if (rects==undefined) {
+          return;
       }
 
-      this.options.selectedText = selectedText;
       var self = this;
 
-      if (selectedText.length > 0) {
+      if (this.options.selectedText.length > 0) {
         this._cleanupPopover();
 
         //show popover
-        console.log(tooltipTemplate);
         $("#annotate-tooltip").popover({
           trigger: 'focus',
           container: 'body',
@@ -157,11 +149,64 @@ define([
     },
 
     onComment: function() {
-      console.log("TODO: allow users to comment");
+      this._cleanupPopover();
+      var rects=this._getSelectionRects();
+      if (rects==undefined) {
+          return;
+      }
+      $("#annotate-tooltip").popover({
+        trigger: 'focus',
+        container: 'body',
+        //placement: 'bottom',
+        content: function() {
+          return commentboxTemplate;
+        },
+        html: true
+      }).popover('show');
+      $(".popover").css({
+        top: rects.bottom,
+        left: rects.left,
+        transform: ''
+      }).show();
+
+      // Attach events to popover buttons.
+      var self = this;
+      $("#urlField.commentbox").on("input", function(event) {
+        var urlRegex= new RegExp(
+                     '^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$'
+                     );
+        CommonUtils.onURLChange("#urlField.commentbox", urlRegex);
+      });
+
     },
 
     onHelp: function() {
       console.log("TODO: show help");
+    },
+
+    onURLChange: function(e) {
+      var url = $('#urlField.commentbox').val();
+      if (!this.urlRegex.test(url)) {
+          // Make Success Indicators invisible
+          $('#urlFormGroup').removeClass('has-success');
+          $('#viewButton').prop('disabled', true);
+          $('#urlSuccessIcon').addClass('hidden');
+
+          // Make Error Indicators visible
+          $('#urlFormGroup').addClass('has-error');
+          $('#urlHelpBlock').removeClass('hidden');
+          $('#urlErrorIcon').removeClass('hidden');
+      } else {
+          // Make Success Indicators visible
+          $('#urlFormGroup').addClass('has-success');
+          $('#urlSuccessIcon').removeClass('hidden');
+          $('#viewButton').prop('disabled', false);
+
+          // Make Error Indicators invisible
+          $('#urlFormGroup').removeClass('has-error');
+          $('#urlHelpBlock').addClass('hidden');
+          $('#urlErrorIcon').addClass('hidden');
+      }
     },
 
     //
@@ -271,7 +316,23 @@ define([
       $(".popover").remove();
       $("#annotate-tooltip").remove();
       $("#questionview").append('<div id="annotate-tooltip" data-toggle="popover"> </div>');
+    },
+
+    _getSelectionRects: function() {
+      var selectedText;
+      if (window.getSelection) {
+        this.options.selectedText = window.getSelection().toString();
+        var box = window.getSelection().getRangeAt(0).getBoundingClientRect();
+        return this._getHighlightOffset(box);
+      } else if (document.selection) {
+        this.options.selectedText = document.getSelection().toString();
+        var box = document.getSelection().getRangeAt(0).getBoundingClientRect();
+        return this._getHighlightOffset(box);
+      } else {
+        return;
+      }
     }
+
   });
 
   return QuestionView;
