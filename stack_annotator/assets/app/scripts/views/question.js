@@ -15,93 +15,10 @@ define([
             questionTemplate, tooltipTemplate, annotationsTemplate){
 
   var QuestionView = Backbone.View.extend({
+      el: $('.container'),
       initialize: function(options) {
           this.options = options || {};
           this.options.selectedText = "";
-      },
-      el: $('.container'),
-      events: {
-          'mouseup #answers': 'onHighlight',
-          'mousedown #questionView': 'onDeselect',
-          'mouseover .annotation_text': 'onAnnotationHover'
-      },
-      onHighlight: function(){
-        var rects = [];
-        var selectedText = "";
-
-        if (window.getSelection) {
-          selectedText = window.getSelection().toString();
-          var box = window.getSelection().getRangeAt(0).getBoundingClientRect();
-          rects = this.getHighlightOffset(box);
-        } else if (document.selection) {
-          selectedText = document.getSelection().toString();
-          var box = document.getSelection().getRangeAt(0).getBoundingClientRect();
-          rects = this.getHighlightOffset(box);
-        } else {
-          return;
-        }
-
-        this.options.selectedText = selectedText;
-        var self=this;
-
-        if (selectedText.length > 0) {
-          //show popover
-          $("#annotate-tooltip").popover({
-              trigger: 'focus',
-              container: 'body',
-              //placement: 'bottom',
-              content: function() {
-                  return tooltipTemplate;
-              },
-              html: true
-          }).popover('show');
-          $(".popover").css({top: rects.bottom, left: rects.left, transform: ''}).show();
-
-          // Attach events to popover buttons.
-          $("#crowdsourceBtn").on("click", function(event) {self.onCrowdsource()});
-          $("#commentBtn").on("click", function(event) {self.onComment()});
-          $("#helpBtn").on("click", function(event) {self.onHelp()});
-        };
-      },
-      getHighlightOffset: function(box) {
-        /* Returns offset of selected text.
-         * Code adapted from this tutorial:
-         * http://javascript.info/tutorial/coordinates
-         */
-        var body = document.body;
-        var docElem = document.documentElement;
-
-        var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
-        var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
-
-        var clientTop = docElem.clientTop || body.clientTop || 0;
-        var clientLeft = docElem.clientLeft || body.clientLeft || 0;
-
-        var bottom = box.bottom +  scrollTop - clientTop;
-        var left = box.left + scrollLeft - clientLeft;
-        var right = box.right + scrollLeft - clientLeft;
-
-
-        return { bottom: Math.round(bottom), left: Math.round(left), right: Math.round(right) };
-      },
-      onDeselect: function() {
-        $("#annotate-tooltip").popover('hide');
-      },
-      onAnnotationHover:function(evt) {
-          debugger;
-          var id=evt.target.id;
-          // Show annotation
-          console.log("Hovered");
-      },
-      onCrowdsource: function () {
-          console.log("TODO: call backend to create crowdsourcing request");
-          console.log("Selected Text: " + this.options.selectedText);
-      },
-      onComment: function () {
-          console.log("TODO: allow users to comment");
-      },
-      onHelp: function () {
-          console.log("TODO: show help");
       },
       render: function() {
           var self = this;
@@ -147,9 +64,102 @@ define([
               }
           });
           this.annotations = annotations;
-      },
+   },
+
+   //
+   // Events and Listeners
+   //
+   events: {
+       'mouseup #answers': 'onHighlight',
+       'mousedown #questionview': 'onDeselect',
+       'mouseover .annotation_text': 'onAnnotationHover'
+   },
+   onHighlight: function(){
+     var rects = [];
+     var selectedText = "";
+
+     if (window.getSelection) {
+       selectedText = window.getSelection().toString();
+       var box = window.getSelection().getRangeAt(0).getBoundingClientRect();
+       rects = this.getHighlightOffset(box);
+     } else if (document.selection) {
+       selectedText = document.getSelection().toString();
+       var box = document.getSelection().getRangeAt(0).getBoundingClientRect();
+       rects = this.getHighlightOffset(box);
+     } else {
+       return;
+     }
+
+     this.options.selectedText = selectedText;
+     var self=this;
+
+     if (selectedText.length > 0) {
+       this.cleanupPopover();
+
+       //show popover
+       console.log(tooltipTemplate);
+       $("#annotate-tooltip").popover({
+           trigger: 'focus',
+           container: 'body',
+           //placement: 'bottom',
+           content: function() {
+               return tooltipTemplate;
+           },
+           html: true
+       }).popover('show');
+       $(".popover").css({top: rects.bottom, left: rects.left, transform: ''}).show();
+
+       // Attach events to popover buttons.
+       $("#crowdsourceBtn").on("click", function(event) {self.onCrowdsource()});
+       $("#commentBtn").on("click", function(event) {self.onComment()});
+       $("#helpBtn").on("click", function(event) {self.onHelp()});
+     };
+   },
+   onDeselect: function() {
+     console.log("Deselect!");
+     this.cleanupPopover();
+   },
+   onAnnotationHover:function(evt) {
+       this.showYoutubeURL(evt.target.id, this.annotations);
+   },
+   onCrowdsource: function () {
+       console.log("TODO: call backend to create crowdsourcing request");
+       console.log("Selected Text: " + this.options.selectedText);
+   },
+   onComment: function () {
+       console.log("TODO: allow users to comment");
+   },
+   onHelp: function () {
+       console.log("TODO: show help");
+   },
+
+   //
+   // Helper Functions
+   //
+   getHighlightOffset: function(box) {
+     /* Returns offset of selected text.
+      * Code adapted from this tutorial:
+      * http://javascript.info/tutorial/coordinates
+      */
+     var body = document.body;
+     var docElem = document.documentElement;
+
+     var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
+     var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
+
+     var clientTop = docElem.clientTop || body.clientTop || 0;
+     var clientLeft = docElem.clientLeft || body.clientLeft || 0;
+
+     var bottom = box.bottom +  scrollTop - clientTop;
+     var left = box.left + scrollLeft - clientLeft;
+     var right = box.right + scrollLeft - clientLeft;
+
+
+     return { bottom: Math.round(bottom), left: Math.round(left), right: Math.round(right) };
+   },
    showYoutubeURL: function(annotationID, annotations){
       // Shows Annotations (Youtube URLS) next to highlighted text
+      this.cleanupPopover();
       var annotationElem = "#" + annotationID + ".annotation_text";
       var annotationElemOffset = $(annotationElem).offset();
       annotationElemOffset.bottom = annotationElemOffset.top + $(annotationElem).outerHeight(true);
@@ -203,7 +213,13 @@ define([
             _.sortBy(otherAnswers, function(answer) {return -answer.score;}));
 
         return sortedAnswers;
+   },
+   cleanupPopover: function() {
+       $(".popover").remove();
+       $("#annotate-tooltip").remove();
+       $("#questionview").append('<div id="annotate-tooltip" data-toggle="popover"> </div>');
    }
   });
+
   return QuestionView;
 });
