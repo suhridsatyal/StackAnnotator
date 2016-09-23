@@ -3,8 +3,8 @@ from django.http import HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
-from annotator.models import Annotation
-from annotator.serializers import AnnotationSerializer
+from annotator.models import Annotation, Video
+from annotator.serializers import AnnotationSerializer, VideoSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -38,3 +38,23 @@ class AnnotationListView(generics.ListCreateAPIView):
 class AnnotationView(generics.RetrieveAPIView):
     queryset = Annotation.objects.all()
     serializer_class = AnnotationSerializer
+
+
+class VideoListView(generics.ListCreateAPIView):
+    model = Video
+    serializer_class = VideoSerializer
+
+    def get_queryset(self, **kwargs):
+        queryset = Video.objects.all()
+        annotation_id = self.request.query_params.get('annotation_id', None)
+        try:
+            if annotation_id:
+                queryset = queryset.filter(annotation_id_id=int(annotation_id))
+        except ValueError:
+            raise Http404
+        return queryset
+
+
+class VideoView(generics.RetrieveUpdateAPIView):
+    queryset = Video.objects.all()
+    serializer_class = VideoSerializer
