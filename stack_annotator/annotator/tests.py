@@ -177,16 +177,21 @@ class AnnotationAPITests(TestCase):
         self.assertEqual(response.content,
                 '{"id":1,"question_id":5,"answer_id":10,"videos":[],"keyword":"fiesty","position":15}')
 
-        client = APIClient()
+        data = {"question_id":5, "answer_id":10,"keyword":"fiesty","position":15}
+        response = client.post('/api/annotations', data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.content,
+                '{"id":2,"question_id":5,"answer_id":10,"videos":[],"keyword":"fiesty","position":15}')
+
         data = {"question_id":5, "answer_id":10,"videos":[{"video_id":"newvideo"}],"keyword":"fiesty","position":15}
         response = client.post('/api/annotations', data, format='json')
         #print(response)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         
-        response = client.get('/api/annotation/2/', data, format='json')
+        response = client.get('/api/annotation/3/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
-                '{"id":2,"question_id":5,"answer_id":10,"videos":[{"id":1,"video_id":"newvideo"}],"keyword":"fiesty","position":15}')
+                '{"id":3,"question_id":5,"answer_id":10,"videos":[{"id":1,"video_id":"newvideo"}],"keyword":"fiesty","position":15}')
 
 
     def test_post_fail_annotation(self):
