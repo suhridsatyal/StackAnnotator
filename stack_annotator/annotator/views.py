@@ -38,6 +38,38 @@ class AnnotationListView(generics.ListCreateAPIView):
             raise Http404
         return queryset
 
+    def post(self, request, format=None):
+
+        serializer = AnnotationSerializer(data=request.data)
+
+        # Remember video data if a video needs to be created
+        videos = request.data.get('videos', None)
+        request.data["videos"] = []
+
+        # Create annotation
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+        # Create video/videos
+        if videos:
+            annotation_id = int(serializer.data['id'])
+            # Can create multiple videos, may not be required
+            for video in videos:
+                video_id = video["video_id"]
+                new_video = {"annotation_id": annotation_id,
+                             "video_id": video_id}
+                videos = VideoSerializer(data=new_video)
+                if videos.is_valid():
+                    videos.save()
+                else:
+                    return Response(videos.errors,
+                                    status=status.HTTP_400_BAD_REQUEST)
+        # Since it's a post, the data inside shouldn't matter too much
+        # Will need to call get to return the correct data
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 class AnnotationView(generics.RetrieveAPIView):
     queryset = Annotation.objects.all()
