@@ -14,7 +14,7 @@ define([
       if (!urlRegex.test(url)) {
           // Make Success Indicators invisible
           $('#urlFormGroup').removeClass('has-success');
-          $('#viewButton').prop('disabled', true);
+          $('#submitButton').prop('disabled', true);
           $('#urlSuccessIcon').addClass('hidden');
 
           // Make Error Indicators visible
@@ -25,7 +25,7 @@ define([
           // Make Success Indicators visible
           $('#urlFormGroup').addClass('has-success');
           $('#urlSuccessIcon').removeClass('hidden');
-          $('#viewButton').prop('disabled', false);
+          $('#submitButton').prop('disabled', false);
 
           // Make Error Indicators invisible
           $('#urlFormGroup').removeClass('has-error');

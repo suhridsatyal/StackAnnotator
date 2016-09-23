@@ -24,6 +24,9 @@ define([
     initialize: function(options) {
       this.options = options || {};
       this.options.selectedText = "";
+      this.options.youtubeRegExp = new RegExp(
+                     '^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$'
+                     );
     },
 
     render: function() {
@@ -62,24 +65,15 @@ define([
               scrollTop: answerElemOffset.top
             }, "fast");
 
-            if (self.options.highlightType == 'annotation') {
+            if (self.options.highlightID) {
               // Scroll to annotation
-              var annotationElem = "#" + self.options.highlightID + ".annotation_text";
+              var annotationElem = "annotation#" + self.options.highlightID;
               var annotationElemOffset = $(annotationElem).offset();
               $('html,body').animate({
                 scrollTop: annotationElemOffset.top
               }, "fast");
 
               self._showYoutubeURL(self.options.highlightID, annotations);
-            } else if (self.options.highlightType == 'task') {
-              // Scroll to Task
-              var annotationElem = "#" + self.options.highlightID + ".task_text";
-              var annotationElemOffset = $(annotationElem).offset();
-              $('html,body').animate({
-                scrollTop: annotationElemOffset.top
-              }, "fast");
-              // Show comment box
-              // TODO
             }
           }
         });
@@ -92,7 +86,7 @@ define([
     events: {
       'mouseup #answers': 'onHighlight',
       'mousedown #questionview': 'onDeselect',
-      'mouseover .annotation_text': 'onAnnotationHover'
+      'mouseover annotation': 'onAnnotationHover'
     },
 
     onHighlight: function() {
@@ -169,13 +163,23 @@ define([
         transform: ''
       }).show();
 
-      // Attach events to popover buttons.
+      var selection = window.getSelection();
+      var range = selection.getRangeAt(0);
+      var parentDiv = $(range.commonAncestorContainer.parentNode).closest("div");
+      var answerID = parentDiv.attr("id");
       var self = this;
+
+      // Attach events to popover buttons.
       $("#urlField.commentbox").on("input", function(event) {
-        var urlRegex= new RegExp(
-                     '^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$'
-                     );
+        var urlRegex= self.options.youtubeRegExp;
         CommonUtils.onURLChange("#urlField.commentbox", urlRegex);
+      });
+
+      $("#submitButton.commentbox").on("click", function(event) {
+          var annotation =  $("#urlField.commentbox").val();
+          self.annotations.add({question_id: self.options.post, answer_id: answerID,
+                               annotation: annotation});
+          //TODO make a POST request
       });
 
     },
@@ -184,30 +188,6 @@ define([
       console.log("TODO: show help");
     },
 
-    onURLChange: function(e) {
-      var url = $('#urlField.commentbox').val();
-      if (!this.urlRegex.test(url)) {
-          // Make Success Indicators invisible
-          $('#urlFormGroup').removeClass('has-success');
-          $('#viewButton').prop('disabled', true);
-          $('#urlSuccessIcon').addClass('hidden');
-
-          // Make Error Indicators visible
-          $('#urlFormGroup').addClass('has-error');
-          $('#urlHelpBlock').removeClass('hidden');
-          $('#urlErrorIcon').removeClass('hidden');
-      } else {
-          // Make Success Indicators visible
-          $('#urlFormGroup').addClass('has-success');
-          $('#urlSuccessIcon').removeClass('hidden');
-          $('#viewButton').prop('disabled', false);
-
-          // Make Error Indicators invisible
-          $('#urlFormGroup').removeClass('has-error');
-          $('#urlHelpBlock').addClass('hidden');
-          $('#urlErrorIcon').addClass('hidden');
-      }
-    },
 
     //
     // Helper Functions
@@ -241,7 +221,7 @@ define([
     _showYoutubeURL: function(annotationID, annotations) {
       // Shows Annotations (Youtube URLS) next to highlighted text
       this._cleanupPopover();
-      var annotationElem = "#" + annotationID + ".annotation_text";
+      var annotationElem = "annotation#" + annotationID;
       var annotationElemOffset = $(annotationElem).offset();
       annotationElemOffset.bottom = annotationElemOffset.top + $(annotationElem).outerHeight(true);
       annotationElemOffset.right = annotationElemOffset.left + $(annotationElem).outerWidth(true);
@@ -277,14 +257,10 @@ define([
       _.each(annotations, function(annotation) {
         _.each(answers, function(answer) {
           if (answer.answer_id == annotation.answer_id) {
-            var replacer = function(match, offset) {
-              if (offset == annotation.position) {
-                return "<span class='highlighted annotation_text' id=" + annotation.id + ">" + match + "</span>";
-              } else {
-                return match;
-              }
-            };
-            answer.body = answer.body.replace(annotation.keyword, replacer);
+            answer.body = answer.body.replace(annotation.keyword,
+                                              "<annotation class='highlighted'" +
+                                              "id=" + annotation.id + ">" +
+                                              annotation.keyword + "</annotation>");
           }
         });
       });

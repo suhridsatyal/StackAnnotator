@@ -13,8 +13,7 @@ define([
         url: function() {
             var url = this.urlRoot + '/api/annotations';
             return url;
-        }
-        ,
+        },
         parse: function(response) {
             return response;
         }
