@@ -1,10 +1,13 @@
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.renderers import JSONRenderer
-from rest_framework.parsers import JSONParser
+
 from annotator.models import Annotation, Video
 from annotator.serializers import AnnotationSerializer, VideoSerializer
+
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -20,6 +23,7 @@ def index(request):
 class AnnotationListView(generics.ListCreateAPIView):
     model = Annotation
     serializer_class = AnnotationSerializer
+    paginate_by = 50
 
     def get_queryset(self, **kwargs):
         queryset = Annotation.objects.all()
@@ -43,6 +47,7 @@ class AnnotationView(generics.RetrieveAPIView):
 class VideoListView(generics.ListCreateAPIView):
     model = Video
     serializer_class = VideoSerializer
+    paginate_by = 50
 
     def get_queryset(self, **kwargs):
         queryset = Video.objects.all()
