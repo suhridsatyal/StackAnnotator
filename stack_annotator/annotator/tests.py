@@ -45,7 +45,7 @@ class AnnotationAPITests(TestCase):
 
     def test_get_annotation_by_annotation_id(self):
         """
-        Should get a single annotation by annotation_id 
+        Should get a single annotation by annotation_id
         """
         client = APIClient()
         first = create_annotation(1, 1, "sting", 7)
@@ -56,7 +56,7 @@ class AnnotationAPITests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_301_MOVED_PERMANENTLY)
         response = client.get('/api/annotation/2/', format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.content, 
+        self.assertEqual(response.content,
                 '{"id":2,"question_id":2,"answer_id":1,"videos":[{"id":2,"video_id":"g7zO1MBu8SQ"}],"keyword":"fiesty","position":3}')
 
 
@@ -157,7 +157,7 @@ class AnnotationAPITests(TestCase):
 
     def test_get_fail_annotation_url(self):
         """
-        Should return 404 
+        Should return 404
         """
         client = APIClient()
         first = create_annotation(1, 3, "fiesty", 10)
@@ -187,7 +187,7 @@ class AnnotationAPITests(TestCase):
         response = client.post('/api/annotations', data, format='json')
         #print(response)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        
+
         response = client.get('/api/annotation/3/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
@@ -211,7 +211,7 @@ class AnnotationAPITests(TestCase):
 
 class VideoAPITests(TestCase):
 
-    
+
     def test_get_all_videos(self):
         """
         Should get all videos
@@ -230,7 +230,7 @@ class VideoAPITests(TestCase):
         self.assertEqual(response.content,
             '[{"id":1,"video_id":"0MjdyurrP6c","annotation_id":1,"downvotes":2,"upvotes":4,"flags":0,"start_time":"1:14"},{"id":2,"video_id":"g7zO1MBu8SQ","annotation_id":2,"downvotes":1,"upvotes":2,"flags":0,"start_time":"0:14"},{"id":3,"video_id":"3BxYqjzMz","annotation_id":3,"downvotes":1,"upvotes":2,"flags":0,"start_time":"0:14"}]')
 
-    
+
     def test_get_all_videos_of_annotation(self):
         """
         Should get all videos for a particular annotation id
@@ -266,7 +266,7 @@ class VideoAPITests(TestCase):
         self.assertEqual(response.content,
             '{"id":2,"video_id":"dragonballz","annotation_id":1,"downvotes":9,"upvotes":1,"flags":2,"start_time":"6:17"}')
 
-    
+
     def test_post_video(self):
         """
         Should post a video
@@ -360,12 +360,12 @@ class VideoAPITests(TestCase):
         response = client.put('/api/video/5/', data, format='json')
         #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        
+
         data = {"video_id":"updatevideo", "start_time":"13:12"}
         response = client.put('/api/video/1/', data, format='json')
         #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        
+
         data = {"video_id":"updatevideo", "upvotes":"treetag", "annotation_id":1}
         response = client.put('/api/video/1/', data, format='json')
         #print(response.content)
@@ -375,4 +375,3 @@ class VideoAPITests(TestCase):
         response = client.put('/api/video/1/', data, format='json')
         #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        
