@@ -1,6 +1,9 @@
 from rest_framework import serializers
-from annotator.models import Annotation, Video
+from annotator.models import Annotation, Video, Task
 from django.core.exceptions import ValidationError
+
+from twitter_aux import tweeter
+
 import re
 
 
@@ -24,3 +27,9 @@ class AnnotationSerializer(serializers.ModelSerializer):
         model = Annotation
         fields = ('id', 'question_id', 'answer_id', 'videos', 'keyword',
                   'position')
+
+class TaskSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Task
+        fields = ('id', 'tweet_id', 'annotation', 'created_on', 'checked_on')
