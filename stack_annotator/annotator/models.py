@@ -23,10 +23,3 @@ class Task(models.Model):
     annotation = models.OneToOneField(Annotation, blank=False)
     created_on = models.DateTimeField(auto_now_add=True)
     checked_on = models.DateTimeField(auto_now_add=True)
-
-
-class TaskCreate(models.Model):
-    question_id = models.IntegerField(blank=False)
-    answer_id = models.IntegerField(blank=False)
-    keyword = models.CharField(max_length=20, blank=False)
-    position = models.IntegerField(blank=False)
