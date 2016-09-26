@@ -90,7 +90,7 @@ class TaskView(APIView):
             return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
         url = 'https://api.twitter.com/1.1/account/verify_credentials.json'
 
-        message = "Help me find videos for "+request.POST.get('keyword') + "#stackannotator"
+        message = "Help me find videos for " + request.POST.get('keyword') + "#stackannotator"
         auth = OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
         r = requests.post(POST_STATUS_TWITTER_URL, data = {'status' : message}, auth=auth)
         tweetInfo = r.json()
@@ -127,9 +127,9 @@ class TaskView(APIView):
         except Task.DoesNotExist:
             raise Http404
 
-    def get(self, request, format=None):
-        tasks = Task.objects.all()
-        serializer = TaskSerializer(tasks, many=True)
+    def get(self, request, pk, format=None):
+        task = self.get_object(pk)
+        serializer = TaskSerializer(task)
         return Response(serializer.data)
 
 
