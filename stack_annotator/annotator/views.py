@@ -92,7 +92,7 @@ class TaskView(APIView):
             }
             return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
 
-        message = self.create_message(request.POST.get('keyword'), request.POST.get('question_url'))
+        message = self.create_message(request.POST.get('keyword'), request.POST.get('annotation_url'))
         auth = OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
         r = requests.post(POST_STATUS_TWITTER_URL, data = {'status' : message}, auth=auth)
         tweet_info = r.json()
