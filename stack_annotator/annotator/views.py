@@ -3,16 +3,8 @@ from django.shortcuts import render, render_to_response
 from django.http import HttpResponse, Http404
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-import time
-import json
-
-# from django import forms
-# from django.views.generic import DetailView
-# from django.views.generic.edit import FormMixin
-
-from annotator.models import Annotation, Video, Task, TaskCreate
-from annotator.serializers import AnnotationSerializer, VideoSerializer, TaskSerializer
-
+from annotator.models import Annotation, Video, Task
+from annotator.serializers import AnnotationSerializer, TaskSerializer, VideoSerializer
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
@@ -20,10 +12,22 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
 from rest_framework.exceptions import APIException
-
-from twitter_aux import tweeter
-
+from requests_oauthlib import OAuth1
+from django.conf import settings
+import requests
+import time
+import json
 import re
+
+POST_STATUS_TWITTER_URL = "https://api.twitter.com/1.1/statuses/update.json"
+
+# our app key and secret we get from the twitter app site
+CONSUMER_KEY = settings.SA_CONSUMER_KEY
+CONSUMER_SECRET = settings.SA_CONSUMER_SECRET
+
+# get the below through calling API
+ACCESS_TOKEN = settings.SA_ACCESS_TOKEN
+ACCESS_TOKEN_SECRET = settings.SA_ACCESS_TOKEN_SECRET
 
 
 def index(request):
@@ -76,26 +80,26 @@ class VideoView(generics.RetrieveUpdateAPIView):
 
 
 class TaskView(APIView):
-    """
-    Retrieve, update or delete a snippet instance.
-    """
-    def post(self, request, format=None):            
+
+    def post(self, request, format=None):
         if 'question_id' not in request.POST or 'answer_id' not in request.POST or 'keyword' not in request.POST or 'position' not in request.POST:
             errorMsg = {
                 'Error': "Input Error",
                 'Message': "Missing fields (add something better)"
             }
             return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
+        url = 'https://api.twitter.com/1.1/account/verify_credentials.json'
 
-        # tweet and get id
-        tweetInfo = tweeter.send_tweet("Help me find videos for " + request.POST.get('keyword') + "#stackannotator")
-        
+        message = "Help me find videos for "+request.POST.get('keyword') + "#stackannotator"
+        auth = OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
+        r = requests.post(POST_STATUS_TWITTER_URL, data = {'status' : message}, auth=auth)
+        tweetInfo = r.json()
+
         if 'id' not in tweetInfo:
             errorMsg = {
                 'Error': "Twitter Error",
                 'Twitter Response': tweetInfo.pop('errors')
             }
-            
             return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
 
         # create a new annotation with data
@@ -104,15 +108,15 @@ class TaskView(APIView):
         newAnnotation.answer_id = request.POST.get('answer_id')
         newAnnotation.keyword = request.POST.get('keyword')
         newAnnotation.position = request.POST.get('position')
-        
+
         newAnnotation.save()
 
         task = Task()
         task.tweet_id = tweetInfo['id']
         task.annotation_id = newAnnotation.id
-        task.created_on = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(tweetInfo['created_at'],'%a %b %d %H:%M:%S +0000 %Y'))
-        task.checked_on = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(tweetInfo['created_at'],'%a %b %d %H:%M:%S +0000 %Y'))
- 
+        task.created_on = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(tweetInfo['created_at'], '%a %b %d %H:%M:%S +0000 %Y'))
+        task.checked_on = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(tweetInfo['created_at'], '%a %b %d %H:%M:%S +0000 %Y'))
+
         task.save()
 
         return Response(TaskSerializer(task).data, status=status.HTTP_201_CREATED)
@@ -135,14 +139,4 @@ class TaskListView(generics.ListAPIView):
     paginate_by = 50
 
     def get_queryset(self, **kwargs):
-        queryset = Task.objects.all()
-        
-        return queryset
-
-
-
-
-
-
-
-
+        return Task.objects.all()
