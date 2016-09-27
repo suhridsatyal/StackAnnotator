@@ -82,20 +82,30 @@ class VideoView(generics.RetrieveUpdateAPIView):
 class TaskView(APIView):
     def create_message(self, keyword, url):
         # TODO: craft effective tweet
-        return "Help me find videos for " + keyword + " at " + url + " " + "#stackannotator"
+        return "Help me find videos for " + keyword + " at " + url + " "
+        + "#stackannotator"
+
 
     def post(self, request, format=None):
-        if 'question_id' not in request.POST or 'answer_id' not in request.POST or 'keyword' not in request.POST or 'position' not in request.POST:
+        if 'question_id' not in request.POST \
+            or 'answer_id' not in request.POST \
+           or 'keyword' not in request.POST or 'position' not in request.POST:
+
             errorMsg = {
                 'Error': "Input Error",
                 'Message': "Missing fields (add something better)"
             }
             return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
 
-        message = self.create_message(request.POST.get('keyword'), request.POST.get('annotation_url'))
-        auth = OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
-        r = requests.post(POST_STATUS_TWITTER_URL, data = {'status' : message}, auth=auth)
-        tweet_info = r.json()
+        message = self.create_message(request.POST.get('keyword'),
+                                      request.POST.get('annotation_url'))
+        auth = OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN,
+                        ACCESS_TOKEN_SECRET)
+
+        post_res = requests.post(POST_STATUS_TWITTER_URL,
+                                    data={'status': message}, auth=auth)
+
+        tweet_info = post_res.json()
 
         if 'id' not in tweet_info:
             errorMsg = {
@@ -116,18 +126,25 @@ class TaskView(APIView):
         task = Task()
         task.tweet_id = tweet_info['id']
         task.annotation_id = newAnnotation.id
-        task.created_on = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(tweet_info['created_at'], '%a %b %d %H:%M:%S +0000 %Y'))
-        task.checked_on = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(tweet_info['created_at'], '%a %b %d %H:%M:%S +0000 %Y'))
+        task.created_on = time.strftime('%Y-%m-%d %H:%M:%S',
+                            time.strptime(tweet_info['created_at'],
+                            '%a %b %d %H:%M:%S +0000 %Y'))
+        task.checked_on = time.strftime('%Y-%m-%d %H:%M:%S',
+                            time.strptime(tweet_info['created_at'],
+                            '%a %b %d %H:%M:%S +0000 %Y'))
 
         task.save()
 
-        return Response(TaskSerializer(task).data, status=status.HTTP_201_CREATED)
+        return Response(TaskSerializer(task).data,
+                        status=status.HTTP_201_CREATED)
+
 
     def get_object(self, pk):
         try:
             return Task.objects.get(pk=pk)
         except Task.DoesNotExist:
             raise Http404
+
 
     def get(self, request, pk=None, format=None):
         task = self.get_object(pk)
