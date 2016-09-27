@@ -32,13 +32,13 @@ Posts an annotation
 Returns all tasks
 
 ```
-/api/task/{id}
+/api/tasks/{id}
 ```
 Gets a specific task with particular id
 
 ####POST
 ```
-/api/task
+/api/tasks
 ```
 Creates a task which also creates the corresponding annotation
 
@@ -50,4 +50,3 @@ Requires the same parameters as an Annotation:
 | answer_id     | answer of the annotation      |   2 |
 | keyword | highlighted keyword     |   django internals |
 | annotation_url | url to be passed to tweet  | www.stackannotator.com/...  |
-| position | position of the keyword      |  123  |

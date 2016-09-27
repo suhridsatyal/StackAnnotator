@@ -80,6 +80,8 @@ class VideoView(generics.RetrieveUpdateAPIView):
 
 
 class TaskView(APIView):
+    paginate_by = 50
+
     def create_message(self, keyword, url):
         # TODO: craft effective tweet
 
@@ -150,15 +152,11 @@ class TaskView(APIView):
 
 
     def get(self, request, pk=None, format=None):
+        if pk is None:
+            tasks = Task.objects.all()
+            serializer = TaskSerializer(tasks, many=True)
+            return Response(serializer.data)
+
         task = self.get_object(pk)
         serializer = TaskSerializer(task)
         return Response(serializer.data)
-
-
-class TaskListView(generics.ListAPIView):
-    model = Task
-    serializer_class = TaskSerializer
-    paginate_by = 50
-
-    def get_queryset(self, **kwargs):
-        return Task.objects.all()
