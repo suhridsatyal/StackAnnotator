@@ -89,7 +89,7 @@ class TaskView(APIView):
     def post(self, request, format=None):
         if 'question_id' not in request.POST \
             or 'answer_id' not in request.POST \
-           or 'keyword' not in request.POST or 'position' not in request.POST:
+           or 'keyword' not in request.POST:
 
             errorMsg = {
                 'Error': "Input Error",
@@ -119,7 +119,6 @@ class TaskView(APIView):
         newAnnotation.question_id = request.POST.get('question_id')
         newAnnotation.answer_id = request.POST.get('answer_id')
         newAnnotation.keyword = request.POST.get('keyword')
-        newAnnotation.position = request.POST.get('position')
 
         newAnnotation.save()
 
