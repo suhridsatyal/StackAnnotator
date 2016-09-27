@@ -134,5 +134,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 # Twitter Authentication
 SA_CONSUMER_KEY = ""
 SA_CONSUMER_SECRET = ""
-SA_ACCESS_TOKEN = "-6TqT6RZhfQglog7BKAouMamSajRvqMv"
+SA_ACCESS_TOKEN = ""
 SA_ACCESS_TOKEN_SECRET = ""
