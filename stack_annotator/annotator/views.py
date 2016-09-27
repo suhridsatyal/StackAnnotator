@@ -82,8 +82,11 @@ class VideoView(generics.RetrieveUpdateAPIView):
 class TaskView(APIView):
     def create_message(self, keyword, url):
         # TODO: craft effective tweet
-        return "Help me find videos for " + keyword + " at " + url + " "
-        + "#stackannotator"
+
+        tweet = "Help me find videos for %s at %s #stackannotator" % \
+        (keyword, url)
+
+        return tweet
 
 
     def post(self, request, format=None):
@@ -99,6 +102,7 @@ class TaskView(APIView):
 
         message = self.create_message(request.POST.get('keyword'),
                                       request.POST.get('annotation_url'))
+
         auth = OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN,
                         ACCESS_TOKEN_SECRET)
 
