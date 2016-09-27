@@ -49,4 +49,5 @@ Requires the same parameters as an Annotation:
 | question_id     | question of the annotation | 1 |
 | answer_id     | answer of the annotation      |   2 |
 | keyword | highlighted keyword     |   django internals |
+| annotation_url | url to be passed to tweet  | www.stackannotator.com/...  |
 | position | position of the keyword      |  123  |
