@@ -11,14 +11,15 @@ class VideoSerializer(serializers.ModelSerializer):
                   'flags', 'start_time')
 
 
-class ShortenedVideoSerializer(serializers.ModelSerializer):
+class EmbeddedVideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Video
-        fields = ('id', 'video_id')
+        fields = ('id', 'video_id', 'downvotes', 'upvotes',
+                  'flags', 'start_time')
 
 
 class AnnotationSerializer(serializers.ModelSerializer):
-    videos = ShortenedVideoSerializer(source='video_set', many=True)
+    videos = EmbeddedVideoSerializer(source='video_set', many=True)
 
     class Meta:
         model = Annotation

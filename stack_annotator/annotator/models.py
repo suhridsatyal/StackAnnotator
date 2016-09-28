@@ -14,7 +14,7 @@ class Video(models.Model):
     downvotes = models.IntegerField(default=0)
     upvotes = models.IntegerField(default=0)
     flags = models.IntegerField(default=0)
-    start_time = models.CharField(max_length=16, default="0:00")
+    start_time = models.CharField(max_length=16, blank=True)
 
 
 class Task(models.Model):
