@@ -186,9 +186,24 @@ class AnnotationAPITests(TestCase):
                 '{"id":1,"question_id":5,"answer_id":10,"videos":[],"keyword":"fiesty"}')
 
         data = {"question_id":5, "answer_id":10,"keyword":"fiesty","position":15}
+<<<<<<< HEAD
         response = client.post('/api/annotations', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.content,
+                '{"id":2,"question_id":5,"answer_id":10,"videos":[],"keyword":"fiesty"}')
+
+        data = {"question_id":5, "answer_id":10,"videos":[{"video_id":"newvideo"}],"keyword":"fiesty"}
+=======
+>>>>>>> b4c6c2b34025d34249f0e6c0bee7f2d202337c01
+        response = client.post('/api/annotations', data, format='json')
+        #print(response)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = client.get('/api/annotation/3/', data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.content,
+<<<<<<< HEAD
+=======
                 '{"id":2,"question_id":5,"answer_id":10,"videos":[],"keyword":"fiesty"}')
 
         data = {"question_id":5, "answer_id":10,"videos":[{"video_id":"newvideo"}],"keyword":"fiesty"}
@@ -199,6 +214,7 @@ class AnnotationAPITests(TestCase):
         response = client.get('/api/annotation/3/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
+>>>>>>> b4c6c2b34025d34249f0e6c0bee7f2d202337c01
                 '{"id":3,"question_id":5,"answer_id":10,"videos":[{"id":1,"video_id":"newvideo"}],"keyword":"fiesty"}')
 
 
