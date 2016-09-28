@@ -474,7 +474,7 @@ class TaskAPITests(TestCase):
 
         response = client.post('/api/tasks', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.content, '{"Twitter Response": [{"message": "Status is a duplicate.",}], "Error": "Twitter Error"}')
+        self.assertEqual(response.content, '{"Twitter Response":[{"message":"Status is a duplicate.","code":187}],"Error":"Twitter Error"}')
 
 
 class MockTweetReturnSuccess:
@@ -493,7 +493,6 @@ class MockTweetReturnFail:
     def json(self):
         # Mock tweet fail
         data = {
-            'message': "Status is a duplicate.",
-            'code': 187
+            'errors': [{'message': "Status is a duplicate.", 'code': 187}]
         }
         return data
