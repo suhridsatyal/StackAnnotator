@@ -186,35 +186,20 @@ class AnnotationAPITests(TestCase):
                 '{"id":1,"question_id":5,"answer_id":10,"videos":[],"keyword":"fiesty"}')
 
         data = {"question_id":5, "answer_id":10,"keyword":"fiesty","position":15}
-<<<<<<< HEAD
         response = client.post('/api/annotations', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.content,
                 '{"id":2,"question_id":5,"answer_id":10,"videos":[],"keyword":"fiesty"}')
 
         data = {"question_id":5, "answer_id":10,"videos":[{"video_id":"newvideo"}],"keyword":"fiesty"}
-=======
->>>>>>> b4c6c2b34025d34249f0e6c0bee7f2d202337c01
-        response = client.post('/api/annotations', data, format='json')
-        #print(response)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-        response = client.get('/api/annotation/3/', data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.content,
-<<<<<<< HEAD
-=======
-                '{"id":2,"question_id":5,"answer_id":10,"videos":[],"keyword":"fiesty"}')
 
         data = {"question_id":5, "answer_id":10,"videos":[{"video_id":"newvideo"}],"keyword":"fiesty"}
         response = client.post('/api/annotations', data, format='json')
-        #print(response)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         response = client.get('/api/annotation/3/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
->>>>>>> b4c6c2b34025d34249f0e6c0bee7f2d202337c01
                 '{"id":3,"question_id":5,"answer_id":10,"videos":[{"id":1,"video_id":"newvideo"}],"keyword":"fiesty"}')
 
 
@@ -419,28 +404,26 @@ class TaskAPITests(TestCase):
         self.thirdTask = create_task("3", self.thirdAnnotation, "2016-12-12 12:12:12", "2016-12-12 12:12:12")
 
 
-    # GET with ID
     def test_get_task_by_id(self):
-        # self.assertEqual('/api/tasks/' + str(self.firstTask.id), "123")
+        """ Should get task by id """
         url = '/api/tasks/' + str(self.firstTask.id)
         response = self.client.get("/api/tasks/1/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        #print(response.content)
         expected_output = '{"id":%s,"tweet_id":"1","annotation":1,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"}' % str(self.firstTask.id)
 
         self.assertEqual(response.content, expected_output)
 
 
-    # GET ALL
     def test_get_all_tasks(self):
+        """ Should get all tasks """
         response = self.client.get('/api/tasks')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
                 '[{"id":1,"tweet_id":"1","annotation":1,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"},{"id":2,"tweet_id":"2","annotation":2,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"},{"id":3,"tweet_id":"3","annotation":3,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"}]')
 
 
-    # GET with id FAIL
     def test_get_fail_task(self):
+        """ Should fail because bad ids are provided """
         client = APIClient()
 
         response = client.get('/api/tasks/poop', format='json')
@@ -453,10 +436,9 @@ class TaskAPITests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_301_MOVED_PERMANENTLY)
 
 
-    # POST success
     @patch('annotator.views.requests.post')
     def test_post_task(self, mock_post):
-        # Configure the mock to return a response with an OK status code.
+        """ Should be successful """
         mock_post.return_value = MockTweetReturnSuccess()
 
         client = APIClient()
@@ -468,9 +450,9 @@ class TaskAPITests(TestCase):
                '{"id":4,"tweet_id":"1","annotation":4,"created_on":"2012-08-29 17:12:58","checked_on":"2012-08-29 17:12:58"}' )
 
 
-    # POST fail missing parameter
     def test_post_task_fail(self):
-        # Configure the mock to return a response with an OK status code.
+        """ Should fail because of missing parameter """
+
         client = APIClient()
         data = {"question_id": 5, "answer_id": 10, "keyword": "fiesty"}
 
@@ -479,10 +461,9 @@ class TaskAPITests(TestCase):
         self.assertEqual(response.content, '{"Message":"Missing fields","Error":"Input Error"}')
 
 
-    # POST fail tweet (assuming twitter API returns an error due to tweet duplicate)
     @patch('annotator.views.requests.post')
     def test_post_task_tweet_fail(self, mock_post):
-        # Configure the mock to return a response with an OK status code.
+        """ Should fail because twitter API returns error due to duplicate tweet """ 
         mock_post.return_value = MockTweetReturnFail()
 
         client = APIClient()
@@ -494,7 +475,7 @@ class TaskAPITests(TestCase):
 
 
 class MockTweetReturnSuccess:
-    #imitates return from a tweet attempt
+    """ Imitates return from a tweet attempt """
     def json(self):
         # Mock tweet id
         data = {
@@ -505,7 +486,7 @@ class MockTweetReturnSuccess:
 
 
 class MockTweetReturnFail:
-    #imitates return from a tweet attempt
+    """ Imitates return from a tweet attempt """
     def json(self):
         # Mock tweet fail
         data = {

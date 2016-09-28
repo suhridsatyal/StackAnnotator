@@ -1,23 +1,23 @@
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import render, render_to_response
-from django.http import HttpResponse, Http404
-from django.views.decorators.csrf import csrf_exempt
-from django.utils import timezone
 from annotator.models import Annotation, Video, Task
 from annotator.serializers import AnnotationSerializer, TaskSerializer, VideoSerializer
-from rest_framework.renderers import JSONRenderer
-from rest_framework.parsers import JSONParser
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import generics
-from rest_framework.exceptions import APIException
-from requests_oauthlib import OAuth1
 from django.conf import settings
-import requests
-import time
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import HttpResponse, Http404
+from django.shortcuts import render, render_to_response
+from django.utils import timezone
+from django.utils improt timezone
+from django.views.decorators.csrf import csrf_exempt
+from requests_oauthlib import OAuth1
+from rest_framework import generics
+from rest_framework import status
+from rest_framework.exceptions import APIException
+from rest_framework.parsers import JSONParser
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
+from rest_framework.views import APIView
 import json
 import re
+import requests
 
 POST_STATUS_TWITTER_URL = "https://api.twitter.com/1.1/statuses/update.json"
 
@@ -52,8 +52,8 @@ class AnnotationListView(generics.ListCreateAPIView):
             raise Http404
         return queryset
 
-    def post(self, request, format=None):
 
+    def post(self, request, format=None):
         serializer = AnnotationSerializer(data=request.data)
 
         # Remember video data if a video needs to be created
@@ -116,41 +116,29 @@ class TaskView(APIView):
 
     def create_message(self, keyword, url):
         # TODO: craft effective tweet
-
         tweet = "Help me find videos for %s at %s #stackannotator" % \
-        (keyword, url)
-
+                (keyword, url)
         return tweet
 
 
     def post(self, request, format=None):
-        if 'question_id' not in request.data \
-            or 'answer_id' not in request.data \
-           or 'annotation_url' not in request.data \
-           or 'keyword' not in request.data:
-
-            errorMsg = {
-                'Error': "Input Error",
-                'Message': "Missing fields"
-            }
+        required_fields = ['question_id', 'answer_id', 'annotation_url', 'keyword']
+        if not all (param in request.data for param in required_fields):
+            errorMsg = {'Error': "Input Error",
+                        'Message': "Missing fields"}
             return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
 
         message = self.create_message(request.data['keyword'],
                                       request.data['annotation_url'])
-
         auth = OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN,
-                        ACCESS_TOKEN_SECRET)
+                      ACCESS_TOKEN_SECRET)
+        twitter_response = requests.post(POST_STATUS_TWITTER_URL,
+                                         data={'status': message}, auth=auth)
 
-        post_res = requests.post(POST_STATUS_TWITTER_URL,
-                                    data={'status': message}, auth=auth)
-
-        tweet_info = post_res.json()
-
+        tweet_info = twitter_response.json()
         if 'id' not in tweet_info:
-            errorMsg = {
-                'Error': "Twitter Error",
-                'Twitter Response': tweet_info.pop('errors')
-            }
+            errorMsg = {'Error': "Twitter Error", 
+                        'Twitter Response': tweet_info.pop('errors')}
             return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
 
         # create a new annotation with data
@@ -158,9 +146,9 @@ class TaskView(APIView):
         newAnnotation.question_id = request.data['question_id']
         newAnnotation.answer_id = request.data['answer_id']
         newAnnotation.keyword = request.data['keyword']
-
         newAnnotation.save()
 
+        # create a new task
         task = Task()
         task.tweet_id = tweet_info['id']
         task.annotation_id = newAnnotation.id
