@@ -22,5 +22,4 @@ class AnnotationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Annotation
-        fields = ('id', 'question_id', 'answer_id', 'videos', 'keyword',
-                  'position')
+        fields = ('id', 'question_id', 'answer_id', 'videos', 'keyword')
