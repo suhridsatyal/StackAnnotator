@@ -94,6 +94,7 @@ class TaskView(APIView):
     def post(self, request, format=None):
         if 'question_id' not in request.POST \
             or 'answer_id' not in request.POST \
+           or 'annotation_url' not in request.POST \
            or 'keyword' not in request.POST:
 
             errorMsg = {

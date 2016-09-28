@@ -4,8 +4,9 @@ from rest_framework import status
 from rest_framework.test import APITestCase, APIRequestFactory, APIClient
 from models import Annotation, Video, Task
 
+# from unittest.mock import Mock, patch
 from annotator.views import TaskView
-from mock import call, patch
+from mock import call, patch, Mock
 
 def create_annotation(question_id, answer_id, keyword):
     return Annotation.objects.create(question_id=question_id,
@@ -401,6 +402,7 @@ class TaskAPITests(TestCase):
         self.thirdAnnotation = create_annotation(1, 1, "hope")
         self.thirdTask = create_task("3", self.thirdAnnotation, "2016-12-12 12:12:12", "2016-12-12 12:12:12")
 
+
     # GET with ID
     def test_get_task_by_id(self):
         # self.assertEqual('/api/tasks/' + str(self.firstTask.id), "123")
@@ -412,12 +414,14 @@ class TaskAPITests(TestCase):
 
         self.assertEqual(response.content, expected_output)
 
+
     # GET ALL
     def test_get_all_tasks(self):
         response = self.client.get('/api/tasks')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
                 '[{"id":1,"tweet_id":"1","annotation":1,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"},{"id":2,"tweet_id":"2","annotation":2,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"},{"id":3,"tweet_id":"3","annotation":3,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"}]')
+
 
     # GET with id FAIL
     def test_get_fail_task(self):
@@ -431,3 +435,65 @@ class TaskAPITests(TestCase):
 
         response = client.get('/api/tasks/1', format='json')
         self.assertEqual(response.status_code, status.HTTP_301_MOVED_PERMANENTLY)
+
+
+    # POST success
+    @patch('annotator.views.requests.post')
+    def test_post_task(self, mock_post):
+        # Configure the mock to return a response with an OK status code.
+        mock_post.return_value = MockTweetReturnSuccess()
+
+        client = APIClient()
+        data = {"question_id": 5, "answer_id": 10, "annotation_url": "fake.com", "keyword": "fiesty"}
+
+        response = client.post('/api/tasks', data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.content,
+               '{"id":4,"tweet_id":"1","annotation":4,"created_on":"2012-08-29 17:12:58","checked_on":"2012-08-29 17:12:58"}' )
+
+
+    # POST fail missing parameter
+    def test_post_task_fail(self):
+        # Configure the mock to return a response with an OK status code.
+        client = APIClient()
+        data = {"question_id": 5, "answer_id": 10, "keyword": "fiesty"}
+
+        response = client.post('/api/tasks', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.content, '{"Message":"Missing fields (add something better)","Error":"Input Error"}')
+
+
+    # POST fail tweet (assuming twitter API returns an error due to tweet duplicate)
+    @patch('annotator.views.requests.post')
+    def test_post_task_tweet_fail(self, mock_post):
+        # Configure the mock to return a response with an OK status code.
+        mock_post.return_value = MockTweetReturnFail()
+
+        client = APIClient()
+        data = {"question_id": 5, "answer_id": 10, "annotation_url": "fake.com", "keyword": "fiesty"}
+
+        response = client.post('/api/tasks', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.content, '{"Twitter Response": [{"message": "Status is a duplicate.",}], "Error": "Twitter Error"}')
+
+
+class MockTweetReturnSuccess:
+    #imitates return from a tweet attempt
+    def json(self):
+        # Mock tweet id
+        data = {
+            'id': 1,
+            'created_at': "Wed Aug 29 17:12:58 +0000 2012"
+        }
+        return data
+
+
+class MockTweetReturnFail:
+    #imitates return from a tweet attempt
+    def json(self):
+        # Mock tweet id
+        data = {
+            'message': "Status is a duplicate.",
+            'code': 187
+        }
+        return data
