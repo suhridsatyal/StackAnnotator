@@ -6,7 +6,6 @@ class Annotation(models.Model):
     question_id = models.IntegerField(blank=False)
     answer_id = models.IntegerField(blank=False)
     keyword = models.CharField(max_length=20, blank=False)
-    position = models.IntegerField(blank=False)
 
 
 class Video(models.Model):
@@ -21,5 +20,5 @@ class Video(models.Model):
 class Task(models.Model):
     tweet_id = models.CharField(max_length=32, blank=False)
     annotation = models.OneToOneField(Annotation, blank=False)
-    created_on = models.DateTimeField(auto_now_add=True)
-    checked_on = models.DateTimeField(auto_now_add=True)
+    created_on = models.DateTimeField()
+    checked_on = models.DateTimeField()
