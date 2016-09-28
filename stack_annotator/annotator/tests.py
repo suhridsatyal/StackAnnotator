@@ -460,7 +460,7 @@ class TaskAPITests(TestCase):
 
         response = client.post('/api/tasks', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.content, '{"Message":"Missing fields (add something better)","Error":"Input Error"}')
+        self.assertEqual(response.content, '{"Message":"Missing fields","Error":"Input Error"}')
 
 
     # POST fail tweet (assuming twitter API returns an error due to tweet duplicate)

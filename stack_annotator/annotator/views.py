@@ -92,19 +92,19 @@ class TaskView(APIView):
 
 
     def post(self, request, format=None):
-        if 'question_id' not in request.POST \
-            or 'answer_id' not in request.POST \
-           or 'annotation_url' not in request.POST \
-           or 'keyword' not in request.POST:
+        if 'question_id' not in request.data \
+            or 'answer_id' not in request.data \
+           or 'annotation_url' not in request.data \
+           or 'keyword' not in request.data:
 
             errorMsg = {
                 'Error': "Input Error",
-                'Message': "Missing fields (add something better)"
+                'Message': "Missing fields"
             }
             return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
 
-        message = self.create_message(request.POST.get('keyword'),
-                                      request.POST.get('annotation_url'))
+        message = self.create_message(request.data['keyword'],
+                                      request.data['annotation_url'])
 
         auth = OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN,
                         ACCESS_TOKEN_SECRET)
@@ -123,9 +123,9 @@ class TaskView(APIView):
 
         # create a new annotation with data
         newAnnotation = Annotation()
-        newAnnotation.question_id = request.POST.get('question_id')
-        newAnnotation.answer_id = request.POST.get('answer_id')
-        newAnnotation.keyword = request.POST.get('keyword')
+        newAnnotation.question_id = request.data['question_id']
+        newAnnotation.answer_id = request.data['answer_id']
+        newAnnotation.keyword = request.data['keyword']
 
         newAnnotation.save()
 
