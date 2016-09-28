@@ -491,7 +491,7 @@ class MockTweetReturnSuccess:
 class MockTweetReturnFail:
     #imitates return from a tweet attempt
     def json(self):
-        # Mock tweet id
+        # Mock tweet fail
         data = {
             'message': "Status is a duplicate.",
             'code': 187
