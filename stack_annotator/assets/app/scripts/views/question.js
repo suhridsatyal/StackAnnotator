@@ -152,9 +152,7 @@ define([
         trigger: 'focus',
         container: 'body',
         //placement: 'bottom',
-        content: function() {
-          return commentboxTemplate;
-        },
+        content: _.template(commentboxTemplate)({message: "Add a Youtube Video"}),
         html: true
       }).popover('show');
       $(".popover").css({
@@ -228,47 +226,48 @@ define([
 
       var youtubeVideos = [];
       var videos = annotations.get(annotationID).get('videos');
-      _.each(videos, function(video) {
-          var youtubeURL =  "http://youtube.com/embed/" + video.external_id;
-          if (video.start_time) {
-              youtubeURL = youtubeURL + "&t=" + video.start_time
-          }
-          video.url = youtubeURL;
-          video.score = video.upvotes - video.downvotes;
-      });
-      var annotationData = {
-        id: annotationID,
-        videos: videos
-      };
-      var annotationLinks = _.template(annotationsTemplate)(annotationData);
-      console.log(annotationLinks);
-      this._cleanupPopover();
-      $("#annotate-tooltip").popover({
-        trigger: 'focus',
-        container: 'body',
-        placement: 'right',
-        content: annotationLinks,
-        //content: function() {
-        //  return annotationLinks;
-        //},
-        html: true
-      }).popover('show');
+      var popoverTemplate;
 
-      $(".popover").css({
-        top: annotationElemOffset.top,
-        left: annotationElemOffset.right,
-        'max-width': '640px',
-        transform: ''
-      }).show();
+      if (videos.length > 0) {
+        _.each(videos, function(video) {
+            var youtubeURL =  "http://youtube.com/embed/" + video.external_id;
+            if (video.start_time) {
+                youtubeURL = youtubeURL + "&t=" + video.start_time
+            }
+            video.url = youtubeURL;
+            video.score = video.upvotes - video.downvotes;
+        });
+        var annotationData = {
+          id: annotationID,
+          videos: videos
+        };
+        popoverTemplate = _.template(annotationsTemplate)(annotationData);
+     } else {
+         // Show comment box
+         popoverTemplate = _.template(commentboxTemplate) ({message: "Add a Youtube Video"});
+     }
+     $("#annotate-tooltip").popover({
+       trigger: 'focus', container: 'body', placement: 'right', content: popoverTemplate, html: true
+     }).popover('show');
+
+     $(".popover").css({
+       top: annotationElemOffset.top, left: annotationElemOffset.right, 'max-width': '640px', transform: ''
+     }).show();
     },
 
     _annotateAnswers: function(answers, annotations) {
       // Surrounds annotated text with span, with id=annotation id
+      var annotationClass;
       _.each(annotations, function(annotation) {
         _.each(answers, function(answer) {
           if (answer.answer_id == annotation.answer_id) {
+            if (annotation.videos.length) {
+                annotationClass = 'highlighted'
+            } else {
+                annotationClass = 'soft_highlighted'
+            }
             answer.body = answer.body.replace(annotation.keyword,
-                                              "<annotation class='highlighted'" +
+                                              "<annotation class='"+ annotationClass + "'" +
                                               "id=" + annotation.id + ">" +
                                               annotation.keyword + "</annotation>");
           }
