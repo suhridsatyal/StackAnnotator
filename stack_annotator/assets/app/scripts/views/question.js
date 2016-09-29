@@ -265,7 +265,6 @@ define([
      }
      // Attach events for video submission
      this._attachVideoSubmissionHandlers(annotationID);
-
     },
 
     _annotateAnswers: function(answers, annotations) {
@@ -348,6 +347,33 @@ define([
         buttonNode.prop('disabled', true);
       });
     },
+    _attachAnnotationSubmissionHandlers: function(answerID) {
+      // Attach events to popover buttons.
+      var self=this;
+      $("#urlField").on("input", function(event) {
+        var urlRegex= self.options.youtubeRegExp;
+        CommonUtils.onURLChange("#urlField", urlRegex);
+      });
+
+      // Create an annotation with video
+      $("#submitButton").on("click", function(event) {
+          var youtubeURL =  $("#urlField").val();
+          var youtubeRegex = self.options.youtubeRegExp;
+          var videoData = {}
+          youtubeURL.replace(youtubeRegex, function (url, external_id, start_time) {
+              videoData.external_id = external_id;
+              videoData.start_time = start_time;
+              return '';
+          });
+          videoData.annotation_id = answerID;
+          var annotationNode = event.target.closest("div").parentNode;
+          var video = new VideoModel(videoData);
+          $.when(video.post()).done(function() {
+              // TODO Show a 'Thank You' prompt to user and refresh page on click of 'Continue' button
+              console.log("done with POST");
+          });
+      });
+    },
 
     _attachVideoSubmissionHandlers: function(annotationID) {
       // Attach events to popover buttons.
@@ -370,6 +396,7 @@ define([
           var annotationNode = event.target.closest("div").parentNode;
           var video = new VideoModel(videoData);
           $.when(video.post()).done(function() {
+              // TODO Show a 'Thank You' prompt to user and refresh page on click of 'Continue' button
               console.log("done with POST");
           });
       });

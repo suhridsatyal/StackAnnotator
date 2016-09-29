@@ -10,7 +10,7 @@ define([
         post: function() {
             var self = this;
             return $.post(this.urlRoot + '/videos', self.attributes).done(function(data){
-                       console.log(data);
+                   console.log(data);
             });
         },
         incrementAttr: function(attrType) {
