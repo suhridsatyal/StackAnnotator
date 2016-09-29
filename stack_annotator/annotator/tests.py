@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIRequestFactory, APIClient
 from models import Annotation, Video
+import json
 
 
 def create_annotation(question_id, answer_id, keyword):
@@ -438,8 +439,16 @@ class VideoAPITests(TestCase):
         client = APIClient()
         data = {"external_id":5, "annotation_id":1}
         response = client.post('/api/videos', data, format='json')
+
+        expected_attrs = ["id","external_id","annotation_id","downvotes",
+                         "upvotes","flags","start_time"]
+
         response = client.post('/api/video/1/' + metadata_type, format='json')
-        self.assertEquals(response.content, '{"%ss":1}' % metadata_type)
+        response_dict = json.loads(response.content)
+        if not all(attrs in response_dict for attrs in expected_attrs):
+            assert False
+        self.assertEquals(response_dict[metadata_type+'s'], 1)
         response = client.post('/api/video/1/' + metadata_type, format='json')
-        self.assertEquals(response.content, '{"%ss":2}' % metadata_type)
+        response_dict = json.loads(response.content)
+        self.assertEquals(response_dict[metadata_type+'s'], 2)
 

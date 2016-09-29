@@ -104,7 +104,8 @@ def upvote_video(request, pk):
         video = Video.objects.get(pk=pk)
         video.upvotes = video.upvotes + 1
         video.save()
-        return Response({"upvotes": video.upvotes})
+        serializer = VideoSerializer(video)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     except Exception as e :
         return Response({"message": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -115,7 +116,8 @@ def downvote_video(request, pk):
         video = Video.objects.get(pk=pk)
         video.downvotes = video.downvotes + 1
         video.save()
-        return Response({"downvotes": video.downvotes})
+        serializer = VideoSerializer(video)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     except Exception as e :
         return Response({"message": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -126,7 +128,8 @@ def flag_video(request, pk):
         video = Video.objects.get(pk=pk)
         video.flags = video.flags + 1
         video.save()
-        return Response({"flags": video.flags})
+        serializer = VideoSerializer(video)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     except Exception as e :
         return Response({"message": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
