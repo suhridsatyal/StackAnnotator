@@ -7,14 +7,14 @@ import re
 class VideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Video
-        fields = ('id', 'video_id', 'annotation_id', 'downvotes', 'upvotes',
+        fields = ('id', 'external_id', 'annotation_id', 'downvotes', 'upvotes',
                   'flags', 'start_time')
 
 
 class EmbeddedVideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Video
-        fields = ('id', 'video_id', 'downvotes', 'upvotes',
+        fields = ('id', 'external_id', 'downvotes', 'upvotes',
                   'flags', 'start_time')
 
 

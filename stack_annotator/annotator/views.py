@@ -57,9 +57,9 @@ class AnnotationListView(generics.ListCreateAPIView):
             annotation_id = int(serializer.data['id'])
             # Can create multiple videos, may not be required
             for video in videos:
-                video_id = video["video_id"]
+                external_id = video["external_id"]
                 new_video = {"annotation_id": annotation_id,
-                             "video_id": video_id}
+                             "external_id": external_id}
                 videos = VideoSerializer(data=new_video)
                 if videos.is_valid():
                     videos.save()
