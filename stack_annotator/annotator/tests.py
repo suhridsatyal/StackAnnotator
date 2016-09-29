@@ -463,7 +463,7 @@ class TaskAPITests(TestCase):
 
     @patch('annotator.views.requests.post')
     def test_post_task_tweet_fail(self, mock_post):
-        """ Should fail because twitter API returns error due to duplicate tweet """ 
+        """ Should fail because twitter API returns error due to duplicate tweet """
         mock_post.return_value = MockTweetReturnFail()
 
         client = APIClient()

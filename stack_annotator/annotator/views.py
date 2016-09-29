@@ -98,7 +98,7 @@ class VideoView(generics.RetrieveUpdateAPIView):
     serializer_class = VideoSerializer
 
 
-class TaskView(APIView):
+class TaskListView(APIView):
     paginate_by = 50
 
     def create_message(self, keyword, url):
@@ -149,19 +149,13 @@ class TaskView(APIView):
                         status=status.HTTP_201_CREATED)
 
 
-    def get_object(self, pk):
-        try:
-            return Task.objects.get(pk=pk)
-        except Task.DoesNotExist:
-            raise Http404
-
-
-    def get(self, request, pk=None, format=None):
-        if pk is None:
-            tasks = Task.objects.all()
-            serializer = TaskSerializer(tasks, many=True)
-            return Response(serializer.data)
-
-        task = self.get_object(pk)
-        serializer = TaskSerializer(task)
+    def get(self, request, format=None):
+        tasks = Task.objects.all()
+        serializer = TaskSerializer(tasks, many=True)
         return Response(serializer.data)
+
+
+
+class TaskView(generics.RetrieveAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
