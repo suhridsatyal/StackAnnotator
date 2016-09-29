@@ -5,7 +5,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, render_to_response
 from django.utils import timezone
-from django.utils improt timezone
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from requests_oauthlib import OAuth1
 from rest_framework import generics
@@ -18,17 +18,6 @@ from rest_framework.views import APIView
 import json
 import re
 import requests
-
-POST_STATUS_TWITTER_URL = "https://api.twitter.com/1.1/statuses/update.json"
-
-# our app key and secret we get from the twitter app site
-CONSUMER_KEY = settings.SA_CONSUMER_KEY
-CONSUMER_SECRET = settings.SA_CONSUMER_SECRET
-
-# get the below through calling API
-ACCESS_TOKEN = settings.SA_ACCESS_TOKEN
-ACCESS_TOKEN_SECRET = settings.SA_ACCESS_TOKEN_SECRET
-
 
 def index(request):
     return render(request, 'index.html')
@@ -130,9 +119,10 @@ class TaskView(APIView):
 
         message = self.create_message(request.data['keyword'],
                                       request.data['annotation_url'])
-        auth = OAuth1(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN,
-                      ACCESS_TOKEN_SECRET)
-        twitter_response = requests.post(POST_STATUS_TWITTER_URL,
+        auth = OAuth1(settings.SA_CONSUMER_KEY,
+                      settings.SA_CONSUMER_SECRET, settings.SA_ACCESS_TOKEN,
+                      settings.SA_ACCESS_TOKEN_SECRET)
+        twitter_response = requests.post(settings.POST_STATUS_TWITTER_URL,
                                          data={'status': message}, auth=auth)
 
         tweet_info = twitter_response.json()

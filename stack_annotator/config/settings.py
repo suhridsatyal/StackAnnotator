@@ -136,3 +136,6 @@ SA_CONSUMER_KEY = ""
 SA_CONSUMER_SECRET = ""
 SA_ACCESS_TOKEN = ""
 SA_ACCESS_TOKEN_SECRET = ""
+
+
+POST_STATUS_TWITTER_URL = "https://api.twitter.com/1.1/statuses/update.json"
