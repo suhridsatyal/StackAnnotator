@@ -318,7 +318,7 @@ define([
     _getSelectionRects: function() {
       var selectedText;
       if (window.getSelection) {
-        this.options.selectedText = window.getSelection().toString();
+        this.options.selectedText = window.getSelection().toString().trim();
         var box = window.getSelection().getRangeAt(0).getBoundingClientRect();
         return this._getHighlightOffset(box);
       } else if (document.selection) {
