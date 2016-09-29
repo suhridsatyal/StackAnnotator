@@ -226,21 +226,31 @@ define([
       annotationElemOffset.bottom = annotationElemOffset.top + $(annotationElem).outerHeight(true);
       annotationElemOffset.right = annotationElemOffset.left + $(annotationElem).outerWidth(true);
 
-      var youtubeURL = annotations.get(annotationID).
-          get('annotation').
-          replace("watch?v=", "embed/");
+      var youtubeVideos = [];
+      var videos = annotations.get(annotationID).get('videos');
+      _.each(videos, function(video) {
+          var youtubeURL =  "http://youtube.com/embed/" + video.external_id;
+          if (video.start_time) {
+              youtubeURL = youtubeURL + "&t=" + video.start_time
+          }
+          video.url = youtubeURL;
+          video.score = video.upvotes - video.downvotes;
+      });
       var annotationData = {
         id: annotationID,
-        annotation: youtubeURL
+        videos: videos
       };
       var annotationLinks = _.template(annotationsTemplate)(annotationData);
+      console.log(annotationLinks);
+      this._cleanupPopover();
       $("#annotate-tooltip").popover({
         trigger: 'focus',
         container: 'body',
         placement: 'right',
-        content: function() {
-          return annotationLinks;
-        },
+        content: annotationLinks,
+        //content: function() {
+        //  return annotationLinks;
+        //},
         html: true
       }).popover('show');
 
