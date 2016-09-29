@@ -5,7 +5,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, render_to_response
 from django.utils import timezone
-from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from requests_oauthlib import OAuth1
 from rest_framework import generics
@@ -127,7 +126,7 @@ class TaskView(APIView):
 
         tweet_info = twitter_response.json()
         if 'id' not in tweet_info:
-            errorMsg = {'Error': "Twitter Error", 
+            errorMsg = {'Error': "Twitter Error",
                         'Twitter Response': tweet_info.pop('errors')}
             return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
 
@@ -142,12 +141,8 @@ class TaskView(APIView):
         task = Task()
         task.tweet_id = tweet_info['id']
         task.annotation_id = newAnnotation.id
-        task.created_on = time.strftime('%Y-%m-%d %H:%M:%S',
-                            time.strptime(tweet_info['created_at'],
-                            '%a %b %d %H:%M:%S +0000 %Y'))
-        task.checked_on = time.strftime('%Y-%m-%d %H:%M:%S',
-                            time.strptime(tweet_info['created_at'],
-                            '%a %b %d %H:%M:%S +0000 %Y'))
+        task.created_on = timezone.now()
+        task.checked_on = timezone.now()
 
         task.save()
 
