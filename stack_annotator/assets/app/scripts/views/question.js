@@ -21,13 +21,11 @@ define([
 
   var QuestionView = Backbone.View.extend({
     el: $('.container'),
-
     initialize: function(options) {
       this.options = options || {};
       this.options.selectedText = "";
-      this.options.youtubeRegExp = new RegExp(
-          'https?\:\/\/www\.youtube\.com\/watch\?v\=([\w-]+)(?:&t=(\w+))?'
-          );
+      this.options.youtubeRegExp =
+          /^https?\:\/\/www\.youtube\.com\/watch\?v\=([\w-]+)(?:&t=(\w+))?$/g;
     },
 
     render: function() {
@@ -169,6 +167,7 @@ define([
       var parentDiv = $(range.commonAncestorContainer.parentNode).closest("div");
       var answerID = parentDiv.attr("id");
       var self = this;
+      debugger; //need annotation ID, not answer ID
       this._attachVideoSubmissionHandlers(answerID);
 
     },
@@ -265,7 +264,7 @@ define([
         }).show();
      }
      // Attach events for video submission
-     this._attachVideoSubmissionHandlers(answerID);
+     this._attachVideoSubmissionHandlers(annotationID);
 
     },
 
@@ -350,20 +349,29 @@ define([
       });
     },
 
-    _attachVideoSubmissionHandlers: function(answerID) {
+    _attachVideoSubmissionHandlers: function(annotationID) {
       // Attach events to popover buttons.
       var self=this;
       $("#urlField").on("input", function(event) {
         var urlRegex= self.options.youtubeRegExp;
-        debugger;
         CommonUtils.onURLChange("#urlField", urlRegex);
       });
 
       $("#submitButton").on("click", function(event) {
           var youtubeURL =  $("#urlField").val();
-          debugger;
-          var video = new VideoModel({annotation_id: self.options.post});
-          //TODO make a POST request
+          var youtubeRegex = self.options.youtubeRegExp;
+          var videoData = {}
+          youtubeURL.replace(youtubeRegex, function (url, external_id, start_time) {
+              videoData.external_id = external_id;
+              videoData.start_time = start_time;
+              return '';
+          });
+          videoData.annotation_id = annotationID;
+          var annotationNode = event.target.closest("div").parentNode;
+          var video = new VideoModel(videoData);
+          $.when(video.post()).done(function() {
+              console.log("done with POST");
+          });
       });
     }
 
