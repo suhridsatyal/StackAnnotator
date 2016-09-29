@@ -11,27 +11,27 @@
     </div>
   <% }); %>
   <div>
-    <form role="form">
-      <div class="form-group" id="urlFormGroup">
-      <label for="url" class="control-label">Add another Youtube video</label>
+<form role="form">
+  <div class="form-group" id="urlFormGroup">
+  <label for="url" class="control-label"> Add another youtube video </label>
+  <div class="">
+      <input type="text" class="form-control commentbox" id="urlField" name="urlField" aria-describedby="inputErrorStatus"/>
+
+      <!-- Failure Indicators -->
+      <span class="glyphicon glyphicon-remove form-control-feedback hidden" id="urlErrorIcon" aria-hidden="true"></span>
+      <span id="inputErrorStatus" class="sr-only">(error)</span>
+      <span class="help-block hidden" id="urlHelpBlock">Enter a valid Youtube URL and click Submit Button</span>
+
+      <!-- Success Indicators -->
+      <span class="glyphicon glyphicon-ok form-control-feedback hidden" id="urlSuccessIcon" aria-hidden="true"></span>
+      <span id="inputSuccess2Status" class="sr-only">(success)</span>
+  </div>
+  </div>
+ <div class="form-group">
       <div class="">
-          <input type="text" class="form-control commentbox" id="urlField" name="urlField" aria-describedby="inputErrorStatus"/>
-
-          <!-- Failure Indicators -->
-          <span class="glyphicon glyphicon-remove form-control-feedback hidden" id="urlErrorIcon" aria-hidden="true"></span>
-          <span id="inputErrorStatus" class="sr-only">(error)</span>
-          <span class="help-block hidden" id="urlHelpBlock">Enter a valid Youtube URL and click Submit Button</span>
-
-          <!-- Success Indicators -->
-          <span class="glyphicon glyphicon-ok form-control-feedback hidden" id="urlSuccessIcon" aria-hidden="true"></span>
-          <span id="inputSuccess2Status" class="sr-only">(success)</span>
+          <button type="button" id="submitButton" disabled="true" class="btn btn-success commentbox">Submit</button>
       </div>
-      </div>
-     <div class="form-group">
-          <div class="">
-              <button type="button" id="submitButton" disabled="true" class="btn btn-success commentbox">Submit</button>
-          </div>
-      </div>
-    </form>
+  </div>
+</form>
   </div>
 </div>

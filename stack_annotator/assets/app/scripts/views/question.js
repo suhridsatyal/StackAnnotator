@@ -26,8 +26,8 @@ define([
       this.options = options || {};
       this.options.selectedText = "";
       this.options.youtubeRegExp = new RegExp(
-                     '^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$'
-                     );
+          'https?\:\/\/www\.youtube\.com\/watch\?v\=([\w-]+)(?:&t=(\w+))?'
+          );
     },
 
     render: function() {
@@ -74,7 +74,7 @@ define([
                 scrollTop: annotationElemOffset.top
               }, "fast");
 
-              self._showYoutubeURL(self.options.highlightID, annotations);
+              self._showYoutubeURL(self.options.highlightID, annotations, self.options.answerID);
             }
           }
         });
@@ -135,7 +135,9 @@ define([
     },
 
     onAnnotationHover: function(evt) {
-      this._showYoutubeURL(evt.target.id, this.annotations);
+      var answerDiv = $(evt.target).closest("div")
+      var answerID = answerDiv.attr("id");
+      this._showYoutubeURL(evt.target.id, this.annotations, answerID);
     },
 
     onCrowdsource: function() {
@@ -167,19 +169,7 @@ define([
       var parentDiv = $(range.commonAncestorContainer.parentNode).closest("div");
       var answerID = parentDiv.attr("id");
       var self = this;
-
-      // Attach events to popover buttons.
-      $("#urlField.commentbox").on("input", function(event) {
-        var urlRegex= self.options.youtubeRegExp;
-        CommonUtils.onURLChange("#urlField.commentbox", urlRegex);
-      });
-
-      $("#submitButton.commentbox").on("click", function(event) {
-          var annotation =  $("#urlField.commentbox").val();
-          self.annotations.add({question_id: self.options.post, answer_id: answerID,
-                               annotation: annotation});
-          //TODO make a POST request
-      });
+      this._attachVideoSubmissionHandlers(answerID);
 
     },
 
@@ -217,7 +207,7 @@ define([
       };
     },
 
-    _showYoutubeURL: function(annotationID, annotations) {
+    _showYoutubeURL: function(annotationID, annotations, answerID) {
       // Shows Annotations (Youtube URLS) next to highlighted text
       this._cleanupPopover();
       var annotationElem = "annotation#" + annotationID;
@@ -273,8 +263,9 @@ define([
         $(".popover").css({
           top: annotationElemOffset.top, left: annotationElemOffset.right, 'max-width': '640px', transform: ''
         }).show();
-        // Attach Events
      }
+     // Attach events for video submission
+     this._attachVideoSubmissionHandlers(answerID);
 
     },
 
@@ -342,6 +333,7 @@ define([
     },
 
     _updateVideoMetaData: function(event, updateType) {
+      var self = this;
       var videoNode = event.target.closest("div").parentNode;
       var annotationNode = videoNode.parentNode;
       var video = new VideoModel();
@@ -355,6 +347,23 @@ define([
         }
         var buttonNode = $(event.target.parentNode);
         buttonNode.prop('disabled', true);
+      });
+    },
+
+    _attachVideoSubmissionHandlers: function(answerID) {
+      // Attach events to popover buttons.
+      var self=this;
+      $("#urlField").on("input", function(event) {
+        var urlRegex= self.options.youtubeRegExp;
+        debugger;
+        CommonUtils.onURLChange("#urlField", urlRegex);
+      });
+
+      $("#submitButton").on("click", function(event) {
+          var youtubeURL =  $("#urlField").val();
+          debugger;
+          var video = new VideoModel({annotation_id: self.options.post});
+          //TODO make a POST request
       });
     }
 
