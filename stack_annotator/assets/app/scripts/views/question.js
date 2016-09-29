@@ -6,6 +6,7 @@ define([
   '../models/question',
   '../models/answers',
   '../models/annotations',
+  '../models/video',
   // Templates
   'text!../templates/question.html',
   'text!../templates/tooltip_menu.html',
@@ -14,7 +15,7 @@ define([
   // Utils
   '../views/common_utils'
 ], function($, _, Backbone,
-  QuestionModel, AnswerCollection, AnnotationCollection,
+  QuestionModel, AnswerCollection, AnnotationCollection, VideoModel,
   questionTemplate, tooltipTemplate, annotationsTemplate, commentboxTemplate,
   CommonUtils) {
 
@@ -242,17 +243,39 @@ define([
           videos: videos
         };
         popoverTemplate = _.template(annotationsTemplate)(annotationData);
-     } else {
-         // Show comment box
-         popoverTemplate = _.template(commentboxTemplate) ({message: "Add a Youtube Video"});
-     }
-     $("#annotate-tooltip").popover({
-       trigger: 'focus', container: 'body', placement: 'right', content: popoverTemplate, html: true
-     }).popover('show');
+        $("#annotate-tooltip").popover({
+          trigger: 'focus', container: 'body', placement: 'right', content: popoverTemplate, html: true
+        }).popover('show');
 
-     $(".popover").css({
-       top: annotationElemOffset.top, left: annotationElemOffset.right, 'max-width': '640px', transform: ''
-     }).show();
+        $(".popover").css({
+          top: annotationElemOffset.top, left: annotationElemOffset.right, 'max-width': '640px', transform: ''
+        }).show();
+
+        var self = this;
+        // Attach Events
+        $(".upvoteBtn").on("click", function(event) {
+            self._updateVideoMetaData(event, "upvote");
+        });
+        $(".downvoteBtn").on("click", function(event) {
+            self._updateVideoMetaData(event, "downvote");
+        });
+        $(".flagBtn").on("click", function(event) {
+            self._updateVideoMetaData(event, "flag");
+        });
+
+     } else {
+        // Show comment box
+        popoverTemplate = _.template(commentboxTemplate) ({message: "Add a Youtube Video"});
+        $("#annotate-tooltip").popover({
+          trigger: 'focus', container: 'body', placement: 'right', content: popoverTemplate, html: true
+        }).popover('show');
+
+        $(".popover").css({
+          top: annotationElemOffset.top, left: annotationElemOffset.right, 'max-width': '640px', transform: ''
+        }).show();
+        // Attach Events
+     }
+
     },
 
     _annotateAnswers: function(answers, annotations) {
@@ -316,6 +339,23 @@ define([
       } else {
         return;
       }
+    },
+
+    _updateVideoMetaData: function(event, updateType) {
+      var videoNode = event.target.closest("div").parentNode;
+      var annotationNode = videoNode.parentNode;
+      var video = new VideoModel();
+      video.set({id: videoNode.id});
+      $.when(video.incrementAttr(updateType)).done(function(){
+        if (!(updateType==="flag")) {
+          // Do not update score on flag action. We can to show
+          // "fresh" score here, but unexpected update to score will be confusing for users.
+          var oldScore = $(videoNode).find(".videoScore");
+          oldScore.html(video.get("upvotes") - video.get("downvotes"));
+        }
+        var buttonNode = $(event.target.parentNode);
+        buttonNode.prop('disabled', true);
+      });
     }
 
   });
