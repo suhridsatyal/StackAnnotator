@@ -7,8 +7,7 @@ from django.shortcuts import render, render_to_response
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from requests_oauthlib import OAuth1
-from rest_framework import generics
-from rest_framework import status
+from rest_framework import generics, status
 from rest_framework.exceptions import APIException
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
@@ -110,7 +109,8 @@ class TaskView(APIView):
 
 
     def post(self, request, format=None):
-        required_fields = ['question_id', 'answer_id', 'annotation_url', 'keyword']
+        required_fields = ['question_id', 'answer_id', 'annotation_url',
+                           'keyword']
         if not all (param in request.data for param in required_fields):
             errorMsg = {'Error': "Input Error",
                         'Message': "Missing fields"}
@@ -118,9 +118,10 @@ class TaskView(APIView):
 
         message = self.create_message(request.data['keyword'],
                                       request.data['annotation_url'])
-        auth = OAuth1(settings.SA_CONSUMER_KEY,
-                      settings.SA_CONSUMER_SECRET, settings.SA_ACCESS_TOKEN,
-                      settings.SA_ACCESS_TOKEN_SECRET)
+        auth = OAuth1(settings.TWITTER_CONSUMER_KEY,
+                      settings.TWITTER_CONSUMER_SECRET,
+                      settings.TWITTER_ACCESS_TOKEN,
+                      settings.TWITTER_ACCESS_TOKEN_SECRET)
         twitter_response = requests.post(settings.POST_STATUS_TWITTER_URL,
                                          data={'status': message}, auth=auth)
 
@@ -141,9 +142,7 @@ class TaskView(APIView):
         task = Task()
         task.tweet_id = tweet_info['id']
         task.annotation_id = newAnnotation.id
-        task.created_on = timezone.now()
-        task.checked_on = timezone.now()
-
+        task.created_on = task.checked_on = timezone.now()
         task.save()
 
         return Response(TaskSerializer(task).data,
