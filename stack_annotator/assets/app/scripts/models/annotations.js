@@ -13,8 +13,12 @@ define([
         url: function() {
             var url = this.urlRoot + '/api/annotations';
             return url;
-        }
-        ,
+        },
+        post: function(data) {
+            return $.post(this.urlRoot, data).done(function(data){
+                   console.log(data);
+            });
+        },
         parse: function(response) {
             return response;
         }

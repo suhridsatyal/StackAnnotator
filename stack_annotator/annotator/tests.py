@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIRequestFactory, APIClient
 from models import Annotation, Video
+import json
 
 
 def create_annotation(question_id, answer_id, keyword):
@@ -11,13 +12,13 @@ def create_annotation(question_id, answer_id, keyword):
                                      keyword=keyword)
 
 
-def create_video(video_id, annotation_id):
-    return Video.objects.create(video_id=video_id,
+def create_video(external_id, annotation_id):
+    return Video.objects.create(external_id=external_id,
                                 annotation_id=annotation_id)
 
 
-def create_video_with_details(video_id, annotation_id, upvotes, downvotes, flags, start_time):
-    return Video.objects.create(video_id=video_id,
+def create_video_with_details(external_id, annotation_id, upvotes, downvotes, flags, start_time):
+    return Video.objects.create(external_id=external_id,
                                 annotation_id=annotation_id,
                                 upvotes=upvotes, downvotes=downvotes,
                                 flags=flags, start_time=start_time)
@@ -40,7 +41,9 @@ class AnnotationAPITests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         #print(response.content)
         self.assertEqual(response.content,
-            '[{"id":1,"question_id":1,"answer_id":1,"videos":[{"id":1,"video_id":"0MjdyurrP6c"}],"keyword":"sting"}]')
+                '[{"id":1,"question_id":1,"answer_id":1,"videos":[{"id":1,'\
+                '"external_id":"0MjdyurrP6c","downvotes":0,"upvotes":0,'\
+                '"flags":0,"start_time":""}],"keyword":"sting"}]')
 
 
     def test_get_annotation_by_annotation_id(self):
@@ -57,7 +60,9 @@ class AnnotationAPITests(TestCase):
         response = client.get('/api/annotation/2/', format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
-                '{"id":2,"question_id":2,"answer_id":1,"videos":[{"id":2,"video_id":"g7zO1MBu8SQ"}],"keyword":"fiesty"}')
+                '{"id":2,"question_id":2,"answer_id":1,"videos":'\
+                '[{"id":2,"external_id":"g7zO1MBu8SQ","downvotes":0,'\
+                '"upvotes":0,"flags":0,"start_time":""}],"keyword":"fiesty"}')
 
 
     def test_get_annotation_by_question_and_answer(self):
@@ -74,7 +79,9 @@ class AnnotationAPITests(TestCase):
         response = client.get('/api/annotations?question_id=1&answer_id=1', format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
-            '[{"id":1,"question_id":1,"answer_id":1,"videos":[{"id":1,"video_id":"0MjdyurrP6c"}],"keyword":"sting"}]')
+                '[{"id":1,"question_id":1,"answer_id":1,'\
+                '"videos":[{"id":1,"external_id":"0MjdyurrP6c","downvotes":0,'\
+                '"upvotes":0,"flags":0,"start_time":""}],"keyword":"sting"}]')
 
 
     def test_get_annotation_by_answer(self):
@@ -89,7 +96,9 @@ class AnnotationAPITests(TestCase):
         response = client.get('/api/annotations?answer_id=1', format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
-                '[{"id":2,"question_id":2,"answer_id":1,"videos":[{"id":2,"video_id":"g7zO1MBu8SQ"}],"keyword":"fiesty"}]')
+                '[{"id":2,"question_id":2,"answer_id":1,"videos":'\
+                '[{"id":2,"external_id":"g7zO1MBu8SQ","downvotes":0,'\
+                '"upvotes":0,"flags":0,"start_time":""}],"keyword":"fiesty"}]')
 
 
     def test_get_multiple_annotation_by_question(self):
@@ -105,7 +114,12 @@ class AnnotationAPITests(TestCase):
         response = self.client.get('/api/annotations?question_id=1')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
-            '[{"id":1,"question_id":1,"answer_id":1,"videos":[{"id":1,"video_id":"0MjdyurrP6c"}],"keyword":"fiesty"},{"id":3,"question_id":1,"answer_id":2,"videos":[{"id":3,"video_id":"3BxYqjzMz"}],"keyword":"fiesty"}]')
+            '[{"id":1,"question_id":1,"answer_id":1,"videos":'\
+            '[{"id":1,"external_id":"0MjdyurrP6c","downvotes":0,"upvotes":0,'\
+            '"flags":0,"start_time":""}],"keyword":"fiesty"},'\
+            '{"id":3,"question_id":1,"answer_id":2,"videos":'\
+            '[{"id":3,"external_id":"3BxYqjzMz","downvotes":0,'\
+            '"upvotes":0,"flags":0,"start_time":""}],"keyword":"fiesty"}]')
 
 
     def test_get_multiple_annotation_by_answer(self):
@@ -122,7 +136,12 @@ class AnnotationAPITests(TestCase):
         #print(response)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
-                '[{"id":1,"question_id":1,"answer_id":1,"videos":[{"id":1,"video_id":"0MjdyurrP6c"}],"keyword":"fiesty"},{"id":2,"question_id":2,"answer_id":1,"videos":[{"id":2,"video_id":"g7zO1MBu8SQ"}],"keyword":"fiesty"}]')
+                '[{"id":1,"question_id":1,"answer_id":1,"videos":'\
+                '[{"id":1,"external_id":"0MjdyurrP6c","downvotes":0,'\
+                '"upvotes":0,"flags":0,"start_time":""}],"keyword":"fiesty"},'\
+                '{"id":2,"question_id":2,"answer_id":1,"videos":'\
+                '[{"id":2,"external_id":"g7zO1MBu8SQ","downvotes":0,'\
+                '"upvotes":0,"flags":0,"start_time":""}],"keyword":"fiesty"}]')
 
 
     def test_get_all_annotations(self):
@@ -138,7 +157,15 @@ class AnnotationAPITests(TestCase):
         response = self.client.get('/api/annotations')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
-                '[{"id":1,"question_id":1,"answer_id":1,"videos":[{"id":1,"video_id":"0MjdyurrP6c"}],"keyword":"fiesty"},{"id":2,"question_id":2,"answer_id":1,"videos":[{"id":2,"video_id":"g7zO1MBu8SQ"}],"keyword":"fiesty"},{"id":3,"question_id":1,"answer_id":2,"videos":[{"id":3,"video_id":"3BxYqjzMz"}],"keyword":"fiesty"}]')
+                '[{"id":1,"question_id":1,"answer_id":1,"videos":'\
+                '[{"id":1,"external_id":"0MjdyurrP6c","downvotes":0,'\
+                '"upvotes":0,"flags":0,"start_time":""}],"keyword":"fiesty"},'\
+                '{"id":2,"question_id":2,"answer_id":1,"videos":'\
+                '[{"id":2,"external_id":"g7zO1MBu8SQ","downvotes":0,'\
+                '"upvotes":0,"flags":0,"start_time":""}],"keyword":"fiesty"},'\
+                '{"id":3,"question_id":1,"answer_id":2,"videos":'\
+                '[{"id":3,"external_id":"3BxYqjzMz","downvotes":0,'\
+                '"upvotes":0,"flags":0,"start_time":""}],"keyword":"fiesty"}]')
 
 
     def test_get_fail_annotation_question(self):
@@ -183,7 +210,7 @@ class AnnotationAPITests(TestCase):
         self.assertEqual(response.content,
                 '{"id":2,"question_id":5,"answer_id":10,"videos":[],"keyword":"fiesty"}')
 
-        data = {"question_id":5, "answer_id":10,"videos":[{"video_id":"newvideo"}],"keyword":"fiesty"}
+        data = {"question_id":5, "answer_id":10,"videos":[{"external_id":"newvideo"}],"keyword":"fiesty"}
         response = client.post('/api/annotations', data, format='json')
         #print(response)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -191,7 +218,9 @@ class AnnotationAPITests(TestCase):
         response = client.get('/api/annotation/3/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
-                '{"id":3,"question_id":5,"answer_id":10,"videos":[{"id":1,"video_id":"newvideo"}],"keyword":"fiesty"}')
+                '{"id":3,"question_id":5,"answer_id":10,"videos":[{"id":1,'\
+                '"external_id":"newvideo","downvotes":0,"upvotes":0,'\
+                '"flags":0,"start_time":""}],"keyword":"fiesty"}')
 
 
     def test_post_fail_annotation(self):
@@ -216,7 +245,6 @@ class VideoAPITests(TestCase):
         """
         Should get all videos
         """
-        #video_id, annotation_id, upvotes, downvotes, flags, start_time
         first = create_annotation(1, 3, "fiesty")
         create_video_with_details("0MjdyurrP6c", first, 4, 2, 0, "1:14")
         second = create_annotation(2, 1, "fiesty")
@@ -228,7 +256,12 @@ class VideoAPITests(TestCase):
         response = client.get('/api/videos', format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
-            '[{"id":1,"video_id":"0MjdyurrP6c","annotation_id":1,"downvotes":2,"upvotes":4,"flags":0,"start_time":"1:14"},{"id":2,"video_id":"g7zO1MBu8SQ","annotation_id":2,"downvotes":1,"upvotes":2,"flags":0,"start_time":"0:14"},{"id":3,"video_id":"3BxYqjzMz","annotation_id":3,"downvotes":1,"upvotes":2,"flags":0,"start_time":"0:14"}]')
+            '[{"id":1,"external_id":"0MjdyurrP6c","annotation_id":1,"downvotes":2,'\
+            '"upvotes":4,"flags":0,"start_time":"1:14"},'\
+            '{"id":2,"external_id":"g7zO1MBu8SQ","annotation_id":2,'\
+            '"downvotes":1,"upvotes":2,"flags":0,"start_time":"0:14"},'\
+            '{"id":3,"external_id":"3BxYqjzMz","annotation_id":3,"downvotes":1,'\
+            '"upvotes":2,"flags":0,"start_time":"0:14"}]')
 
 
     def test_get_all_videos_of_annotation(self):
@@ -245,7 +278,10 @@ class VideoAPITests(TestCase):
         response = client.get('/api/videos?annotation_id=2', format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
-            '[{"id":2,"video_id":"g7zO1MBu8SQ","annotation_id":2,"downvotes":1,"upvotes":2,"flags":0,"start_time":"0:14"},{"id":3,"video_id":"dragonballz","annotation_id":2,"downvotes":2,"upvotes":12,"flags":0,"start_time":"0:19"}]')
+            '[{"id":2,"external_id":"g7zO1MBu8SQ","annotation_id":2,'\
+            '"downvotes":1,"upvotes":2,"flags":0,"start_time":"0:14"},'\
+            '{"id":3,"external_id":"dragonballz","annotation_id":2,'\
+            '"downvotes":2,"upvotes":12,"flags":0,"start_time":"0:19"}]')
 
 
     def test_get_details_of_single_video(self):
@@ -264,7 +300,8 @@ class VideoAPITests(TestCase):
         response = client.get('/api/video/2/', format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
-            '{"id":2,"video_id":"dragonballz","annotation_id":1,"downvotes":9,"upvotes":1,"flags":2,"start_time":"6:17"}')
+            '{"id":2,"external_id":"dragonballz","annotation_id":1,'\
+            '"downvotes":9,"upvotes":1,"flags":2,"start_time":"6:17"}')
 
 
     def test_post_video(self):
@@ -274,12 +311,12 @@ class VideoAPITests(TestCase):
         create_annotation(1, 2, "fiesty")
 
         client = APIClient()
-        data = {"video_id":5, "annotation_id":1}
+        data = {"external_id":5, "annotation_id":1}
         response = client.post('/api/videos', data, format='json')
-        #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.content,
-            '{"id":1,"video_id":"5","annotation_id":1,"downvotes":0,"upvotes":0,"flags":0,"start_time":"0:00"}')
+            '{"id":1,"external_id":"5","annotation_id":1,"downvotes":0,'\
+            '"upvotes":0,"flags":0,"start_time":""}')
 
 
     def test_update_video(self):
@@ -290,25 +327,26 @@ class VideoAPITests(TestCase):
         create_video_with_details("3BxYqjzMz", first, 4, 2, 0, "1:14")
 
         client = APIClient()
-        data = {"video_id":"updatevideo", "start_time":"13:12", "annotation_id":1}
+        data = {"external_id":"updatevideo", "start_time":"13:12", "annotation_id":1}
 
         response = client.put('/api/video/1/', data, format='json')
-        #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
-            '{"id":1,"video_id":"updatevideo","annotation_id":1,"downvotes":2,"upvotes":4,"flags":0,"start_time":"13:12"}')
+            '{"id":1,"external_id":"updatevideo","annotation_id":1,'\
+            '"downvotes":2,"upvotes":4,"flags":0,"start_time":"13:12"}')
 
         response = client.get('/api/video/1/', data, format='json')
-        #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
-            '{"id":1,"video_id":"updatevideo","annotation_id":1,"downvotes":2,"upvotes":4,"flags":0,"start_time":"13:12"}')
+            '{"id":1,"external_id":"updatevideo","annotation_id":1,'\
+            '"downvotes":2,"upvotes":4,"flags":0,"start_time":"13:12"}')
 
         response = client.get('/api/annotation/1/', data, format='json')
-        #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
-            '{"id":1,"question_id":1,"answer_id":2,"videos":[{"id":1,"video_id":"updatevideo"}],"keyword":"fiesty"}')
+                '{"id":1,"question_id":1,"answer_id":2,"videos":[{"id":1,'\
+                '"external_id":"updatevideo","downvotes":2,"upvotes":4,'\
+                '"flags":0,"start_time":"13:12"}],"keyword":"fiesty"}')
 
 
     def test_fail_get(self):
@@ -335,14 +373,13 @@ class VideoAPITests(TestCase):
         Should fail a post
         """
         create_annotation(1, 2, "fiesty")
-        #video_id, annotation_id, upvotes, downvotes, flags, start_time
 
         client = APIClient()
-        data = {"video_id":5, "annotation_id":2}
+        data = {"external_id":5, "annotation_id":2}
         response = client.post('/api/videos', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        data = {"video_id":5, "annotation_id":1, "upvotes":"pie"}
+        data = {"external_id":5, "annotation_id":1, "upvotes":"pie"}
         response = client.post('/api/videos', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -355,23 +392,63 @@ class VideoAPITests(TestCase):
         create_video_with_details("3BxYqjzMz", first, 4, 2, 0, "1:14")
 
         client = APIClient()
-        data = {"video_id":"updatevideo", "start_time":"13:12", "annotation_id":1}
+        data = {"external_id":"updatevideo", "start_time":"13:12", "annotation_id":1}
 
         response = client.put('/api/video/5/', data, format='json')
-        #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-        data = {"video_id":"updatevideo", "start_time":"13:12"}
+        data = {"external_id":"updatevideo", "start_time":"13:12"}
         response = client.put('/api/video/1/', data, format='json')
-        #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        data = {"video_id":"updatevideo", "upvotes":"treetag", "annotation_id":1}
+        data = {"external_id":"updatevideo", "upvotes":"treetag", "annotation_id":1}
         response = client.put('/api/video/1/', data, format='json')
-        #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-        data = {"video_id":"updatevideo", "upvotes":"2", "annotation_id":5}
+        data = {"external_id":"updatevideo", "upvotes":"2", "annotation_id":5}
         response = client.put('/api/video/1/', data, format='json')
-        #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+    def test_video_upvote(self):
+        """
+        Should increase video upvotes
+        """
+        self._test_video_metadata_increment(metadata_type="upvote")
+
+
+    def test_video_downvote(self):
+        """
+        Should increase video downvotes
+        """
+        self._test_video_metadata_increment(metadata_type="downvote")
+
+
+    def test_video_flag(self):
+        """
+        Should increase video flags
+        """
+        self._test_video_metadata_increment(metadata_type="flag")
+
+
+    def _test_video_metadata_increment(self, metadata_type):
+        """
+        Should upvote a video 
+        """
+        create_annotation(1, 2, "fiesty")
+        client = APIClient()
+        data = {"external_id":5, "annotation_id":1}
+        response = client.post('/api/videos', data, format='json')
+
+        expected_attrs = ["id","external_id","annotation_id","downvotes",
+                         "upvotes","flags","start_time"]
+
+        response = client.post('/api/video/1/' + metadata_type, format='json')
+        response_dict = json.loads(response.content)
+        if not all(attrs in response_dict for attrs in expected_attrs):
+            assert False
+        self.assertEquals(response_dict[metadata_type+'s'], 1)
+        response = client.post('/api/video/1/' + metadata_type, format='json')
+        response_dict = json.loads(response.content)
+        self.assertEquals(response_dict[metadata_type+'s'], 2)
+

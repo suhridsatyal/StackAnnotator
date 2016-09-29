@@ -9,6 +9,7 @@ from annotator.serializers import AnnotationSerializer, VideoSerializer
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
@@ -57,9 +58,9 @@ class AnnotationListView(generics.ListCreateAPIView):
             annotation_id = int(serializer.data['id'])
             # Can create multiple videos, may not be required
             for video in videos:
-                video_id = video["video_id"]
+                external_id = video["external_id"]
                 new_video = {"annotation_id": annotation_id,
-                             "video_id": video_id}
+                             "external_id": external_id}
                 videos = VideoSerializer(data=new_video)
                 if videos.is_valid():
                     videos.save()
@@ -95,3 +96,40 @@ class VideoListView(generics.ListCreateAPIView):
 class VideoView(generics.RetrieveUpdateAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
+
+
+@api_view(['POST'])
+def upvote_video(request, pk):
+    try:
+        video = Video.objects.get(pk=pk)
+        video.upvotes = video.upvotes + 1
+        video.save()
+        serializer = VideoSerializer(video)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    except Exception as e :
+        return Response({"message": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+def downvote_video(request, pk):
+    try:
+        video = Video.objects.get(pk=pk)
+        video.downvotes = video.downvotes + 1
+        video.save()
+        serializer = VideoSerializer(video)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    except Exception as e :
+        return Response({"message": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+def flag_video(request, pk):
+    try:
+        video = Video.objects.get(pk=pk)
+        video.flags = video.flags + 1
+        video.save()
+        serializer = VideoSerializer(video)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    except Exception as e :
+        return Response({"message": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+

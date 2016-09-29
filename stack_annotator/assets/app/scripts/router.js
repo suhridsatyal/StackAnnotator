@@ -9,7 +9,7 @@ define([
     routes: {
       // Define some URL routes
       '': 'showHome',
-      'question/:post(/:answerID)(/:highlightType/:highlightID)': 'showQuestion', //#question
+      'question/:post(/:answerID)(/:highlightID)': 'showQuestion', //#question
 
       // Default
       '*actions': 'showHome'
@@ -24,9 +24,9 @@ define([
       homeView.render();
     });
 
-    appRouter.on('route:showQuestion', function(post, answerID, highlightType, highlightID){
+    appRouter.on('route:showQuestion', function(post, answerID, highlightID){
       var questionView = new QuestionView({post: post, answerID:answerID,
-                                           highlightType:highlightType, highlightID:highlightID});
+                                           highlightID:highlightID});
       questionView.render();
     });
 
