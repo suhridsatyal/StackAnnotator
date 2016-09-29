@@ -20,7 +20,7 @@ class Video(models.Model):
     start_time = models.CharField(max_length=16, blank=True)
 
     def __unicode__(self):
-        return "(%s, %s) %s" % (self.pk, self.video_id,
+        return "(%s, %s) %s" % (self.pk, self.external_id,
                                               self.annotation_id)
 
 

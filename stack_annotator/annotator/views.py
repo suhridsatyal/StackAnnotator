@@ -9,6 +9,7 @@ from annotator.serializers import AnnotationSerializer, VideoSerializer
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
@@ -95,3 +96,37 @@ class VideoListView(generics.ListCreateAPIView):
 class VideoView(generics.RetrieveUpdateAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
+
+
+@api_view(['POST'])
+def upvote_video(request, pk):
+    try:
+        video = Video.objects.get(pk=pk)
+        video.upvotes = video.upvotes + 1
+        video.save()
+        return Response({"upvotes": video.upvotes})
+    except Exception as e :
+        return Response({"message": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+def downvote_video(request, pk):
+    try:
+        video = Video.objects.get(pk=pk)
+        video.downvotes = video.downvotes + 1
+        video.save()
+        return Response({"downvotes": video.downvotes})
+    except Exception as e :
+        return Response({"message": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+def flag_video(request, pk):
+    try:
+        video = Video.objects.get(pk=pk)
+        video.flags = video.flags + 1
+        video.save()
+        return Response({"flags": video.flags})
+    except Exception as e :
+        return Response({"message": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+

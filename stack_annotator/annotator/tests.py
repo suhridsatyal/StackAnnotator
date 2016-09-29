@@ -244,7 +244,6 @@ class VideoAPITests(TestCase):
         """
         Should get all videos
         """
-        #external_id, annotation_id, upvotes, downvotes, flags, start_time
         first = create_annotation(1, 3, "fiesty")
         create_video_with_details("0MjdyurrP6c", first, 4, 2, 0, "1:14")
         second = create_annotation(2, 1, "fiesty")
@@ -313,7 +312,6 @@ class VideoAPITests(TestCase):
         client = APIClient()
         data = {"external_id":5, "annotation_id":1}
         response = client.post('/api/videos', data, format='json')
-        #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.content,
             '{"id":1,"external_id":"5","annotation_id":1,"downvotes":0,'\
@@ -331,7 +329,6 @@ class VideoAPITests(TestCase):
         data = {"external_id":"updatevideo", "start_time":"13:12", "annotation_id":1}
 
         response = client.put('/api/video/1/', data, format='json')
-        #print(response.content)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
             '{"id":1,"external_id":"updatevideo","annotation_id":1,'\
@@ -375,7 +372,6 @@ class VideoAPITests(TestCase):
         Should fail a post
         """
         create_annotation(1, 2, "fiesty")
-        #external_id, annotation_id, upvotes, downvotes, flags, start_time
 
         client = APIClient()
         data = {"external_id":5, "annotation_id":2}
@@ -411,3 +407,39 @@ class VideoAPITests(TestCase):
         data = {"external_id":"updatevideo", "upvotes":"2", "annotation_id":5}
         response = client.put('/api/video/1/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+    def test_video_upvote(self):
+        """
+        Should increase video upvotes
+        """
+        self._test_video_metadata_increment(metadata_type="upvote")
+
+
+    def test_video_downvote(self):
+        """
+        Should increase video downvotes
+        """
+        self._test_video_metadata_increment(metadata_type="downvote")
+
+
+    def test_video_flag(self):
+        """
+        Should increase video flags
+        """
+        self._test_video_metadata_increment(metadata_type="flag")
+
+
+    def _test_video_metadata_increment(self, metadata_type):
+        """
+        Should upvote a video 
+        """
+        create_annotation(1, 2, "fiesty")
+        client = APIClient()
+        data = {"external_id":5, "annotation_id":1}
+        response = client.post('/api/videos', data, format='json')
+        response = client.post('/api/video/1/' + metadata_type, format='json')
+        self.assertEquals(response.content, '{"%ss":1}' % metadata_type)
+        response = client.post('/api/video/1/' + metadata_type, format='json')
+        self.assertEquals(response.content, '{"%ss":2}' % metadata_type)
+
