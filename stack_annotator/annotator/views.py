@@ -155,7 +155,6 @@ class TaskListView(APIView):
         return Response(serializer.data)
 
 
-
 class TaskView(generics.RetrieveAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
