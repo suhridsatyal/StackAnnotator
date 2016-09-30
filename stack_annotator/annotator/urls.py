@@ -9,5 +9,5 @@ urlpatterns = [
     url(r'video/(?P<pk>[0-9]+)/$', views.VideoView.as_view()),
     url(r'tasks/$', views.TaskListView.as_view()),
     url(r'tasks$', views.TaskListView.as_view()),
-    url(r'tasks/(?P<pk>[0-9]+)/$', views.TaskView.as_view()),
+    url(r'task/(?P<pk>[0-9]+)/$', views.TaskView.as_view()),
 ]
