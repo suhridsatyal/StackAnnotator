@@ -59,8 +59,16 @@ class AnnotationListView(generics.ListCreateAPIView):
             # Can create multiple videos, may not be required
             for video in videos:
                 external_id = video["external_id"]
-                new_video = {"annotation_id": annotation_id,
-                             "external_id": external_id}
+                # Check if there is a start time
+                if "start_time" in video:
+                    start_time = video["start_time"]
+                    new_video = {"annotation_id": annotation_id,
+                                 "external_id": external_id,
+                                 "start_time": start_time}
+                else:
+                    new_video = {"annotation_id": annotation_id,
+                                 "external_id": external_id}
+
                 videos = VideoSerializer(data=new_video)
                 if videos.is_valid():
                     videos.save()
@@ -106,7 +114,7 @@ def upvote_video(request, pk):
         video.save()
         serializer = VideoSerializer(video)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    except Exception as e :
+    except Exception as e:
         return Response({"message": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -118,7 +126,7 @@ def downvote_video(request, pk):
         video.save()
         serializer = VideoSerializer(video)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    except Exception as e :
+    except Exception as e:
         return Response({"message": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -130,6 +138,6 @@ def flag_video(request, pk):
         video.save()
         serializer = VideoSerializer(video)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    except Exception as e :
+    except Exception as e:
         return Response({"message": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

@@ -222,6 +222,17 @@ class AnnotationAPITests(TestCase):
                 '"external_id":"newvideo","downvotes":0,"upvotes":0,'\
                 '"flags":0,"start_time":""}],"keyword":"fiesty"}')
 
+        data = {"question_id":5, "answer_id":10,"videos":[{"external_id":"anothervideo","start_time":"0:15"}],"keyword":"fiesty"}
+        response = client.post('/api/annotations', data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = client.get('/api/annotation/4/', data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.content,
+                '{"id":4,"question_id":5,"answer_id":10,"videos":[{"id":2,'\
+                '"external_id":"anothervideo","downvotes":0,"upvotes":0,'\
+                '"flags":0,"start_time":"0:15"}],"keyword":"fiesty"}')
+
 
     def test_post_fail_annotation(self):
         """
