@@ -14,10 +14,6 @@ requests==2.11.1
 requests_oauthlib==0.6.2
 mock==2.0.0
 
-# Python Libraries
-requests==2.11.0
-requests_oauthlib==0.6.2
-
 # Dev Tools
 ipython
 ipdb
