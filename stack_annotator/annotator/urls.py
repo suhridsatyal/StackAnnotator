@@ -12,5 +12,6 @@ urlpatterns = [
     url(r'video/(?P<pk>[0-9]+)/flag$', views.flag_video),
     url(r'tasks/$', views.TaskListView.as_view()),
     url(r'task/(?P<pk>[0-9]+)/$', views.TaskView.as_view()),
+    url(r'task/$', views.TaskListView.as_view()),
     url(r'tasks$', views.TaskListView.as_view()),
 ]
