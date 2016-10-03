@@ -9,13 +9,13 @@
     <% _.each(answers, function(answer){ %>
       <% if(!(typeof answer === "string")) { %> <!-- Ignore post id. Better approach than using 'delete' in view. -->
         <div class="row">
-          <div class="col-md-1" >
+          <div class="col-md-1 col-xs-1 col-lg-1" >
             <% if(answer.is_accepted === true) { %>
-              <h3> <span class="glyphicon glyphicon-ok" id="urlSuccessIcon"></span> </h3>
+              <h3> <span class="glyphicon glyphicon-ok"></span> </h3>
             <% }; %>
             <h3> Score: <%= answer.score %> </h3>
           </div>
-          <div id="<%= answer.answer_id %>" class="col-md-11 answer-item"> <%= answer.body %> </div>
+          <div id="<%= answer.answer_id %>" class="col-md-11 col-xs-11 col-lg-11 answer-item"> <%= answer.body %> </div>
         </div>
       <% }; %>
     <% }); %>

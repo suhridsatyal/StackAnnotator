@@ -7,14 +7,21 @@ class Annotation(models.Model):
     answer_id = models.IntegerField(blank=False)
     keyword = models.CharField(max_length=20, blank=False)
 
+    def __unicode__(self):
+        return "<Annotation: %s>" % self.pk
+
 
 class Video(models.Model):
-    video_id = models.CharField(max_length=20)
+    external_id = models.CharField(max_length=20)
     annotation_id = models.ForeignKey(Annotation, on_delete=models.CASCADE)
     downvotes = models.IntegerField(default=0)
     upvotes = models.IntegerField(default=0)
     flags = models.IntegerField(default=0)
-    start_time = models.CharField(max_length=16, default="0:00")
+    start_time = models.CharField(max_length=16, blank=True)
+
+    def __unicode__(self):
+        return "(%s, %s) %s" % (self.pk, self.external_id,
+                                              self.annotation_id)
 
 
 class Task(models.Model):

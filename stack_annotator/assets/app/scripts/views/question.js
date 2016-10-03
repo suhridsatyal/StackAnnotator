@@ -6,20 +6,26 @@ define([
   '../models/question',
   '../models/answers',
   '../models/annotations',
+  '../models/video',
   // Templates
   'text!../templates/question.html',
   'text!../templates/tooltip_menu.html',
-  'text!../templates/annotations.html'
+  'text!../templates/annotations.html',
+  'text!../templates/commentbox.html',
+  // Utils
+  '../views/common_utils'
 ], function($, _, Backbone,
-  QuestionModel, AnswerCollection, AnnotationCollection,
-  questionTemplate, tooltipTemplate, annotationsTemplate) {
+  QuestionModel, AnswerCollection, AnnotationCollection, VideoModel,
+  questionTemplate, tooltipTemplate, annotationsTemplate, commentboxTemplate,
+  CommonUtils) {
 
   var QuestionView = Backbone.View.extend({
     el: $('.container'),
-
     initialize: function(options) {
       this.options = options || {};
       this.options.selectedText = "";
+      this.options.youtubeRegExp =
+          /^https?\:\/\/www\.youtube\.com\/watch\?v\=([\w-]+)(?:&t=(\w+))?$/g;
     },
 
     render: function() {
@@ -58,24 +64,15 @@ define([
               scrollTop: answerElemOffset.top
             }, "fast");
 
-            if (self.options.highlightType == 'annotation') {
+            if (self.options.highlightID) {
               // Scroll to annotation
-              var annotationElem = "#" + self.options.highlightID + ".annotation_text";
+              var annotationElem = "annotation#" + self.options.highlightID;
               var annotationElemOffset = $(annotationElem).offset();
               $('html,body').animate({
                 scrollTop: annotationElemOffset.top
               }, "fast");
 
-              self._showYoutubeURL(self.options.highlightID, annotations);
-            } else if (self.options.highlightType == 'task') {
-              // Scroll to Task
-              var annotationElem = "#" + self.options.highlightID + ".task_text";
-              var annotationElemOffset = $(annotationElem).offset();
-              $('html,body').animate({
-                scrollTop: annotationElemOffset.top
-              }, "fast");
-              // Show comment box
-              // TODO
+              self._showYoutubeURL(self.options.highlightID, annotations, self.options.answerID);
             }
           }
         });
@@ -88,33 +85,21 @@ define([
     events: {
       'mouseup #answers': 'onHighlight',
       'mousedown #questionview': 'onDeselect',
-      'mouseover .annotation_text': 'onAnnotationHover'
+      'mouseover annotation': 'onAnnotationHover'
     },
 
     onHighlight: function() {
-      var rects = [];
-      var selectedText = "";
-
-      if (window.getSelection) {
-        selectedText = window.getSelection().toString();
-        var box = window.getSelection().getRangeAt(0).getBoundingClientRect();
-        rects = this._getHighlightOffset(box);
-      } else if (document.selection) {
-        selectedText = document.getSelection().toString();
-        var box = document.getSelection().getRangeAt(0).getBoundingClientRect();
-        rects = this._getHighlightOffset(box);
-      } else {
-        return;
+      var rects = this._getSelectionRects();
+      if (rects==undefined) {
+          return;
       }
 
-      this.options.selectedText = selectedText;
       var self = this;
 
-      if (selectedText.length > 0) {
+      if (this.options.selectedText.length > 0) {
         this._cleanupPopover();
 
         //show popover
-        console.log(tooltipTemplate);
         $("#annotate-tooltip").popover({
           trigger: 'focus',
           container: 'body',
@@ -148,7 +133,9 @@ define([
     },
 
     onAnnotationHover: function(evt) {
-      this._showYoutubeURL(evt.target.id, this.annotations);
+      var answerDiv = $(evt.target).closest("div")
+      var answerID = answerDiv.attr("id");
+      this._showYoutubeURL(evt.target.id, this.annotations, answerID);
     },
 
     onCrowdsource: function() {
@@ -157,12 +144,38 @@ define([
     },
 
     onComment: function() {
-      console.log("TODO: allow users to comment");
+      this._cleanupPopover();
+      var rects=this._getSelectionRects();
+      if (rects==undefined) {
+          return;
+      }
+      $("#annotate-tooltip").popover({
+        trigger: 'focus',
+        container: 'body',
+        //placement: 'bottom',
+        content: _.template(commentboxTemplate)({message: "Add a Youtube Video"}),
+        html: true
+      }).popover('show');
+      $(".popover").css({
+        top: rects.bottom,
+        left: rects.left,
+        transform: ''
+      }).show();
+
+      var selection = window.getSelection();
+      var range = selection.getRangeAt(0);
+      var parentDiv = $(range.commonAncestorContainer.parentNode).closest("div");
+      var answerID = parentDiv.attr("id");
+      var self = this;
+      debugger; //need annotation ID, not answer ID
+      this._attachVideoSubmissionHandlers(answerID);
+
     },
 
     onHelp: function() {
       console.log("TODO: show help");
     },
+
 
     //
     // Helper Functions
@@ -193,53 +206,82 @@ define([
       };
     },
 
-    _showYoutubeURL: function(annotationID, annotations) {
+    _showYoutubeURL: function(annotationID, annotations, answerID) {
       // Shows Annotations (Youtube URLS) next to highlighted text
       this._cleanupPopover();
-      var annotationElem = "#" + annotationID + ".annotation_text";
+      var annotationElem = "annotation#" + annotationID;
       var annotationElemOffset = $(annotationElem).offset();
       annotationElemOffset.bottom = annotationElemOffset.top + $(annotationElem).outerHeight(true);
       annotationElemOffset.right = annotationElemOffset.left + $(annotationElem).outerWidth(true);
 
-      var youtubeURL = annotations.get(annotationID).
-          get('annotation').
-          replace("watch?v=", "embed/");
-      var annotationData = {
-        id: annotationID,
-        annotation: youtubeURL
-      };
-      var annotationLinks = _.template(annotationsTemplate)(annotationData);
-      $("#annotate-tooltip").popover({
-        trigger: 'focus',
-        container: 'body',
-        placement: 'right',
-        content: function() {
-          return annotationLinks;
-        },
-        html: true
-      }).popover('show');
+      var youtubeVideos = [];
+      var videos = annotations.get(annotationID).get('videos');
+      var popoverTemplate;
 
-      $(".popover").css({
-        top: annotationElemOffset.top,
-        left: annotationElemOffset.right,
-        'max-width': '640px',
-        transform: ''
-      }).show();
+      if (videos.length > 0) {
+        _.each(videos, function(video) {
+            var youtubeURL =  "http://youtube.com/embed/" + video.external_id;
+            if (video.start_time) {
+                youtubeURL = youtubeURL + "&t=" + video.start_time
+            }
+            video.url = youtubeURL;
+            video.score = video.upvotes - video.downvotes;
+        });
+        var annotationData = {
+          id: annotationID,
+          videos: videos
+        };
+        popoverTemplate = _.template(annotationsTemplate)(annotationData);
+        $("#annotate-tooltip").popover({
+          trigger: 'focus', container: 'body', placement: 'right', content: popoverTemplate, html: true
+        }).popover('show');
+
+        $(".popover").css({
+          top: annotationElemOffset.top, left: annotationElemOffset.right, 'max-width': '640px', transform: ''
+        }).show();
+
+        var self = this;
+        // Attach Events
+        $(".upvoteBtn").on("click", function(event) {
+            self._updateVideoMetaData(event, "upvote");
+        });
+        $(".downvoteBtn").on("click", function(event) {
+            self._updateVideoMetaData(event, "downvote");
+        });
+        $(".flagBtn").on("click", function(event) {
+            self._updateVideoMetaData(event, "flag");
+        });
+
+     } else {
+        // Show comment box
+        popoverTemplate = _.template(commentboxTemplate) ({message: "Add a Youtube Video"});
+        $("#annotate-tooltip").popover({
+          trigger: 'focus', container: 'body', placement: 'right', content: popoverTemplate, html: true
+        }).popover('show');
+
+        $(".popover").css({
+          top: annotationElemOffset.top, left: annotationElemOffset.right, 'max-width': '640px', transform: ''
+        }).show();
+     }
+     // Attach events for video submission
+     this._attachVideoSubmissionHandlers(annotationID);
     },
 
     _annotateAnswers: function(answers, annotations) {
       // Surrounds annotated text with span, with id=annotation id
+      var annotationClass;
       _.each(annotations, function(annotation) {
         _.each(answers, function(answer) {
           if (answer.answer_id == annotation.answer_id) {
-            var replacer = function(match, offset) {
-              if (offset == annotation.position) {
-                return "<span class='highlighted annotation_text' id=" + annotation.id + ">" + match + "</span>";
-              } else {
-                return match;
-              }
-            };
-            answer.body = answer.body.replace(annotation.keyword, replacer);
+            if (annotation.videos.length) {
+                annotationClass = 'highlighted'
+            } else {
+                annotationClass = 'soft_highlighted'
+            }
+            answer.body = answer.body.replace(annotation.keyword,
+                                              "<annotation class='"+ annotationClass + "'" +
+                                              "id=" + annotation.id + ">" +
+                                              annotation.keyword + "</annotation>");
           }
         });
       });
@@ -271,7 +313,95 @@ define([
       $(".popover").remove();
       $("#annotate-tooltip").remove();
       $("#questionview").append('<div id="annotate-tooltip" data-toggle="popover"> </div>');
+    },
+
+    _getSelectionRects: function() {
+      var selectedText;
+      if (window.getSelection) {
+        this.options.selectedText = window.getSelection().toString().trim();
+        var box = window.getSelection().getRangeAt(0).getBoundingClientRect();
+        return this._getHighlightOffset(box);
+      } else if (document.selection) {
+        this.options.selectedText = document.getSelection().toString();
+        var box = document.getSelection().getRangeAt(0).getBoundingClientRect();
+        return this._getHighlightOffset(box);
+      } else {
+        return;
+      }
+    },
+
+    _updateVideoMetaData: function(event, updateType) {
+      var self = this;
+      var videoNode = event.target.closest("div").parentNode;
+      var annotationNode = videoNode.parentNode;
+      var video = new VideoModel();
+      video.set({id: videoNode.id});
+      $.when(video.incrementAttr(updateType)).done(function(){
+        if (!(updateType==="flag")) {
+          // Do not update score on flag action. We can to show
+          // "fresh" score here, but unexpected update to score will be confusing for users.
+          var oldScore = $(videoNode).find(".videoScore");
+          oldScore.html(video.get("upvotes") - video.get("downvotes"));
+        }
+        var buttonNode = $(event.target.parentNode);
+        buttonNode.prop('disabled', true);
+      });
+    },
+    _attachAnnotationSubmissionHandlers: function(answerID) {
+      // Attach events to popover buttons.
+      var self=this;
+      $("#urlField").on("input", function(event) {
+        var urlRegex= self.options.youtubeRegExp;
+        CommonUtils.onURLChange("#urlField", urlRegex);
+      });
+
+      // Create an annotation with video
+      $("#submitButton").on("click", function(event) {
+          var youtubeURL =  $("#urlField").val();
+          var youtubeRegex = self.options.youtubeRegExp;
+          var videoData = {}
+          youtubeURL.replace(youtubeRegex, function (url, external_id, start_time) {
+              videoData.external_id = external_id;
+              videoData.start_time = start_time;
+              return '';
+          });
+          videoData.annotation_id = answerID;
+          var annotationNode = event.target.closest("div").parentNode;
+          var video = new VideoModel(videoData);
+          $.when(video.post()).done(function() {
+              // TODO Show a 'Thank You' prompt to user and refresh page on click of 'Continue' button
+              console.log("done with POST");
+          });
+      });
+    },
+
+    _attachVideoSubmissionHandlers: function(annotationID) {
+      // Attach events to popover buttons.
+      var self=this;
+      $("#urlField").on("input", function(event) {
+        var urlRegex= self.options.youtubeRegExp;
+        CommonUtils.onURLChange("#urlField", urlRegex);
+      });
+
+      $("#submitButton").on("click", function(event) {
+          var youtubeURL =  $("#urlField").val();
+          var youtubeRegex = self.options.youtubeRegExp;
+          var videoData = {}
+          youtubeURL.replace(youtubeRegex, function (url, external_id, start_time) {
+              videoData.external_id = external_id;
+              videoData.start_time = start_time;
+              return '';
+          });
+          videoData.annotation_id = annotationID;
+          var annotationNode = event.target.closest("div").parentNode;
+          var video = new VideoModel(videoData);
+          $.when(video.post()).done(function() {
+              // TODO Show a 'Thank You' prompt to user and refresh page on click of 'Continue' button
+              console.log("done with POST");
+          });
+      });
     }
+
   });
 
   return QuestionView;
