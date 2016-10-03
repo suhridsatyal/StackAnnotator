@@ -1,0 +1,35 @@
+<div id="<%= id %>" class="annotationList">
+  <% _.each(videos, function(video){ %>
+    <div id="<%= video.id %>" class="annotationVideo">
+      <div class="col-md-2 col-xs-2 col-lg-2 btn-group-vertical videoMeta">
+        <button class="button btn-link upvoteBtn"> <span class="glyphicon glyphicon-triangle-top icon-link"></span> </button>
+        <div> <h3 class="videoScore"> <%= video.score %> <h3> </div>
+        <button class="button btn-link downvoteBtn"> <span class="glyphicon glyphicon-triangle-bottom icon-link"></span> </button>
+        <button class="button btn-link flagBtn"> <span class="glyphicon glyphicon-flag icon-link"></span> </button>
+      </div>
+      <iframe width="420" height="315" src="<%= video.url %>" "col-md-9 col-xs-9 col-lg-9"> </iframe>
+    </div>
+  <% }); %>
+  <div>
+<form role="form">
+  <div class="form-group" id="urlFormGroup">
+  <label for="url" class="control-label"> Add another youtube video </label>
+  <div class="">
+      <input type="text" class="form-control commentbox" id="urlField" name="urlField" aria-describedby="inputErrorStatus"/>
+
+      <!-- Failure Indicators -->
+      <span class="glyphicon glyphicon-remove form-control-feedback hidden" id="urlErrorIcon" aria-hidden="true"></span>
+      <span id="inputErrorStatus" class="sr-only">(error)</span>
+      <span class="help-block hidden" id="urlHelpBlock">Enter a valid Youtube URL and click Submit Button</span>
+
+      <!-- Success Indicators -->
+      <span class="glyphicon glyphicon-ok form-control-feedback hidden" id="urlSuccessIcon" aria-hidden="true"></span>
+      <span id="inputSuccess2Status" class="sr-only">(success)</span>
+  </div>
+  </div>
+ <div class="form-group">
+      <button type="button" id="submitButton" disabled="true" class="btn btn-success commentbox">Submit</button>
+  </div>
+</form>
+  </div>
+</div>
