@@ -148,7 +148,7 @@ class TaskListView(APIView):
 
     def create_message(self, keyword, url):
         # TODO: craft effective tweet
-        tweet = "Help me find videos for %s at %s #stackannotator" % \
+        tweet = "Help me find videos for \"%s\" at %s #stackannotator" % \
                 (keyword, url)
         return tweet
 

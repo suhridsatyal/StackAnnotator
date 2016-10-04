@@ -10,7 +10,7 @@ define([
   var HomeView = Backbone.View.extend({
       el: $('.container'),
       events: {
-          'click #viewButton': 'onSubmitURL',
+          'click #submitButton': 'onSubmitURL',
           'input #urlField': 'onURLChange'
       },
       urlRegex: new RegExp(
