@@ -161,27 +161,30 @@ class TaskListView(APIView):
                         'Message': "Missing fields"}
             return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
 
-        message = self.create_message(request.data['keyword'],
-                                      request.data['annotation_url'])
-        auth = OAuth1(settings.TWITTER_CONSUMER_KEY,
-                      settings.TWITTER_CONSUMER_SECRET,
-                      settings.TWITTER_ACCESS_TOKEN,
-                      settings.TWITTER_ACCESS_TOKEN_SECRET)
-        twitter_response = requests.post(settings.POST_STATUS_TWITTER_URL,
-                                         data={'status': message}, auth=auth)
-
-        tweet_info = twitter_response.json()
-        if 'id' not in tweet_info:
-            errorMsg = {'Error': "Twitter Error",
-                        'Twitter Response': tweet_info.pop('errors')}
-            return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
-
         # create a new annotation with data
         newAnnotation = Annotation()
         newAnnotation.question_id = request.data['question_id']
         newAnnotation.answer_id = request.data['answer_id']
         newAnnotation.keyword = request.data['keyword']
         newAnnotation.save()
+
+        appended_url = request.data['annotation_url'] + "/" \
+                      + str(newAnnotation.id)
+        message = self.create_message(request.data['keyword'], appended_url)
+
+        auth = OAuth1(settings.TWITTER_CONSUMER_KEY,
+                      settings.TWITTER_CONSUMER_SECRET,
+                      settings.TWITTER_ACCESS_TOKEN,
+                      settings.TWITTER_ACCESS_TOKEN_SECRET)
+        twitter_response = requests.post(settings.POST_STATUS_TWITTER_URL,
+                                         data={'status': message}, auth=auth)
+        tweet_info = twitter_response.json()
+        if 'id' not in tweet_info:
+            errorMsg = {'Error': "Twitter Error",
+                        'Twitter Response': tweet_info.pop('errors')}
+            # remove annotation we just created
+            newAnnotation.delete()
+            return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
 
         # create a new task
         task = Task()

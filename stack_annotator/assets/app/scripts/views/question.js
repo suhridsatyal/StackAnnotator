@@ -6,6 +6,7 @@ define([
   '../models/question',
   '../models/answers',
   '../models/annotations',
+  '../models/task',
   '../models/video',
   // Templates
   'text!../templates/question.html',
@@ -15,7 +16,7 @@ define([
   // Utils
   '../views/common_utils'
 ], function($, _, Backbone,
-  QuestionModel, AnswerCollection, AnnotationCollection, VideoModel,
+  QuestionModel, AnswerCollection, AnnotationCollection, TaskModel, VideoModel,
   questionTemplate, tooltipTemplate, annotationsTemplate, commentboxTemplate,
   CommonUtils) {
 
@@ -140,7 +141,25 @@ define([
 
     onCrowdsource: function() {
       console.log("TODO: call backend to create crowdsourcing request");
-      console.log("Selected Text: " + this.options.selectedText);
+
+      var selection = window.getSelection();
+      var range = selection.getRangeAt(0);
+      var parentDiv = $(range.commonAncestorContainer.parentNode).closest("div");
+      
+      //post parameters
+      var taskData = {}
+      taskData.answer_id = parentDiv.attr("id");
+      taskData.question_id = this.options.post;
+      taskData.keyword = this.options.selectedText; 
+      taskData.annotation_url = "stackannotator.com/#question/" + taskData.question_id + "/" + taskData.answer_id;
+      
+      var task = new TaskModel(taskData);
+      
+      $.when(task.post()).done(function() {
+          // TODO Show a 'Thank You' prompt to user and refresh page on click of 'Continue' button
+          console.log("Task done with POST");
+      });
+
     },
 
     onComment: function() {
