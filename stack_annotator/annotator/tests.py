@@ -7,6 +7,8 @@ from models import Annotation, Video, Task
 # from unittest.mock import Mock, patch
 from annotator.views import TaskView
 from mock import call, patch, Mock
+import json
+
 
 def create_annotation(question_id, answer_id, keyword):
     return Annotation.objects.create(question_id=question_id,
@@ -450,7 +452,7 @@ class VideoAPITests(TestCase):
 
     def _test_video_metadata_increment(self, metadata_type):
         """
-        Should upvote a video 
+        Should upvote a video
         """
         create_annotation(1, 2, "fiesty")
         client = APIClient()
@@ -492,7 +494,7 @@ class TaskAPITests(TestCase):
     def test_get_task_by_id(self):
         """ Should get task by id """
         url = '/api/tasks/' + str(self.firstTask.id)
-        response = self.client.get("/api/tasks/1/")
+        response = self.client.get("/api/task/1/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         expected_output = '{"id":%s,"tweet_id":"1","annotation":1,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"}' % str(self.firstTask.id)
 
@@ -511,20 +513,22 @@ class TaskAPITests(TestCase):
         """ Should fail because bad ids are provided """
         client = APIClient()
 
-        response = client.get('/api/tasks/poop', format='json')
+        response = client.get('/api/task/poop', format='json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-        response = client.get('/api/tasks/ss', format='json')
+        response = client.get('/api/task/ss', format='json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-        response = client.get('/api/tasks/1', format='json')
+        response = client.get('/api/task/1', format='json')
         self.assertEqual(response.status_code, status.HTTP_301_MOVED_PERMANENTLY)
 
 
+    @patch('annotator.views.timezone.now')
     @patch('annotator.views.requests.post')
-    def test_post_task(self, mock_post):
+    def test_post_task(self, mock_post, mock_time):
         """ Should be successful """
         mock_post.return_value = MockTweetReturnSuccess()
+        mock_time.return_value = "2012-08-29 17:12:58"
 
         client = APIClient()
         data = {"question_id": 5, "answer_id": 10, "annotation_url": "fake.com", "keyword": "fiesty"}
