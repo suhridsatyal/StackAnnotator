@@ -112,3 +112,6 @@ bower_components/
 # Others
 db.sqlite*
 *.sock*
+
+# Keys and Global Variables
+stack_annotator/config/settings.py

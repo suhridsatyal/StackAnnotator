@@ -1,21 +1,22 @@
+from annotator.models import Annotation, Video, Task
+from annotator.serializers import AnnotationSerializer, TaskSerializer, VideoSerializer
+from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import render, render_to_response
 from django.http import HttpResponse, Http404
+from django.shortcuts import render, render_to_response
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-
-from annotator.models import Annotation, Video
-from annotator.serializers import AnnotationSerializer, VideoSerializer
-
-from rest_framework.renderers import JSONRenderer
+from requests_oauthlib import OAuth1
+from rest_framework import generics, status
+from rest_framework.exceptions import APIException
 from rest_framework.parsers import JSONParser
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import generics
-from rest_framework.exceptions import APIException
+import json
 import re
-
+import requests
 
 def index(request):
     return render(request, 'index.html')
@@ -39,8 +40,8 @@ class AnnotationListView(generics.ListCreateAPIView):
             raise Http404
         return queryset
 
-    def post(self, request, format=None):
 
+    def post(self, request, format=None):
         serializer = AnnotationSerializer(data=request.data)
 
         # Remember video data if a video needs to be created
@@ -141,3 +142,67 @@ def flag_video(request, pk):
     except Exception as e:
         return Response({"message": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+class TaskListView(APIView):
+    paginate_by = 50
+
+    def create_message(self, keyword, url):
+        # TODO: craft effective tweet
+        tweet = "Help me find videos for \"%s\" at %s #stackannotator" % \
+                (keyword, url)
+        return tweet
+
+
+    def post(self, request, format=None):
+        required_fields = ['question_id', 'answer_id', 'annotation_url',
+                           'keyword']
+        if not all (param in request.data for param in required_fields):
+            errorMsg = {'Error': "Input Error",
+                        'Message': "Missing fields"}
+            return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
+
+        # create a new annotation with data
+        newAnnotation = Annotation()
+        newAnnotation.question_id = request.data['question_id']
+        newAnnotation.answer_id = request.data['answer_id']
+        newAnnotation.keyword = request.data['keyword']
+        newAnnotation.save()
+
+        appended_url = request.data['annotation_url'] + "/" \
+                      + str(newAnnotation.id)
+        message = self.create_message(request.data['keyword'], appended_url)
+
+        auth = OAuth1(settings.TWITTER_CONSUMER_KEY,
+                      settings.TWITTER_CONSUMER_SECRET,
+                      settings.TWITTER_ACCESS_TOKEN,
+                      settings.TWITTER_ACCESS_TOKEN_SECRET)
+        twitter_response = requests.post(settings.POST_STATUS_TWITTER_URL,
+                                         data={'status': message}, auth=auth)
+        tweet_info = twitter_response.json()
+        if 'id' not in tweet_info:
+            errorMsg = {'Error': "Twitter Error",
+                        'Twitter Response': tweet_info.pop('errors')}
+            # remove annotation we just created
+            newAnnotation.delete()
+            return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
+
+        # create a new task
+        task = Task()
+        task.tweet_id = tweet_info['id']
+        task.annotation_id = newAnnotation.id
+        task.created_on = task.checked_on = timezone.now()
+        task.save()
+
+        return Response(TaskSerializer(task).data,
+                        status=status.HTTP_201_CREATED)
+
+
+    def get(self, request, format=None):
+        tasks = Task.objects.all()
+        serializer = TaskSerializer(tasks, many=True)
+        return Response(serializer.data)
+
+
+class TaskView(generics.RetrieveAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer

@@ -2,7 +2,11 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIRequestFactory, APIClient
-from models import Annotation, Video
+from models import Annotation, Video, Task
+
+# from unittest.mock import Mock, patch
+from annotator.views import TaskView
+from mock import call, patch, Mock
 import json
 
 
@@ -23,6 +27,11 @@ def create_video_with_details(external_id, annotation_id, upvotes, downvotes, fl
                                 upvotes=upvotes, downvotes=downvotes,
                                 flags=flags, start_time=start_time)
 
+def create_task(tweet_id, annotation, created_on, checked_on):
+    return Task.objects.create(tweet_id=tweet_id,
+                                annotation=annotation,
+                                created_on=created_on,
+                                checked_on=checked_on)
 
 class AnnotationAPITests(TestCase):
 
@@ -212,7 +221,6 @@ class AnnotationAPITests(TestCase):
 
         data = {"question_id":5, "answer_id":10,"videos":[{"external_id":"newvideo"}],"keyword":"fiesty"}
         response = client.post('/api/annotations', data, format='json')
-        #print(response)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         response = client.get('/api/annotation/3/', data, format='json')
@@ -444,7 +452,7 @@ class VideoAPITests(TestCase):
 
     def _test_video_metadata_increment(self, metadata_type):
         """
-        Should upvote a video 
+        Should upvote a video
         """
         create_annotation(1, 2, "fiesty")
         client = APIClient()
@@ -463,3 +471,114 @@ class VideoAPITests(TestCase):
         response_dict = json.loads(response.content)
         self.assertEquals(response_dict[metadata_type+'s'], 2)
 
+
+
+
+class TaskAPITests(TestCase):
+    firstTask = ""
+    secondTask = ""
+    thirdTask = ""
+    firstAnnotation = ""
+    secondAnnotation = ""
+    thirdAnnotation = ""
+
+    def setUp(self):
+        self.firstAnnotation = create_annotation(1, 1, "hope")
+        self.firstTask = create_task("1", self.firstAnnotation, "2016-12-12 12:12:12", "2016-12-12 12:12:12")
+        self.secondAnnotation = create_annotation(1, 1, "hope")
+        self.secondTask = create_task("2", self.secondAnnotation, "2016-12-12 12:12:12", "2016-12-12 12:12:12")
+        self.thirdAnnotation = create_annotation(1, 1, "hope")
+        self.thirdTask = create_task("3", self.thirdAnnotation, "2016-12-12 12:12:12", "2016-12-12 12:12:12")
+
+
+    def test_get_task_by_id(self):
+        """ Should get task by id """
+        url = '/api/tasks/' + str(self.firstTask.id)
+        response = self.client.get("/api/task/1/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        expected_output = '{"id":%s,"tweet_id":"1","annotation":1,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"}' % str(self.firstTask.id)
+
+        self.assertEqual(response.content, expected_output)
+
+
+    def test_get_all_tasks(self):
+        """ Should get all tasks """
+        response = self.client.get('/api/tasks')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.content,
+                '[{"id":1,"tweet_id":"1","annotation":1,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"},{"id":2,"tweet_id":"2","annotation":2,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"},{"id":3,"tweet_id":"3","annotation":3,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"}]')
+
+
+    def test_get_fail_task(self):
+        """ Should fail because bad ids are provided """
+        client = APIClient()
+
+        response = client.get('/api/task/poop', format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        response = client.get('/api/task/ss', format='json')
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        response = client.get('/api/task/1', format='json')
+        self.assertEqual(response.status_code, status.HTTP_301_MOVED_PERMANENTLY)
+
+
+    @patch('annotator.views.timezone.now')
+    @patch('annotator.views.requests.post')
+    def test_post_task(self, mock_post, mock_time):
+        """ Should be successful """
+        mock_post.return_value = MockTweetReturnSuccess()
+        mock_time.return_value = "2012-08-29 17:12:58"
+
+        client = APIClient()
+        data = {"question_id": 5, "answer_id": 10, "annotation_url": "fake.com", "keyword": "fiesty"}
+
+        response = client.post('/api/tasks', data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.content,
+               '{"id":4,"tweet_id":"1","annotation":4,"created_on":"2012-08-29 17:12:58","checked_on":"2012-08-29 17:12:58"}' )
+
+
+    def test_post_task_fail(self):
+        """ Should fail because of missing parameter """
+
+        client = APIClient()
+        data = {"question_id": 5, "answer_id": 10, "keyword": "fiesty"}
+
+        response = client.post('/api/tasks', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.content, '{"Message":"Missing fields","Error":"Input Error"}')
+
+
+    @patch('annotator.views.requests.post')
+    def test_post_task_tweet_fail(self, mock_post):
+        """ Should fail because twitter API returns error due to duplicate tweet """
+        mock_post.return_value = MockTweetReturnFail()
+
+        client = APIClient()
+        data = {"question_id": 5, "answer_id": 10, "annotation_url": "fake.com", "keyword": "fiesty"}
+
+        response = client.post('/api/tasks', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.content, '{"Twitter Response":[{"message":"Status is a duplicate.","code":187}],"Error":"Twitter Error"}')
+
+
+class MockTweetReturnSuccess:
+    """ Imitates return from a tweet attempt """
+    def json(self):
+        # Mock tweet id
+        data = {
+            'id': 1,
+            'created_at': "Wed Aug 29 17:12:58 +0000 2012"
+        }
+        return data
+
+
+class MockTweetReturnFail:
+    """ Imitates return from a tweet attempt """
+    def json(self):
+        # Mock tweet fail
+        data = {
+            'errors': [{'message': "Status is a duplicate.", 'code': 187}]
+        }
+        return data
