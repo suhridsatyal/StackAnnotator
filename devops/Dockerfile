@@ -33,20 +33,20 @@ RUN /etc/init.d/postgresql start &&\
 
 # Adjust PostgreSQL configuration so that remote connections to the
 # database are possible.
-#RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/9.5/main/pg_hba.conf
+RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/9.5/main/pg_hba.conf
 
 # And add ``listen_addresses`` to ``/etc/postgresql/9.5/main/postgresql.conf``
-#RUN echo "listen_addresses='*'" >> /etc/postgresql/9.5/main/postgresql.conf
+RUN echo "listen_addresses='*'" >> /etc/postgresql/9.5/main/postgresql.conf
 
 # Expose the PostgreSQL port
 EXPOSE 5432
 
 # Add VOLUMEs to allow backup of config, logs and databases
-#RUN mkdir -p /var/run/postgresql && chown -R postgres /var/run/postgresql
-#VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
+RUN mkdir -p /var/run/postgresql && chown -R postgres /var/run/postgresql
+VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 
 # Set the default command to run when starting the container
-#CMD ["/usr/lib/postgresql/9.5/bin/postgres", "-D", "/var/lib/postgresql/9.5/main", "-c", "config_file=/etc/postgresql/9.5/main/postgresql.conf"]
+CMD ["/usr/lib/postgresql/9.5/bin/postgres", "-D", "/var/lib/postgresql/9.5/main", "-c", "config_file=/etc/postgresql/9.5/main/postgresql.conf"]
 
 USER root
 RUN ln -sf /opt/StackAnnotator/devops/cmd_config/.vimrc ~/.vimrc
