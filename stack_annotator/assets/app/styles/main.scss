@@ -1,18 +1,46 @@
 $icon-font-path: "/bower_components/bootstrap-sass-official/assets/fonts/bootstrap/";
 
-@import 'https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Lobster+Two|Open+Sans';
+@import 'https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Lobster+Two|Open+Sans|Inconsolata|Dosis|Cantarell';
 @import 'bootstrap-sass-official/assets/stylesheets/bootstrap.scss';
 
-
+//for easy experimentation
 $highlight_color: #EBCA44;
-$highlight_font_color: black;
 
-$theme_color_1: #867666;
-$theme_color_2: #EAE2D6;
+//Theme 1 (Van Gough Museum)
+$highlight_color: #EBCA44;
+$highlight_font_color: #262228;
+$theme_color_3: #F0F1F5; //font color
+$theme_color_1: #FFCE00; //font color (highlight)
+$theme_color_2: #0375B4; //menu color
 
+/* 
+//Theme 2 (42. Polished $ Inviting)
+$highlight_color: #E1B80D;
+$highlight_font_color: #262228;
+$theme_color_3: #F0F1F5; //font color
+$theme_color_1: #E1B80D; //font color (highlight)
+$theme_color_2: #867666; //menu color
+*/
+
+/* 
+//Theme 3 (21. Warm Naturals)
+$highlight_color: #DB9501;
+$highlight_font_color: #262228;
+$theme_color_3: #F0F1F5; //font color
+$theme_color_1: #DB9501; //font color (highlight)
+$theme_color_2: #C05805; //menu color
+*/
+
+//logocs
+$logo_font: 'Lobster Two', cursive;
+//$first_font: 'Gentium Book Basic', serif;
+//$first_font: 'Inconsolata', monospace;
+//$first_font: 'Dosis', sans-serif;
+$first_font: 'Cantarell', sans-serif;
+$second_font: 'Open Sans', sans-serif;
 
 body {
-    font-family: 'Open Sans', sans-serif;
+    font-family: $second_font;
     font-size: 14px;
     line-height: 1.42857143;
     color: black;
@@ -40,12 +68,12 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .navbar-brand, .navbar-inverse .navbar-brand{
-    font-family: 'Lobster Two', cursive;
-    color: $theme_color_1;
+    font-family: $logo_font;
+    color: $theme_color_3;
 }
 
 .navbar-nav {
-    font-family: 'Gentium Book Basic', serif;
+    font-family: $first_font;
 }
 
 .navbar-inverse {
@@ -56,6 +84,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 //hover for navbar menu
 .navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus, .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
     color: $theme_color_1;
+}
+//non hover for navbar menu
+.navbar-inverse .navbar-nav > li > a {
+    color: $theme_color_3;
 }
 
 //hover for navbar compact menu icon
