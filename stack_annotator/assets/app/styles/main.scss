@@ -1,6 +1,82 @@
 $icon-font-path: "/bower_components/bootstrap-sass-official/assets/fonts/bootstrap/";
 
+@import 'https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Lobster+Two|Open+Sans';
 @import 'bootstrap-sass-official/assets/stylesheets/bootstrap.scss';
+
+
+$highlight_color: #EBCA44;
+$highlight_font_color: black;
+
+$theme_color_1: #867666;
+$theme_color_2: #EAE2D6;
+
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: black;
+    padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+}
+
+footer {
+    margin: 50px 0;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.1;
+    color: inherit;
+}
+
+/* logo + navbar */
+#logoHighlight {
+    background-color: $highlight_color;
+    border: 2px solid $highlight_color;
+    border-radius: 1px;
+    color: $highlight_font_color;
+    padding: unset;
+}
+
+.navbar-brand, .navbar-inverse .navbar-brand{
+    font-family: 'Lobster Two', cursive;
+    color: $theme_color_1;
+}
+
+.navbar-nav {
+    font-family: 'Gentium Book Basic', serif;
+}
+
+.navbar-inverse {
+    border-color: $theme_color_2;
+    background-color: $theme_color_2;
+}
+
+//hover for navbar menu
+.navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus, .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
+    color: $theme_color_1;
+}
+
+//hover for navbar compact menu icon
+.navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {
+    background-color: $theme_color_1;
+    border-color: $theme_color_1;
+}
+
+//non hover navbar compact menu icon
+.navbar-inverse .navbar-toggle {
+    border-color: $theme_color_1;
+}
+
+.container > .navbar-collapse, .container-fluid > .navbar-collapse {
+    margin-right: -15px;
+    margin-left: -15px;
+    background-color: $theme_color_2;
+    color: $theme_color_2;
+}
+
+/* all else */
 
 .icon-link {
     font-size:25px;
@@ -24,7 +100,12 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/assets/fonts/bootstr
 }
 
 .soft_highlighted {
-    background-color:lightgray;
+    //background-color:lightgray;
+    background-color: $highlight_color;
+    border: 2px solid $highlight_color;
+    border-radius: 1px;
+    color: black;
+    padding: unset;
 }
 
 .annotation_text:hover {

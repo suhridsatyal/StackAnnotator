@@ -21,7 +21,7 @@ define([
   CommonUtils) {
 
   var QuestionView = Backbone.View.extend({
-    el: $('.container'),
+    el: $('.container_load'),
     initialize: function(options) {
       this.options = options || {};
       this.options.selectedText = "";

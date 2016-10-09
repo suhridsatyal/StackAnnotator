@@ -8,7 +8,7 @@ define([
   '../views/common_utils'
 ], function($, _, Backbone, homeTemplate, CommonUtils){
   var HomeView = Backbone.View.extend({
-      el: $('.container'),
+      el: $('.container_load'),
       events: {
           'click #submitButton': 'onSubmitURL',
           'input #urlField': 'onURLChange'
