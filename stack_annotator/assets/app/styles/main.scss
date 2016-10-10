@@ -4,7 +4,6 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/assets/fonts/bootstr
 @import 'bootstrap-sass-official/assets/stylesheets/bootstrap.scss';
 
 //for easy experimentation
-$highlight_color: #EBCA44;
 
 //Theme 1 (Van Gough Museum)
 $highlight_color: #EBCA44;
@@ -12,6 +11,7 @@ $highlight_font_color: #262228;
 $theme_color_3: #F0F1F5; //font color
 $theme_color_1: #FFCE00; //font color (highlight)
 $theme_color_2: #0375B4; //menu color
+$theme_color_4: #007849; //menu color
 
 /* 
 //Theme 2 (42. Polished $ Inviting)
@@ -29,6 +29,15 @@ $highlight_font_color: #262228;
 $theme_color_3: #F0F1F5; //font color
 $theme_color_1: #DB9501; //font color (highlight)
 $theme_color_2: #C05805; //menu color
+*/
+
+/*
+//Theme 4 (VWhite)
+$highlight_color: #EBCA44;
+$highlight_font_color: #262228;
+$theme_color_3: black; //font color
+$theme_color_1: #FFCE00; //font color (highlight)
+$theme_color_2: white; //menu color
 */
 
 //logocs
@@ -110,6 +119,68 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 /* all else */
 
+
+/* home menu */
+.homeSearchBar {
+    margin: auto;
+    text-align: center;
+    width: 85%;
+}
+
+#searchPageLogo{
+    width: 225px;
+    height: auto;
+    padding-bottom: 5px;
+}
+
+#helpButton{
+  align: bottom;
+}
+
+.red, .red a {
+  color: red;
+}
+//Make the "View" Button more unique
+//disabled and default (unactivated)
+.btn-success,
+.btn-success.disabled:hover,
+.btn-success[disabled]:hover,
+fieldset[disabled] .btn-success:hover,
+.btn-success.disabled:focus,
+.btn-success[disabled]:focus,
+fieldset[disabled] .btn-success:focus,
+.btn-success.disabled.focus,
+.btn-success[disabled].focus,
+fieldset[disabled] .btn-success.focus {
+  color: black;
+  background-color: white;
+  border-color: #398439;
+}
+.btn-success:focus,
+.btn-success.focus {
+  color: black;
+  background-color: #e8e9ea;
+}
+
+.btn-success:hover {
+  color: black;
+  background-color: #e8e9ea;
+}
+
+.btn-success:active:hover,
+.btn-success.active:hover,
+.open > .dropdown-toggle.btn-success:hover,
+.btn-success:active:focus,
+.btn-success.active:focus,
+.open > .dropdown-toggle.btn-success:focus,
+.btn-success:active.focus,
+.btn-success.active.focus,
+.open > .dropdown-toggle.btn-success.focus {
+  color: black;
+  background-color: #e8e9ea;
+}
+
+/* questions */
 .icon-link {
     font-size:25px;
 }
