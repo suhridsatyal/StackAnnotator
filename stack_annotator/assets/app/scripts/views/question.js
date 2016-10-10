@@ -360,8 +360,8 @@ define([
           var oldScore = $(videoNode).find(".videoScore");
           oldScore.html(video.get("upvotes") - video.get("downvotes"));
         }
-        var buttonNode = $(event.target.parentNode);
-        buttonNode.prop('disabled', true);
+        var buttonNode = event.target.closest("button");
+        $(buttonNode).prop('disabled', true);
       });
     },
     _attachAnnotationSubmissionHandlers: function(answerID) {
