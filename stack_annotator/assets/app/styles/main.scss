@@ -40,6 +40,9 @@ $theme_color_1: #FFCE00; //font color (highlight)
 $theme_color_2: white; //menu color
 */
 
+//other colors
+$view_button_enabled_color: #6DB356;
+
 //logocs
 $logo_font: 'Lobster Two', cursive;
 //$first_font: 'Gentium Book Basic', serif;
@@ -121,7 +124,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 
 /* home menu */
-.homeSearchBar {
+#home {
     margin: auto;
     text-align: center;
     width: 85%;
@@ -142,7 +145,21 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 //Make the "View" Button more unique
 //disabled and default (unactivated)
-.btn-success,
+.btn-success {
+  font: $first_font;
+  border-radius:0;
+  color: black;
+  border-width: 2px;
+  border-color: #6DB356;
+  background-color: white;
+}
+
+.btn-success[disabled] {
+  border-width: 1px;
+  background-color: white;
+  border-color: grey;
+}
+
 .btn-success.disabled:hover,
 .btn-success[disabled]:hover,
 fieldset[disabled] .btn-success:hover,
@@ -151,20 +168,45 @@ fieldset[disabled] .btn-success:hover,
 fieldset[disabled] .btn-success:focus,
 .btn-success.disabled.focus,
 .btn-success[disabled].focus,
-fieldset[disabled] .btn-success.focus {
+fieldset[disabled] .btn-success.focus, 
+.btn-success.disabled:active:hover,
+.btn-success.disabled.active:hover,
+.btn-success[disabled]:active:hover,
+.btn-success[disabled].active:hover,
+fieldset[disabled] .btn-success:active:hover,
+fieldset[disabled] .btn-success.active:hover,
+.btn-success.disabled:active:focus,
+.btn-success.disabled.active:focus,
+.btn-success.disabled:active.focus,
+.btn-success.disabled.active.focus,
+.btn-success[disabled]:active:focus,
+.btn-success[disabled].active:focus,
+.btn-success[disabled]:active.focus,
+.btn-success[disabled].active.focus,
+fieldset[disabled] .btn-success:active:focus,
+fieldset[disabled] .btn-success:active.focus, 
+fieldset[disabled] .btn-success.active:focus,
+fieldset[disabled] .btn-success.active.focus 
+{
+  background-color: white;
+  border-color: grey;
+}
+
+//disabled, clicked and pulled outside the button
+.btn-success:active,
+.btn-success.active,
+.open > .dropdown-toggle.btn-success {
   color: black;
   background-color: white;
-  border-color: #398439;
+  border-color: grey;
 }
+
+//for selected
 .btn-success:focus,
 .btn-success.focus {
   color: black;
-  background-color: #e8e9ea;
-}
-
-.btn-success:hover {
-  color: black;
-  background-color: #e8e9ea;
+  background-color: #F0F0F0;
+  border-color: #6DB356;
 }
 
 .btn-success:active:hover,
@@ -177,8 +219,29 @@ fieldset[disabled] .btn-success.focus {
 .btn-success.active.focus,
 .open > .dropdown-toggle.btn-success.focus {
   color: black;
-  background-color: #e8e9ea;
+  background-color: white;
+  border-color: $view_button_enabled_color;
 }
+
+.btn-success:hover {
+  color: black;
+  background-color: #F0F0F0;
+  border-color: $view_button_enabled_color;
+}
+
+///////////////////
+/*
+.btn-success:active,
+.btn-success.active,
+.open > .dropdown-toggle.btn-success {
+  background-image: none;
+}
+
+.btn-success .badge {
+  color: #5cb85c;
+  background-color: #fff;
+}
+*/
 
 /* questions */
 .icon-link {
