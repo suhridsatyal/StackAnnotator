@@ -127,13 +127,13 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 #home {
     margin: auto;
     text-align: center;
-    width: 85%;
+    width: 87%;
 }
 
 #searchPageLogo{
     width: 225px;
     height: auto;
-    padding-bottom: 5px;
+    padding-bottom: 4px;
 }
 
 #helpButton{
@@ -266,6 +266,15 @@ fieldset[disabled] .btn-success.active.focus
 }
 
 .soft_highlighted {
+    //background-color:lightgray;
+    background-color: #C2C2C2;
+    border: 2px solid #C2C2C2;
+    border-radius: 1px;
+    color: black;
+    padding: unset;
+}
+
+.highlighted {
     //background-color:lightgray;
     background-color: $highlight_color;
     border: 2px solid $highlight_color;
