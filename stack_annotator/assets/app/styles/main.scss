@@ -11,7 +11,7 @@ $highlight_font_color: #262228;
 $theme_color_3: #F0F1F5; //font color
 $theme_color_1: #FFCE00; //font color (highlight)
 $theme_color_2: #0375B4; //menu color
-$theme_color_4: #007849; //menu color
+$theme_color_4: #007849; //menu color (rarely used)
 
 /* 
 //Theme 2 (42. Polished $ Inviting)
@@ -42,6 +42,7 @@ $theme_color_2: white; //menu color
 
 //other colors
 $view_button_enabled_color: #6DB356;
+$soft_highlight_color: #C2C2C2;
 
 //logocs
 $logo_font: 'Lobster Two', cursive;
@@ -249,7 +250,7 @@ fieldset[disabled] .btn-success.active.focus
 }
 
 .question {
-    margin-bottom: 100px;
+    margin-bottom: 80px;
 }
 
 .answers {
@@ -267,8 +268,8 @@ fieldset[disabled] .btn-success.active.focus
 
 .soft_highlighted {
     //background-color:lightgray;
-    background-color: #C2C2C2;
-    border: 2px solid #C2C2C2;
+    background-color: $soft_highlight_color;
+    border: 2px solid $soft_highlight_color;
     border-radius: 1px;
     color: black;
     padding: unset;
