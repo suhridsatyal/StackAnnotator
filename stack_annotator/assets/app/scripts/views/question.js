@@ -152,11 +152,14 @@ define([
       taskData.annotation_url = "stackannotator.com/#question/" + taskData.question_id + "/" + taskData.answer_id;
 
       var task = new TaskModel(taskData);
+      var self = this;
 
       $.when(task.post()).done(function() {
-          // TODO Show a 'Thank You' prompt to user and refresh page on click of 'Continue' button
-          console.log("Task done with POST");
+          self._cleanupPopover();
           $('#tweetSuccess').modal('show');
+          $('#tweetSuccessButton').on("click", function(){
+              location.reload();
+          });
       });
 
     },
@@ -387,8 +390,11 @@ define([
           var annotationNode = event.target.closest("div").parentNode;
           var video = new VideoModel(videoData);
           $.when(video.post()).done(function() {
-              // TODO Show a 'Thank You' prompt to user and refresh page on click of 'Continue' button
-              console.log("done with POST");
+              self._cleanupPopover();
+              $('#videoAnnotationModal').modal('show');
+              $('#videoAnnotationModalButton').on("click", function(){
+                  location.reload();
+              });
           });
       });
     },
@@ -414,8 +420,11 @@ define([
           var annotationNode = event.target.closest("div").parentNode;
           var video = new VideoModel(videoData);
           $.when(video.post()).done(function() {
-              // TODO Show a 'Thank You' prompt to user and refresh page on click of 'Continue' button
-              console.log("done with POST");
+              self._cleanupPopover();
+              $('#videoAnnotationModal').modal('show');
+              $('#videoAnnotationModalButton').on("click", function(){
+                  location.reload();
+              });
           });
       });
     }
