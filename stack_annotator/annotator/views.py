@@ -100,8 +100,30 @@ class VideoListView(generics.ListCreateAPIView):
         except ValueError:
             raise Http404
         return queryset
+    
+    
+    def post(self, request, format=None):
 
+        serializer = VideoSerializer(data=request.data)
 
+        # Create Video
+        if serializer.is_valid():
+            # Check if there is a duplicate
+            duplicate = Video.objects.all()
+            external_id = request.data['external_id']
+            annotation_id = request.data['annotation_id']
+            duplicate = duplicate.filter(external_id=external_id)
+            duplicate = duplicate.filter(annotation_id=annotation_id)
+            # If no duplicate then save
+            if not duplicate.exists():
+                serializer.save()
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    
 class VideoView(generics.RetrieveUpdateAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
