@@ -134,7 +134,8 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 #searchPageLogo{
     width: 225px;
     height: auto;
-    padding-bottom: 4px;
+    padding-bottom: 6px;
+    padding-top: 36px;
 }
 
 #helpButton{
@@ -250,7 +251,7 @@ fieldset[disabled] .btn-success.active.focus
 }
 
 .question {
-    margin-bottom: 80px;
+    margin-bottom: 60px;
 }
 
 .answers {
