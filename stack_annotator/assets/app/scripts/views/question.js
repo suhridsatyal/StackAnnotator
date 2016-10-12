@@ -156,6 +156,7 @@ define([
       $.when(task.post()).done(function() {
           // TODO Show a 'Thank You' prompt to user and refresh page on click of 'Continue' button
           console.log("Task done with POST");
+          $('#tweetSuccess').modal('show');
       });
 
     },

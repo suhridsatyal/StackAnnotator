@@ -361,3 +361,32 @@ h3.videoScore{
   text-align: center;
 }
 
+.modal-content{
+  max-width: 400px;
+}
+
+.modal-header-info {
+  font:$second_font;
+  color:#fff;
+  padding:9px 15px;
+  border-bottom:1px solid #eee;
+  background-color: $theme_color_2;
+  -webkit-border-top-left-radius: 5px;
+  -webkit-border-top-right-radius: 5px;
+  -moz-border-radius-topleft: 5px;
+  -moz-border-radius-topright: 5px;
+   border-top-left-radius: 5px;
+   border-top-right-radius: 5px;
+}
+
+#tweetSuccessHeading {
+  margin-top: 10px;
+}
+
+#tweetSuccessHeading > .glyphicon {
+  color:#FFCE00;
+}
+
+.modal-footer > .btn {
+  border-radius:0;
+}
