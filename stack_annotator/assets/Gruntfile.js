@@ -208,16 +208,6 @@ module.exports = function (grunt) {
         dirs: ['<%= yeoman.dist %>','<%= yeoman.dist %>/images']
       }
     },
-    imagemin: {
-      dist: {
-        files: [{
-          expand: true,
-          cwd: '<%= yeoman.app %>/images',
-          src: '{,*/}*.{png,jpg,jpeg}',
-          dest: '<%= yeoman.dist %>/images'
-        }]
-      }
-    },
     cssmin: {
       dist: {
         files: {
@@ -361,7 +351,7 @@ module.exports = function (grunt) {
     'jst',
     'sass:dist',
     'useminPrepare',
-    'imagemin',
+    //'imagemin',
     'htmlmin',
     //'concat',
     'cssmin',
