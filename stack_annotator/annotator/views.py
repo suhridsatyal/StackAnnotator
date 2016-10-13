@@ -172,11 +172,9 @@ class TaskListView(APIView):
 
     def create_message(self, keyword, url):
         # Tweet V2
-        tweet = "Help the community understand \"%s\" by enriching #stackoverflow with youtube videos you know about %s #stackannotator" % \
-                (keyword, url)
-        # Tweet V1
-        #tweet = "Help me find videos for \"%s\" at %s #stackannotator" % \
-        #        (keyword, url)
+        tweet = "Help the community understand \"" + keyword + "\" by "+\
+                "enriching #stackoverflow with youtube videos you know " +\
+                "of " + url + " #stackannotator" 
         return tweet
 
 
@@ -205,7 +203,8 @@ class TaskListView(APIView):
 
         appended_url = request.data['annotation_url'] + "/" \
                       + str(newAnnotation.id)
-        message = self.create_message(truncated_keyword, appended_url)
+        message = self.create_message(str(request.data['keyword'][:8]+".."),
+                    appended_url)
 
         auth = OAuth1(settings.TWITTER_CONSUMER_KEY,
                       settings.TWITTER_CONSUMER_SECRET,
