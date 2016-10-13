@@ -169,9 +169,13 @@ class TaskListView(APIView):
     paginate_by = 50
 
     def create_message(self, keyword, url):
-        # TODO: craft effective tweet
-        tweet = "Help me find videos for \"%s\" at %s #stackannotator" % \
+        # Tweet V2
+        tweet = "Help the community understand \"%s\" by enriching #stackoverflow " +
+                "with youtube videos you know about %s #stackannotator" % \
                 (keyword, url)
+        # Tweet V1
+        #tweet = "Help me find videos for \"%s\" at %s #stackannotator" % \
+        #        (keyword, url)
         return tweet
 
 
