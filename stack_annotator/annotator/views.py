@@ -42,13 +42,15 @@ class AnnotationListView(generics.ListCreateAPIView):
 
 
     def post(self, request, format=None):
-        serializer = AnnotationSerializer(data=request.data)
 
         # Remember video data if a video needs to be created
-        videos = request.data.get('videos', None)
+        request.POST._mutable = True
+        videos = json.loads(request.data.get('videos', None))
         request.data["videos"] = []
 
+
         # Create annotation
+        serializer = AnnotationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
         else:
@@ -170,7 +172,7 @@ class TaskListView(APIView):
 
     def create_message(self, keyword, url):
         # Tweet V2
-        tweet = "Help the community understand \"%s\" by enriching #stackoverflow " +
+        tweet = "Help the community understand \"%s\" by enriching #stackoverflow " +\
                 "with youtube videos you know about %s #stackannotator" % \
                 (keyword, url)
         # Tweet V1

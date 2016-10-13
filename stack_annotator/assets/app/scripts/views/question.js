@@ -190,7 +190,7 @@ define([
       var parentDiv = $(range.commonAncestorContainer.parentNode).closest("div");
       var answerID = parentDiv.attr("id");
       var self = this;
-      this._attachAnnotationSubmissionHandlers(answerID);
+      this._attachAnnotationSubmissionHandlers(answerID, this.options.selectedText);
     },
 
     onHelp: function() {
@@ -402,8 +402,11 @@ define([
           videoData.annotation_id = answerID;
           var annotationNode = event.target.closest("div").parentNode;
           var annotationCollection = new AnnotationCollection();
-          var newAnnotation = {question_id: self.options.post, answer_id:answerID,
-                               keyword:keyword, videos:[videoData]};
+          var newAnnotation = {};
+          newAnnotation.question_id = self.options.post;
+          newAnnotation.answer_id = answerID;
+          newAnnotation.keyword = keyword;
+          newAnnotation.videos = JSON.stringify([videoData]);
           $.when(annotationCollection.post(newAnnotation)).done(function() {
               self._cleanupPopover();
               $('#videoAnnotationModal').modal('show');
