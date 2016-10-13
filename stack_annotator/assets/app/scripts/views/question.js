@@ -104,7 +104,7 @@ define([
         $("#annotate-tooltip").popover({
           trigger: 'focus',
           container: 'body',
-          //placement: 'bottom',
+          placement: 'bottom',
           content: function() {
             return tooltipTemplate;
           },
@@ -115,6 +115,7 @@ define([
           left: rects.left,
           transform: ''
         }).show();
+        $(".arrow").css({"visibility": "hidden"});
 
         // Attach events to popover buttons.
         $("#crowdsourceBtn").on("click", function(event) {
@@ -173,7 +174,7 @@ define([
       $("#annotate-tooltip").popover({
         trigger: 'focus',
         container: 'body',
-        //placement: 'bottom',
+        placement: 'bottom',
         content: _.template(commentboxTemplate)({message: "Add a Youtube Video"}),
         html: true
       }).popover('show');
@@ -182,14 +183,14 @@ define([
         left: rects.left,
         transform: ''
       }).show();
+      $(".arrow").css({"visibility": "hidden"});
 
       var selection = window.getSelection();
       var range = selection.getRangeAt(0);
       var parentDiv = $(range.commonAncestorContainer.parentNode).closest("div");
       var answerID = parentDiv.attr("id");
       var self = this;
-      this._attachVideoSubmissionHandlers(answerID);
-
+      this._attachAnnotationSubmissionHandlers(answerID);
     },
 
     onHelp: function() {
@@ -260,6 +261,8 @@ define([
           top: annotationElemOffset.top, left: annotationElemOffset.right, 'max-width': '640px', transform: ''
         }).show();
 
+        $(".arrow").css({top: '2%'});
+
         var self = this;
         // Attach Events
         $(".upvoteBtn").on("click", function(event) {
@@ -282,6 +285,7 @@ define([
         $(".popover").css({
           top: annotationElemOffset.top, left: annotationElemOffset.right, 'max-width': '640px', transform: ''
         }).show();
+
      }
      // Attach events for video submission
      this._attachVideoSubmissionHandlers(annotationID);
@@ -377,7 +381,7 @@ define([
       });
     },
 
-    _attachAnnotationSubmissionHandlers: function(answerID) {
+    _attachAnnotationSubmissionHandlers: function(answerID, keyword) {
       // Attach events to popover buttons.
       var self=this;
       $("#urlField").on("input", function(event) {
@@ -397,8 +401,10 @@ define([
           });
           videoData.annotation_id = answerID;
           var annotationNode = event.target.closest("div").parentNode;
-          var video = new VideoModel(videoData);
-          $.when(video.post()).done(function() {
+          var annotationCollection = new AnnotationCollection();
+          var newAnnotation = {question_id: self.options.post, answer_id:answerID,
+                               keyword:keyword, videos:[videoData]};
+          $.when(annotationCollection.post(newAnnotation)).done(function() {
               self._cleanupPopover();
               $('#videoAnnotationModal').modal('show');
               $('#videoAnnotationModalButton').on("click", function(){
