@@ -104,7 +104,7 @@ define([
         $("#annotate-tooltip").popover({
           trigger: 'focus',
           container: 'body',
-          //placement: 'bottom',
+          placement: 'bottom',
           content: function() {
             return tooltipTemplate;
           },
@@ -115,6 +115,7 @@ define([
           left: rects.left,
           transform: ''
         }).show();
+        $(".arrow").css({"visibility": "hidden"});
 
         // Attach events to popover buttons.
         $("#crowdsourceBtn").on("click", function(event) {
@@ -152,11 +153,14 @@ define([
       taskData.annotation_url = "stackannotator.com/#question/" + taskData.question_id + "/" + taskData.answer_id;
 
       var task = new TaskModel(taskData);
+      var self = this;
 
       $.when(task.post()).done(function() {
-          // TODO Show a 'Thank You' prompt to user and refresh page on click of 'Continue' button
-          console.log("Task done with POST");
+          self._cleanupPopover();
           $('#tweetSuccess').modal('show');
+          $('#tweetSuccessButton').on("click", function(){
+              location.reload();
+          });
       });
 
     },
@@ -170,7 +174,7 @@ define([
       $("#annotate-tooltip").popover({
         trigger: 'focus',
         container: 'body',
-        //placement: 'bottom',
+        placement: 'bottom',
         content: _.template(commentboxTemplate)({message: "Add a Youtube Video"}),
         html: true
       }).popover('show');
@@ -179,15 +183,14 @@ define([
         left: rects.left,
         transform: ''
       }).show();
+      $(".arrow").css({"visibility": "hidden"});
 
       var selection = window.getSelection();
       var range = selection.getRangeAt(0);
       var parentDiv = $(range.commonAncestorContainer.parentNode).closest("div");
       var answerID = parentDiv.attr("id");
       var self = this;
-      debugger; //need annotation ID, not answer ID
-      this._attachVideoSubmissionHandlers(answerID);
-
+      this._attachAnnotationSubmissionHandlers(answerID, this.options.selectedText);
     },
 
     onHelp: function() {
@@ -258,6 +261,8 @@ define([
           top: annotationElemOffset.top, left: annotationElemOffset.right, 'max-width': '640px', transform: ''
         }).show();
 
+        $(".arrow").css({top: '2%'});
+
         var self = this;
         // Attach Events
         $(".upvoteBtn").on("click", function(event) {
@@ -280,6 +285,7 @@ define([
         $(".popover").css({
           top: annotationElemOffset.top, left: annotationElemOffset.right, 'max-width': '640px', transform: ''
         }).show();
+
      }
      // Attach events for video submission
      this._attachVideoSubmissionHandlers(annotationID);
@@ -350,22 +356,32 @@ define([
 
     _updateVideoMetaData: function(event, updateType) {
       var self = this;
+
       var videoNode = event.target.closest("div").parentNode;
       var annotationNode = videoNode.parentNode;
       var video = new VideoModel();
       video.set({id: videoNode.id});
+
       $.when(video.incrementAttr(updateType)).done(function(){
         if (!(updateType==="flag")) {
           // Do not update score on flag action. We can to show
           // "fresh" score here, but unexpected update to score will be confusing for users.
           var oldScore = $(videoNode).find(".videoScore");
           oldScore.html(video.get("upvotes") - video.get("downvotes"));
+
+          // update global data (videos)
+          var currentVideos = self.annotations.get(annotationNode.id).get('videos');
+          var globalAnnoataionVideo = _.find(currentVideos, function(obj){return (obj.id == videoNode.id);})
+          globalAnnoataionVideo.upvotes = video.get("upvotes");
+          globalAnnoataionVideo.downvotes = video.get("downvotes");
+          globalAnnoataionVideo.flags = video.get("flags");
         }
         var buttonNode = event.target.closest("button");
         $(buttonNode).prop('disabled', true);
       });
     },
-    _attachAnnotationSubmissionHandlers: function(answerID) {
+
+    _attachAnnotationSubmissionHandlers: function(answerID, keyword) {
       // Attach events to popover buttons.
       var self=this;
       $("#urlField").on("input", function(event) {
@@ -385,10 +401,18 @@ define([
           });
           videoData.annotation_id = answerID;
           var annotationNode = event.target.closest("div").parentNode;
-          var video = new VideoModel(videoData);
-          $.when(video.post()).done(function() {
-              // TODO Show a 'Thank You' prompt to user and refresh page on click of 'Continue' button
-              console.log("done with POST");
+          var annotationCollection = new AnnotationCollection();
+          var newAnnotation = {};
+          newAnnotation.question_id = self.options.post;
+          newAnnotation.answer_id = answerID;
+          newAnnotation.keyword = keyword;
+          newAnnotation.videos = JSON.stringify([videoData]);
+          $.when(annotationCollection.post(newAnnotation)).done(function() {
+              self._cleanupPopover();
+              $('#videoAnnotationModal').modal('show');
+              $('#videoAnnotationModalButton').on("click", function(){
+                  location.reload();
+              });
           });
       });
     },
@@ -414,8 +438,11 @@ define([
           var annotationNode = event.target.closest("div").parentNode;
           var video = new VideoModel(videoData);
           $.when(video.post()).done(function() {
-              // TODO Show a 'Thank You' prompt to user and refresh page on click of 'Continue' button
-              console.log("done with POST");
+              self._cleanupPopover();
+              $('#videoAnnotationModal').modal('show');
+              $('#videoAnnotationModalButton').on("click", function(){
+                  location.reload();
+              });
           });
       });
     }

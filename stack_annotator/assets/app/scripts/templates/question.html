@@ -27,13 +27,31 @@
     <div class="modal-content">
       <div class="modal-header modal-header-info">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h4 id="tweetSuccessHeading"><i class="glyphicon glyphicon-thumbs-up"></i> Success</h4>
+        <h4 class="modalSuccessHeading"><i class="glyphicon glyphicon-thumbs-up"></i> Success</h4>
       </div>
       <div class="modal-body">
-        <p>Your request has been processed! </p>
+        <p>We have asked the community for a Youtube video.</p>
       </div>
       <div class="modal-footer">
-          <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+          <button type="button" id="tweetSuccessButton" class="btn btn-default pull-right" data-dismiss="modal">Ok</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="videoAnnotationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header modal-header-info">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modalSuccessHeading"><i class="glyphicon glyphicon-thumbs-up"></i> Success</h4>
+      </div>
+      <div class="modal-body">
+        <p>Thank you for the annotation.</p>
+        <p>Your contribution is highly appreciated by the community.</p>
+      </div>
+      <div class="modal-footer">
+          <button type="button" id="videoAnnotationModalButton" class="btn btn-default pull-right" data-dismiss="modal">Ok</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

@@ -15,8 +15,9 @@ define([
             return url;
         },
         post: function(data) {
-            return $.post(this.urlRoot, data).done(function(data){
-                   console.log(data);
+            console.log(data);
+            return $.post(this.url(), data).done(function(resp){
+                   console.log(resp);
             });
         },
         parse: function(response) {

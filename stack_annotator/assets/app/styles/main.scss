@@ -13,7 +13,7 @@ $theme_color_1: #FFCE00; //font color (highlight)
 $theme_color_2: #0375B4; //menu color
 $theme_color_4: #007849; //menu color (rarely used)
 
-/* 
+/*
 //Theme 2 (42. Polished $ Inviting)
 $highlight_color: #E1B80D;
 $highlight_font_color: #262228;
@@ -22,7 +22,7 @@ $theme_color_1: #E1B80D; //font color (highlight)
 $theme_color_2: #867666; //menu color
 */
 
-/* 
+/*
 //Theme 3 (21. Warm Naturals)
 $highlight_color: #DB9501;
 $highlight_font_color: #262228;
@@ -174,7 +174,7 @@ fieldset[disabled] .btn-success:hover,
 fieldset[disabled] .btn-success:focus,
 .btn-success.disabled.focus,
 .btn-success[disabled].focus,
-fieldset[disabled] .btn-success.focus, 
+fieldset[disabled] .btn-success.focus,
 .btn-success.disabled:active:hover,
 .btn-success.disabled.active:hover,
 .btn-success[disabled]:active:hover,
@@ -190,9 +190,9 @@ fieldset[disabled] .btn-success.active:hover,
 .btn-success[disabled]:active.focus,
 .btn-success[disabled].active.focus,
 fieldset[disabled] .btn-success:active:focus,
-fieldset[disabled] .btn-success:active.focus, 
+fieldset[disabled] .btn-success:active.focus,
 fieldset[disabled] .btn-success.active:focus,
-fieldset[disabled] .btn-success.active.focus 
+fieldset[disabled] .btn-success.active.focus
 {
   background-color: white;
   border-color: grey;
@@ -235,6 +235,11 @@ fieldset[disabled] .btn-success.active.focus
   border-color: $view_button_enabled_color;
 }
 
+.btn-link[disabled] {
+  background-color: white;
+  color: grey;
+}
+
 ///////////////////
 /*
 .btn-success:active,
@@ -263,7 +268,7 @@ fieldset[disabled] .btn-success.active.focus
 }
 
 .answer-item {
-  margin-top: 18px; 
+  margin-top: 18px;
   margin-bottom: 15px;
   background: beige none repeat scroll 0% 0%;
 }
@@ -342,7 +347,7 @@ h3.videoScore{
 }
 
 .answerMetaData{
-  margin-top: 18px; 
+  margin-top: 18px;
   margin-bottom: 15px;
 }
 #urlFormGroup > .control-label {
@@ -379,11 +384,11 @@ h3.videoScore{
    border-top-right-radius: 5px;
 }
 
-#tweetSuccessHeading {
+.modalSuccessHeading {
   margin-top: 10px;
 }
 
-#tweetSuccessHeading > .glyphicon {
+.modalSuccessHeading > .glyphicon {
   color:#FFCE00;
 }
 
