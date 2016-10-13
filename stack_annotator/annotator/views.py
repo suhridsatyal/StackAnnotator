@@ -187,16 +187,24 @@ class TaskListView(APIView):
                         'Message': "Missing fields"}
             return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
 
+        # Truncate keyword
+        length = len(request.data['keyword'])
+        truncated_keyword = request.data['keyword']
+
+        if length > 20:
+            truncate = length - 20
+            truncated_keyword = request.data['keyword'][:truncate]
+
         # create a new annotation with data
         newAnnotation = Annotation()
         newAnnotation.question_id = request.data['question_id']
         newAnnotation.answer_id = request.data['answer_id']
-        newAnnotation.keyword = request.data['keyword']
+        newAnnotation.keyword = truncated_keyword
         newAnnotation.save()
 
         appended_url = request.data['annotation_url'] + "/" \
                       + str(newAnnotation.id)
-        message = self.create_message(request.data['keyword'], appended_url)
+        message = self.create_message(truncated_keyword, appended_url)
 
         auth = OAuth1(settings.TWITTER_CONSUMER_KEY,
                       settings.TWITTER_CONSUMER_SECRET,
