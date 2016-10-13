@@ -188,7 +188,6 @@ define([
       var parentDiv = $(range.commonAncestorContainer.parentNode).closest("div");
       var answerID = parentDiv.attr("id");
       var self = this;
-      debugger; //need annotation ID, not answer ID
       this._attachVideoSubmissionHandlers(answerID);
 
     },
@@ -353,21 +352,31 @@ define([
 
     _updateVideoMetaData: function(event, updateType) {
       var self = this;
+
       var videoNode = event.target.closest("div").parentNode;
       var annotationNode = videoNode.parentNode;
       var video = new VideoModel();
       video.set({id: videoNode.id});
+
       $.when(video.incrementAttr(updateType)).done(function(){
         if (!(updateType==="flag")) {
           // Do not update score on flag action. We can to show
           // "fresh" score here, but unexpected update to score will be confusing for users.
           var oldScore = $(videoNode).find(".videoScore");
           oldScore.html(video.get("upvotes") - video.get("downvotes"));
+
+          // update global data (videos)
+          var currentVideos = self.annotations.get(annotationNode.id).get('videos');
+          var globalAnnoataionVideo = _.find(currentVideos, function(obj){return (obj.id == videoNode.id);})
+          globalAnnoataionVideo.upvotes = video.get("upvotes");
+          globalAnnoataionVideo.downvotes = video.get("downvotes");
+          globalAnnoataionVideo.flags = video.get("flags");
         }
         var buttonNode = event.target.closest("button");
         $(buttonNode).prop('disabled', true);
       });
     },
+
     _attachAnnotationSubmissionHandlers: function(answerID) {
       // Attach events to popover buttons.
       var self=this;
