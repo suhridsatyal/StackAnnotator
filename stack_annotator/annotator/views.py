@@ -170,8 +170,7 @@ class TaskListView(APIView):
 
     def create_message(self, keyword, url):
         # Tweet V2
-        tweet = "Help the community understand \"%s\" by enriching #stackoverflow " +
-                "with youtube videos you know about %s #stackannotator" % \
+        tweet = "Help the community understand \"%s\" by enriching #stackoverflow with youtube videos you know about %s #stackannotator" % \
                 (keyword, url)
         # Tweet V1
         #tweet = "Help me find videos for \"%s\" at %s #stackannotator" % \
