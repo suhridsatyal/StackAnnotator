@@ -45,9 +45,15 @@ class AnnotationListView(generics.ListCreateAPIView):
 
         # Remember video data if a video needs to be created
         request.POST._mutable = True
-        videos = json.loads(request.data.get('videos', None))
-        request.data["videos"] = []
 
+        video_data = request.data.get('videos', None)
+        print(video_data)
+        videos = None
+
+        if video_data:
+            videos = video_data
+
+        request.data["videos"] = []
 
         # Create annotation
         serializer = AnnotationSerializer(data=request.data)
@@ -83,7 +89,7 @@ class AnnotationListView(generics.ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class AnnotationView(generics.RetrieveAPIView):
+class AnnotationView(generics.RetrieveUpdateAPIView):
     queryset = Annotation.objects.all()
     serializer_class = AnnotationSerializer
 
