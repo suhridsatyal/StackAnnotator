@@ -102,8 +102,8 @@ class VideoListView(generics.ListCreateAPIView):
         except ValueError:
             raise Http404
         return queryset
-    
-    
+
+
     def post(self, request, format=None):
 
         serializer = VideoSerializer(data=request.data)
@@ -122,10 +122,10 @@ class VideoListView(generics.ListCreateAPIView):
         else:
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
-        
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    
+
 class VideoView(generics.RetrieveUpdateAPIView):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
@@ -168,22 +168,46 @@ def flag_video(request, pk):
 
 
 class TaskListView(APIView):
+    TASK_TYPE_DETAILS = 0
+    TASK_TYPE_TUTORIAL = 1
+    TASK_TYPE_USAGE = 2
     paginate_by = 50
 
-    def create_message(self, keyword, url):
-        # Tweet V2
-        tweet = "Help the community understand \"" + keyword + "\" by "+\
-                "enriching #stackoverflow with youtube videos you know " +\
-                "of " + url + " #stackannotator" 
+    def create_message(self, keyword, task_type, url):
+        # Tweet V3
+        if task_type == self.TASK_TYPE_DETAILS:
+            tweet = "Help the community understand \"" + keyword + "\" by " +\
+                  "enriching #stackoverflow with youtube videos you know " +\
+                  "of " + url + " #stackannotator"
+
+        elif task_type == self.TASK_TYPE_TUTORIAL:
+            tweet = "Help the community understand \"" + keyword + "\" with " +\
+                  "youtube tutorial videos you know of " + url + " #stackannotator"
+
+        elif task_type == self.TASK_TYPE_USAGE:
+            tweet = "Help the community understand \"" + keyword + "\" with " +\
+                  "youtube usage videos you know of " + url + " #stackannotator"
+
+        # should never happen
+        else:
+            tweet = "Task Error. Task Type (" + str(task_type) + ") not defined."
+
         return tweet
 
 
     def post(self, request, format=None):
         required_fields = ['question_id', 'answer_id', 'annotation_url',
-                           'keyword']
+                           'task_type', 'keyword']
         if not all (param in request.data for param in required_fields):
             errorMsg = {'Error': "Input Error",
                         'Message': "Missing fields"}
+            return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
+
+        taskType = int(request.data['task_type'])
+
+        if not 0 <= taskType <= 2:
+            errorMsg = {'Error': "Input Error",
+                        'Message': "Task Type not in range (0-2)"}
             return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -197,7 +221,8 @@ class TaskListView(APIView):
         appended_url = request.data['annotation_url'] + "/" \
                       + str(newAnnotation.id)
         message = self.create_message(str(request.data['keyword'][:6]+".."),
-                    appended_url)
+                                      taskType,
+                                      appended_url)
 
         auth = OAuth1(settings.TWITTER_CONSUMER_KEY,
                       settings.TWITTER_CONSUMER_SECRET,
@@ -217,6 +242,7 @@ class TaskListView(APIView):
         task = Task()
         task.tweet_id = tweet_info['id']
         task.annotation_id = newAnnotation.id
+        task.task_type = taskType
         task.created_on = task.checked_on = timezone.now()
         task.save()
 

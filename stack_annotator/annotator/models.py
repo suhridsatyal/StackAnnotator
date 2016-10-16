@@ -21,7 +21,7 @@ class Video(models.Model):
 
     def __unicode__(self):
         return "(%s, %s) %s" % (self.pk, self.external_id,
-                                              self.annotation_id)
+                                self.annotation_id)
 
 
 class Task(models.Model):
@@ -29,3 +29,4 @@ class Task(models.Model):
     annotation = models.OneToOneField(Annotation, blank=False)
     created_on = models.DateTimeField()
     checked_on = models.DateTimeField()
+    task_type = models.IntegerField(default=0)

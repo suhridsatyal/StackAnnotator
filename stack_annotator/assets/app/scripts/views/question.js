@@ -11,13 +11,14 @@ define([
   // Templates
   'text!../templates/question.html',
   'text!../templates/tooltip_menu.html',
+  'text!../templates/task_request_menu.html',
   'text!../templates/annotations.html',
   'text!../templates/commentbox.html',
   // Utils
   '../views/common_utils'
 ], function($, _, Backbone,
   QuestionModel, AnswerCollection, AnnotationCollection, TaskModel, VideoModel,
-  questionTemplate, tooltipTemplate, annotationsTemplate, commentboxTemplate,
+  questionTemplate, tooltipTemplate, taskRequestTemplate, annotationsTemplate, commentboxTemplate,
   CommonUtils) {
 
   var QuestionView = Backbone.View.extend({
@@ -119,7 +120,7 @@ define([
 
         // Attach events to popover buttons.
         $("#crowdsourceBtn").on("click", function(event) {
-          self.onCrowdsource();
+          self.onCrowdsourceMenuSelect();
         });
         $("#commentBtn").on("click", function(event) {
           self.onComment();
@@ -140,7 +141,46 @@ define([
       this._showYoutubeURL(evt.target.id, this.annotations, answerID);
     },
 
-    onCrowdsource: function() {
+    onCrowdsourceMenuSelect: function() {
+      this._cleanupPopover();
+      var rects=this._getSelectionRects();
+      if (rects==undefined) {
+          return;
+      }
+
+      var self = this;
+      
+      $("#annotate-tooltip").popover({
+        trigger: 'focus',
+        container: 'body',
+        placement: 'bottom',
+        content: _.template(taskRequestTemplate)(),
+        html: true
+      }).popover('show');
+      $(".popover").css({
+        top: rects.bottom,
+        left: rects.left,
+        transform: ''
+      }).show();
+      $(".arrow").css({"visibility": "hidden"});
+
+      // Attach events to popover buttons.
+      $("#crowdsourceDetailsBtn").on("click", function(event) {
+        self.onCrowdsource(0); //TODO: remove magic numbers
+      });
+      $("#crowdsourceTutorialBtn").on("click", function(event) {
+        self.onCrowdsource(1);
+      });
+      $("#crowdsourceUsageBtn").on("click", function(event) {
+        self.onCrowdsource(2);
+      });
+    },
+
+    onCrowdsource: function(task_type) {
+      if (task_type === undefined) {
+        task_type = 0;//default val
+      }
+
       var selection = window.getSelection();
       var range = selection.getRangeAt(0);
       var parentDiv = $(range.commonAncestorContainer.parentNode).closest("div");
@@ -151,6 +191,7 @@ define([
       taskData.question_id = this.options.post;
       taskData.keyword = this.options.selectedText;
       taskData.annotation_url = "stackannotator.com/#question/" + taskData.question_id + "/" + taskData.answer_id;
+      taskData.task_type = task_type;
 
       var task = new TaskModel(taskData);
       var self = this;
@@ -162,7 +203,6 @@ define([
               location.reload();
           });
       });
-
     },
 
     onComment: function() {

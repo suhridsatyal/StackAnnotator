@@ -52,73 +52,80 @@ $logo_font: 'Lobster Two', cursive;
 $first_font: 'Cantarell', sans-serif;
 $second_font: 'Open Sans', sans-serif;
 
+html {
+  //for the sticky footer
+  position: relative;
+  min-height: 100%;
+}
+
 body {
-    font-family: $second_font;
-    font-size: 14px;
-    line-height: 1.42857143;
-    color: black;
-    padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+  font-family: $second_font;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: black;
+  padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+  margin-bottom: 200px;
 }
 
 footer {
-    margin: 50px 0;
+  margin: 50px 0;
 }
 
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-    font-family: inherit;
-    font-weight: 500;
-    line-height: 1.1;
-    color: inherit;
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.1;
+  color: inherit;
 }
 
 /* logo + navbar */
 #logoHighlight {
-    background-color: $highlight_color;
-    border: 2px solid $highlight_color;
-    border-radius: 1px;
-    color: $highlight_font_color;
-    padding: unset;
+  background-color: $highlight_color;
+  border: 2px solid $highlight_color;
+  border-radius: 1px;
+  color: $highlight_font_color;
+  padding: unset;
 }
 
 .navbar-brand, .navbar-inverse .navbar-brand{
-    font-family: $logo_font;
-    color: $theme_color_3;
+  font-family: $logo_font;
+  color: $theme_color_3;
 }
 
 .navbar-nav {
-    font-family: $first_font;
+  font-family: $first_font;
 }
 
 .navbar-inverse {
-    border-color: $theme_color_2;
-    background-color: $theme_color_2;
+  border-color: $theme_color_2;
+  background-color: $theme_color_2;
 }
 
 //hover for navbar menu
 .navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus, .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
-    color: $theme_color_1;
+  color: $theme_color_1;
 }
 //non hover for navbar menu
 .navbar-inverse .navbar-nav > li > a {
-    color: $theme_color_3;
+  color: $theme_color_3;
 }
 
 //hover for navbar compact menu icon
 .navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {
-    background-color: $theme_color_1;
-    border-color: $theme_color_1;
+  background-color: $theme_color_1;
+  border-color: $theme_color_1;
 }
 
 //non hover navbar compact menu icon
 .navbar-inverse .navbar-toggle {
-    border-color: $theme_color_1;
+  border-color: $theme_color_1;
 }
 
 .container > .navbar-collapse, .container-fluid > .navbar-collapse {
-    margin-right: -15px;
-    margin-left: -15px;
-    background-color: $theme_color_2;
-    color: $theme_color_2;
+  margin-right: -15px;
+  margin-left: -15px;
+  background-color: $theme_color_2;
+  color: $theme_color_2;
 }
 
 /* all else */
@@ -136,10 +143,10 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 #searchPageLogo{
-    width: 225px;
-    height: auto;
-    padding-bottom: 6px;
-    //padding-top: 30px;
+  width: 225px;
+  height: auto;
+  padding-bottom: 6px;
+  //padding-top: 30px;
 }
 
 #helpButton{
@@ -255,6 +262,11 @@ fieldset[disabled] .btn-success.active.focus
 */
 
 /* questions */
+
+#questionview{
+  padding-bottom: 50px;
+}
+
 .icon-link {
   font-size:25px;
 }
