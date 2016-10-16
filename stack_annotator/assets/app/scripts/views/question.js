@@ -85,7 +85,7 @@ define([
     // Events and Listeners
     //
     events: {
-      'mouseup #answers': 'onHighlight',
+      'mouseup .answer-item': 'onHighlight',
       'mousedown #questionview': 'onDeselect',
       'mouseover annotation': 'onAnnotationHover'
     },

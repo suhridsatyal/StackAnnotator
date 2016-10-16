@@ -160,7 +160,6 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 //Make the "View" Button more unique
 //disabled and default (unactivated)
 .btn-success {
-  font: $first_font;
   border-radius:0;
   color: black;
   border-width: 2px;
@@ -329,6 +328,10 @@ fieldset[disabled] .btn-success.active.focus
   border-radius: 6px;
 }
 
+#requestTypeMenuHeader {
+  padding-bottom: 5px;
+}
+
 #answersHeading{
   margin-bottom: 5px;
   border-bottom: 1px solid #e4e6e8;
@@ -381,6 +384,7 @@ h3.videoScore{
 
 .modal-content{
   max-width: 400px;
+  margin-left:100px;
 }
 
 .modal-header-info {
@@ -423,6 +427,7 @@ h3.videoScore{
   padding-top: 15px;
   background-color:$theme_color_4;
   color: white;
+  font-family: $first_font;
 }
 
 .social:hover {
