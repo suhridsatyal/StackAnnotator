@@ -12,7 +12,7 @@ $theme_color_3: #F0F1F5; //font color
 $theme_color_1: #FFCE00; //font color (highlight)
 $theme_color_2: #0375B4; //menu color
 $theme_color_4: #007849; //menu color (rarely used)
-
+$theme_color_5: #262228; //menu color (rarely used)
 /*
 //Theme 2 (42. Polished $ Inviting)
 $highlight_color: #E1B80D;
@@ -136,7 +136,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   margin: auto;
   text-align: center;
   width: 87%;
-  padding-bottom: 100px;
+  padding-bottom: 150px;
 }
 
 .homePageForm {
@@ -419,7 +419,10 @@ h3.videoScore{
   bottom: 0;
   width: 100%;
   /* Set the fixed height of the footer here */
-  height: 150px;
+  height: 130px;
+  padding-top: 15px;
+  background-color:$theme_color_4;
+  color: white;
 }
 
 .social:hover {
@@ -444,10 +447,11 @@ h3.videoScore{
 }
 
 .socialMediaMenu {
+  margin-bottom: 0px;
 }
 
 .socialMediaButton {
-  color: $theme_color_2;
+  color: $theme_color_5;
 }
 /*
     Multicoloured Hover Variations
