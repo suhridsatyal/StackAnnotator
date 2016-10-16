@@ -27,10 +27,15 @@ define([
         Backbone.history.navigate(nextURL, true);
       },
       render: function() {
+          this._cleanupPopover();
           var data = {};
           var compiledTemplate = _.template(homeTemplate, data);
           this.$el.empty().append(compiledTemplate);
-      }
+      },
+      _cleanupPopover: function() {
+        $(".popover").remove();
+        $("#annotate-tooltip").remove();
+      },
   });
 
 
