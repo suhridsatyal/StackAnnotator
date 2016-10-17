@@ -187,12 +187,14 @@ class TaskListView(APIView):
                   "of " + url + " #stackannotator"
 
         elif task_type == self.TASK_TYPE_TUTORIAL:
-            tweet = "Help the community understand \"" + keyword + "\" with " +\
-                  "youtube tutorial videos you know of " + url + " #stackannotator"
+            tweet = "Help the community understand \"" + keyword +\
+                    "\" with " + "youtube tutorial videos you know of " +\
+                    url + " #stackannotator"
 
         elif task_type == self.TASK_TYPE_USAGE:
-            tweet = "Help the community understand \"" + keyword + "\" with " +\
-                  "youtube usage videos you know of " + url + " #stackannotator"
+            tweet = "Help the community understand \"" + keyword +\
+                    "\" with " + "youtube usage videos you know of " +\
+                    url + " #stackannotator"
 
         # should never happen
         else:
@@ -216,7 +218,6 @@ class TaskListView(APIView):
                         'Message': "Task Type not in range (0-2)"}
             return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
 
-
         # create a new annotation with data
         newAnnotation = Annotation()
         newAnnotation.question_id = request.data['question_id']
@@ -224,12 +225,27 @@ class TaskListView(APIView):
         newAnnotation.keyword = request.data['keyword']
         newAnnotation.save()
 
+        # append and shorten url
         appended_url = request.data['annotation_url'] + "/" \
-                      + str(newAnnotation.id)
+                                                      + str(newAnnotation.id)
+        post_url_with_key = settings.POST_GOOGLE_URLSHORTENER_URL +\
+                          "?key=" + settings.GOOGLE_URL_SHORTENER_KEY
+        post_header = {'Content-Type': 'application/json'}
+        google_response = requests.post(post_url_with_key,
+                                        data=json.dumps(
+                                          {'longUrl': appended_url}),
+                                        headers=post_header).json()
+        if 'id' not in google_response:
+            errorMsg = {'Error': "Google URL Shortener Error",
+                        'Google Response': google_response.pop('error')}
+            return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
+
+        shortened_url = google_response['id']
         message = self.create_message(str(request.data['keyword'][:6]+".."),
                                       taskType,
-                                      appended_url)
+                                      shortened_url)
 
+        # post twitter message
         auth = OAuth1(settings.TWITTER_CONSUMER_KEY,
                       settings.TWITTER_CONSUMER_SECRET,
                       settings.TWITTER_ACCESS_TOKEN,
