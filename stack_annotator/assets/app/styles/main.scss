@@ -140,14 +140,14 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 .homePageForm {
-  margin-top: 80px;
+  margin-top: 60px;
 }
 
 #searchPageLogo{
-  width: 225px;
+  width: 230px;
   height: auto;
   padding-bottom: 6px;
-  //padding-top: 30px;
+  padding-right: 3px;
 }
 
 #helpButton{
@@ -422,6 +422,7 @@ h3.videoScore{
   position: absolute;
   bottom: 0;
   width: 100%;
+  min-width: 900px;
   /* Set the fixed height of the footer here */
   height: 130px;
   padding-top: 15px;
