@@ -28,8 +28,9 @@ def create_video_with_details(external_id, annotation_id, upvotes, downvotes, fl
                                 flags=flags, start_time=start_time)
 
 
-def create_task(tweet_id, annotation, created_on, checked_on):
+def create_task(tweet_id, annotation, task_type, created_on, checked_on):
     return Task.objects.create(tweet_id=tweet_id,
+                               task_type=task_type,
                                annotation=annotation,
                                created_on=created_on,
                                checked_on=checked_on)
@@ -64,7 +65,7 @@ class AnnotationAPITests(TestCase):
         create_video("0MjdyurrP6c", first)
         second = create_annotation(2, 1, "fiesty")
         create_video("g7zO1MBu8SQ", second)
-        
+
         second_pk=str(second.pk)
 
         response = client.get('/api/annotation/'+second_pk, format='json')
@@ -129,7 +130,7 @@ class AnnotationAPITests(TestCase):
         create_video("3BxYqjzMz", third)
         response = self.client.get('/api/annotations?question_id=1')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         #Convert json to list
         response_list = json.loads(response.content)
 
@@ -153,7 +154,7 @@ class AnnotationAPITests(TestCase):
         create_video("3BxYqjzMz", third)
         response = self.client.get('/api/annotations?answer_id=1')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         #Convert json to list
         response_list = json.loads(response.content)
 
@@ -177,7 +178,7 @@ class AnnotationAPITests(TestCase):
         create_video("3BxYqjzMz", third)
         response = self.client.get('/api/annotations')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         #Convert json to list
         response_list = json.loads(response.content)
 
@@ -232,7 +233,7 @@ class AnnotationAPITests(TestCase):
         data = {"question_id":5, "answer_id":10,"keyword":"fiesty","position":15}
         response = client.post('/api/annotations', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        
+
         #Convert json to dict
         response_dict = json.loads(response.content)
 
@@ -254,7 +255,7 @@ class AnnotationAPITests(TestCase):
 
         response = client.get('/api/annotation/'+third_id+'/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         #Convert json to dict
         response_dict = json.loads(response.content)
 
@@ -276,7 +277,7 @@ class AnnotationAPITests(TestCase):
 
         response = client.get('/api/annotation/'+fourth_id+'/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         #Convert json to dict
         response_dict = json.loads(response.content)
 
@@ -286,7 +287,7 @@ class AnnotationAPITests(TestCase):
         #Check pk of video is the same
         self.assertEqual(response_dict['videos'][0]['start_time'], "0:15")
 
-    
+
     def test_post_fail_annotation(self):
         """
         Should fail to POST if URL is invalid
@@ -312,7 +313,7 @@ class AnnotationAPITests(TestCase):
         first_id = first.pk
         response = self.client.get('/api/annotation/'+str(first_id)+'/', format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         #Convert json to list
         response_dict = json.loads(response.content)
         #Check that it is initialized to 0
@@ -350,7 +351,7 @@ class VideoAPITests(TestCase):
         client = APIClient()
         response = client.get('/api/videos', format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         #Convert json to list
         response_list = json.loads(response.content)
 
@@ -375,7 +376,7 @@ class VideoAPITests(TestCase):
         client = APIClient()
         response = client.get('/api/videos?annotation_id='+str(second.pk), format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         #Convert json to list
         response_list = json.loads(response.content)
 
@@ -385,7 +386,7 @@ class VideoAPITests(TestCase):
         for items in response_list:
             if not items['id']==second_vid.pk and not items['id']==third_vid.pk:
                 assert False
-        
+
     def test_get_details_of_single_video(self):
         """
         Should get a single video on a video id
@@ -401,12 +402,12 @@ class VideoAPITests(TestCase):
 
         response = client.get('/api/video/'+str(second_vid.pk)+'/', format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         #Convert json to list
         response_list = json.loads(response.content)
 
         self.assertEqual(response_list['id'], second_vid.pk)
-        
+
 
     def test_post_video(self):
         """
@@ -424,7 +425,7 @@ class VideoAPITests(TestCase):
 
         self.assertEqual(response_list['annotation_id'], first.pk)
         self.assertEqual(response_list['external_id'], "test")
-        
+
         """
         Post the same video
         """
@@ -452,7 +453,7 @@ class VideoAPITests(TestCase):
 
         response = client.put('/api/video/'+str(first_vid.pk)+'/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         #Convert json to list
         response_list = json.loads(response.content)
 
@@ -462,7 +463,7 @@ class VideoAPITests(TestCase):
 
         response = client.get('/api/video/'+str(first_vid.pk)+'/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         #Convert json to list
         response_list = json.loads(response.content)
 
@@ -472,7 +473,7 @@ class VideoAPITests(TestCase):
 
         response = client.get('/api/annotation/'+str(first.pk)+'/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         #Convert json to list
         response_list = json.loads(response.content)
 
@@ -498,7 +499,7 @@ class VideoAPITests(TestCase):
 
         response = client.get('/api/videos?annotation_id=triangles', format='json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-       
+
 
     def test_fail_post(self):
         """
@@ -540,19 +541,19 @@ class VideoAPITests(TestCase):
         data = {"external_id":"updatevideo", "upvotes":"2", "annotation_id":233}
         response = client.put('/api/video/'+str(first_vid)+'/', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        
+
     def test_video_upvote(self):
         """
         Should increase video upvotes
         """
         self._test_video_metadata_increment(metadata_type="upvote")
-        
+
     def test_video_downvote(self):
         """
         Should increase video downvotes
         """
         self._test_video_metadata_increment(metadata_type="downvote")
-        
+
     def test_video_flag(self):
         """
         Should increase video flags
@@ -561,13 +562,13 @@ class VideoAPITests(TestCase):
 
     def _test_video_metadata_increment(self, metadata_type):
         """
-        Should upvote a video 
+        Should upvote a video
         """
         first = create_annotation(1, 2, "fiesty")
         client = APIClient()
         data = {"external_id":5, "annotation_id":first.pk}
         response = client.post('/api/videos', data, format='json')
-        
+
         #Convert json to dict
         response_list = json.loads(response.content)
 
@@ -596,11 +597,11 @@ class TaskAPITests(TestCase):
 
     def setUp(self):
         self.firstAnnotation = create_annotation(1, 1, "hope")
-        self.firstTask = create_task("1", self.firstAnnotation, "2016-12-12 12:12:12", "2016-12-12 12:12:12")
+        self.firstTask = create_task("1", self.firstAnnotation, 0, "2016-12-12 12:12:12", "2016-12-12 12:12:12")
         self.secondAnnotation = create_annotation(1, 1, "hope")
-        self.secondTask = create_task("2", self.secondAnnotation, "2016-12-12 12:12:12", "2016-12-12 12:12:12")
+        self.secondTask = create_task("2", self.secondAnnotation, 0, "2016-12-12 12:12:12", "2016-12-12 12:12:12")
         self.thirdAnnotation = create_annotation(1, 1, "hope")
-        self.thirdTask = create_task("3", self.thirdAnnotation, "2016-12-12 12:12:12", "2016-12-12 12:12:12")
+        self.thirdTask = create_task("3", self.thirdAnnotation, 0, "2016-12-12 12:12:12", "2016-12-12 12:12:12")
 
 
     def test_get_task_by_id(self):
@@ -608,7 +609,7 @@ class TaskAPITests(TestCase):
         url = '/api/tasks/' + str(self.firstTask.id)
         response = self.client.get("/api/task/1/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        expected_output = '{"id":%s,"tweet_id":"1","annotation":1,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"}' % str(self.firstTask.id)
+        expected_output = '{"id":%s,"tweet_id":"1","task_type":0,"annotation":1,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"}' % str(self.firstTask.id)
 
         self.assertEqual(response.content, expected_output)
 
@@ -618,7 +619,7 @@ class TaskAPITests(TestCase):
         response = self.client.get('/api/tasks')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content,
-                '[{"id":1,"tweet_id":"1","annotation":1,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"},{"id":2,"tweet_id":"2","annotation":2,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"},{"id":3,"tweet_id":"3","annotation":3,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"}]')
+                '[{"id":1,"tweet_id":"1","task_type":0,"annotation":1,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"},{"id":2,"tweet_id":"2","task_type":0,"annotation":2,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"},{"id":3,"tweet_id":"3","task_type":0,"annotation":3,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"}]')
 
 
     def test_get_fail_task(self):
@@ -639,23 +640,23 @@ class TaskAPITests(TestCase):
     @patch('annotator.views.requests.post')
     def test_post_task(self, mock_post, mock_time):
         """ Should be successful """
-        mock_post.return_value = MockTweetReturnSuccess()
+        mock_post.side_effect = iter([MockGoogleShortenURLReturnSuccess(), MockTweetReturnSuccess()])
         mock_time.return_value = "2012-08-29 17:12:58"
 
         client = APIClient()
-        data = {"question_id": 5, "answer_id": 10, "annotation_url": "fake.com", "keyword": "fiesty"}
+        data = {"question_id": 5, "answer_id": 10, "task_type": 0, "annotation_url": "fake.com", "keyword": "fiesty"}
 
         response = client.post('/api/tasks', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.content,
-               '{"id":4,"tweet_id":"1","annotation":4,"created_on":"2012-08-29 17:12:58","checked_on":"2012-08-29 17:12:58"}' )
+               '{"id":4,"tweet_id":"1","task_type":0,"annotation":4,"created_on":"2012-08-29 17:12:58","checked_on":"2012-08-29 17:12:58"}' )
 
 
     def test_post_task_fail(self):
         """ Should fail because of missing parameter """
 
         client = APIClient()
-        data = {"question_id": 5, "answer_id": 10, "keyword": "fiesty"}
+        data = {"question_id": 5, "task_type": 0, "answer_id": 10, "keyword": "fiesty"}
 
         response = client.post('/api/tasks', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -665,14 +666,28 @@ class TaskAPITests(TestCase):
     @patch('annotator.views.requests.post')
     def test_post_task_tweet_fail(self, mock_post):
         """ Should fail because twitter API returns error due to duplicate tweet """
-        mock_post.return_value = MockTweetReturnFail()
+        mock_post.side_effect = iter([MockGoogleShortenURLReturnSuccess(), MockTweetReturnFail()])
 
         client = APIClient()
-        data = {"question_id": 5, "answer_id": 10, "annotation_url": "fake.com", "keyword": "fiesty"}
+        data = {"question_id": 5, "answer_id": 10, "task_type": 0, "annotation_url": "fake.com", "keyword": "fiesty"}
 
         response = client.post('/api/tasks', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.content, '{"Twitter Response":[{"message":"Status is a duplicate.","code":187}],"Error":"Twitter Error"}')
+        # AssertionError: '{"Message":"Missing fields","Error":"Input Error"}' != '{"Twitter Response":[{"message":"Status is a duplicate.","code":187}],"Error":"Twitter Error"}'
+
+
+    @patch('annotator.views.requests.post')
+    def test_post_task_shorten_url_fail(self, mock_post):
+        """ Should fail because Google Shorten URL API returns error due to missing parameter, a problem on the backend"""
+        mock_post.side_effect = iter([MockGoogleShortenURLReturnFail(), MockTweetReturnSuccess()])
+
+        client = APIClient()
+        data = {"question_id": 5, "answer_id": 10, "task_type": 0, "annotation_url": "fake.com", "keyword": "fiesty"}
+
+        response = client.post('/api/tasks', data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.content, '{"Google Response":{"code":400,"message":"Required","errors":[{"locationType":"parameter","domain":"global","message":"Required","reason":"required","location":"resource.longUrl"}]},"Error":"Google URL Shortener Error"}')
 
 
 class MockTweetReturnSuccess:
@@ -692,5 +707,34 @@ class MockTweetReturnFail:
         # Mock tweet fail
         data = {
             'errors': [{'message': "Status is a duplicate.", 'code': 187}]
+        }
+        return data
+
+
+class MockGoogleShortenURLReturnSuccess:
+    """ Imitates return from a tweet attempt """
+    def json(self):
+        # Mock tweet fail
+        data = {
+            "id": "https://t.co/cgTZTvDRVS"
+        }
+        return data
+
+
+class MockGoogleShortenURLReturnFail:
+    """ Imitates return from a tweet attempt """
+    def json(self):
+        # Mock tweet fail
+        data = {
+            "error": {
+                "errors": [{
+                    "domain": "global",
+                    "reason": "required",
+                    "message": "Required",
+                    "locationType": "parameter",
+                    "location": "resource.longUrl"}],
+                "code": 400,
+                "message": "Required"
+            }
         }
         return data

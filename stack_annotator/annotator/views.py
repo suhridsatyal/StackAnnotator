@@ -229,7 +229,7 @@ class TaskListView(APIView):
         appended_url = request.data['annotation_url'] + "/" \
                                                       + str(newAnnotation.id)
         post_url_with_key = settings.POST_GOOGLE_URLSHORTENER_URL +\
-                          "?key=" + settings.GOOGLE_URL_SHORTENER_KEY
+                            "?key=" + settings.GOOGLE_URL_SHORTENER_KEY
         post_header = {'Content-Type': 'application/json'}
         google_response = requests.post(post_url_with_key,
                                         data=json.dumps(
