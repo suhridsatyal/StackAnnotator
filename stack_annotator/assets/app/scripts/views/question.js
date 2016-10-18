@@ -93,6 +93,7 @@ define([
     onHighlight: function() {
       var rects = this._getSelectionRects();
       if (rects==undefined) {
+          this._cleanupPopover();
           return;
       }
 
@@ -128,6 +129,8 @@ define([
         $("#helpBtn").on("click", function(event) {
           self.onHelp();
         });
+      } else {        
+        this._cleanupPopover();
       };
     },
 
@@ -165,6 +168,9 @@ define([
       $(".arrow").css({"visibility": "hidden"});
 
       // Attach events to popover buttons.
+      $("#backToTooltipMenuBtn").on("click", function(event) {
+        self.onHighlight();
+      });
       $("#crowdsourceDetailsBtn").on("click", function(event) {
         self.onCrowdsource(0); //TODO: remove magic numbers
       });
@@ -215,7 +221,7 @@ define([
         trigger: 'focus',
         container: 'body',
         placement: 'bottom',
-        content: _.template(commentboxTemplate)({message: "Add a Youtube Video"}),
+        content: _.template(commentboxTemplate)({message: ""}),
         html: true
       }).popover('show');
       $(".popover").css({
@@ -317,7 +323,7 @@ define([
 
      } else {
         // Show comment box
-        popoverTemplate = _.template(commentboxTemplate) ({message: "Add a Youtube Video"});
+        popoverTemplate = _.template(commentboxTemplate) ({message: "Annotate"});
         $("#annotate-tooltip").popover({
           trigger: 'focus', container: 'body', placement: 'right', content: popoverTemplate, html: true
         }).popover('show');

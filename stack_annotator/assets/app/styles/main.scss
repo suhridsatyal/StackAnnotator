@@ -327,10 +327,6 @@ fieldset[disabled] .btn-success.active.focus
   border-radius: 6px;
 }
 
-#requestTypeMenuHeader {
-  padding-bottom: 5px;
-}
-
 #answersHeading{
   margin-bottom: 5px;
   border-bottom: 1px solid #e4e6e8;
@@ -365,6 +361,7 @@ h3.videoScore{
   margin-top: 18px;
   margin-bottom: 15px;
 }
+
 #urlFormGroup > .control-label {
   margin-top:27px;
 }
@@ -379,17 +376,54 @@ h3.videoScore{
 
 .popover {
   text-align: center;
+  max-width: 290px;
 }
 
 .popover-content {
-  padding-left: 18px;
-  padding-right: 18px;
+  padding-left: 20px;
+  padding-right: 20px;
   padding-bottom: 14px;
-  padding-top: 12px;
+  padding-top: 16px;
 }
+
+#taskTypeMenu {
+  padding-bottom: 5px;
+}
+
+.verticalButtonDivider{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.buttonDivider {
+  width: 1px;
+  height: auto;
+  display: inline-block;
+}
+
+.popover-content > .btn-success, 
+#taskTypeMenu > .btn-success,
+.popover-content >.btn-success:focus,
+.popover-content >.btn-success.focus,
+#taskTypeMenu >.btn-success:focus,
+#taskTypeMenu >.btn-success.focus {
+  border-color: $theme_color_2;
+  border-radius: 5px;
+}
+
+.popover-content > .btn-success > .glyphicon {
+  width: 12px;
+  margin-left: -5px;
+  font-size: 1.2em;
+  margin-right: 8px;
+  color: $theme_color_2;
+}
+
 .modal-content{
   max-width: 400px;
   margin-left:100px;
+  border-radius: 0px;
+
 }
 
 .modal-header-info {
@@ -398,12 +432,6 @@ h3.videoScore{
   padding:9px 15px;
   border-bottom:1px solid #eee;
   background-color: $theme_color_2;
-  -webkit-border-top-left-radius: 5px;
-  -webkit-border-top-right-radius: 5px;
-  -moz-border-radius-topleft: 5px;
-  -moz-border-radius-topright: 5px;
-   border-top-left-radius: 5px;
-   border-top-right-radius: 5px;
 }
 
 .modalSuccessHeading {
@@ -416,6 +444,10 @@ h3.videoScore{
 
 .modal-footer > .btn {
   border-radius:0;
+}
+
+.modal-footer  {
+  border-top: 0px;
 }
 
 .crowdsourcingMenu {
