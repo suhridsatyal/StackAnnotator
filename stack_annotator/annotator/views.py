@@ -182,24 +182,21 @@ class TaskListView(APIView):
     def create_message(self, keyword, task_type, url):
         # Tweet V3
         if task_type == self.TASK_TYPE_DETAILS:
-            tweet = "Help the community understand \"" + keyword + "\" by " +\
-                  "enriching #stackoverflow with youtube videos you know " +\
-                  "of " + url + " #stackannotator"
+            tweet = "Help the community understand \"{}\" by " +\
+                    "enriching #stackoverflow with youtube videos " +\
+                    "you know of {} #stackannotator"
 
         elif task_type == self.TASK_TYPE_TUTORIAL:
-            tweet = "Help the community understand \"" + keyword +\
-                    "\" with " + "youtube tutorial videos you know of " +\
-                    url + " #stackannotator"
+            tweet = "Help the community find tutorials of \"{}\" " +\
+                    "by enriching #stackoverflow with youtube videos " +\
+                    "{} #stackannotator"
 
         elif task_type == self.TASK_TYPE_USAGE:
-            tweet = "Help the community understand \"" + keyword +\
-                    "\" with " + "youtube usage videos you know of " +\
-                    url + " #stackannotator"
+            tweet = "Help the community understand the usage of \"{}\" " +\
+                    "by enriching #stackoverflow with youtube videos " +\
+                    "{} #stackannotator"
 
-        # should never happen
-        else:
-            tweet = "Task Error. Task Type (" + str(task_type) + ") not defined."
-
+        tweet = tweet.format(keyword, url)
         return tweet
 
 
@@ -228,7 +225,7 @@ class TaskListView(APIView):
         # append and shorten url
         appended_url = request.data['annotation_url'] + "/" \
                                                       + str(newAnnotation.id)
-        post_url_with_key = settings.POST_GOOGLE_URLSHORTENER_URL +\
+        post_url_with_key = settings.POST_URLSHORTENER_GOOGLE_URL +\
                             "?key=" + settings.GOOGLE_URL_SHORTENER_KEY
         post_header = {'Content-Type': 'application/json'}
         google_response = requests.post(post_url_with_key,
