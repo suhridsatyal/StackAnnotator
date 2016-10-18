@@ -1,6 +1,15 @@
 <form role="form">
   <div class="form-group" id="urlFormGroup">
-  <label for="url" class="control-label"> <%= message %></label>
+  <% if (typeof displayBackButton !== 'undefined' ) { %>
+    <% if (displayBackButton == true) { %>
+      <button title="Return to Annotation Options" class="button btn-link" id="backToTooltipMenuBtn"> <span class="glyphicon glyphicon-menu-up"></span></button>
+      <hr class="verticalButtonDivider">
+    <% } %>
+  <% } %>
+  
+  <% if (typeof message !== 'undefined' ) { %>
+    <label for="url" class="control-label"> <%= message %></label>
+  <% } %>
   <div class="">
       <input type="text" class="form-control commentbox" id="urlField" name="urlField" aria-describedby="inputErrorStatus" placeholder="Youtube Video URL... e.g. https://www.youtube.com/watch?v=cq1q2rFVF10"/>
 

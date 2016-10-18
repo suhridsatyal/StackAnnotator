@@ -221,7 +221,7 @@ define([
         trigger: 'focus',
         container: 'body',
         placement: 'bottom',
-        content: _.template(commentboxTemplate)({message: ""}),
+        content: _.template(commentboxTemplate)({displayBackButton: true}),
         html: true
       }).popover('show');
       $(".popover").css({
@@ -237,6 +237,11 @@ define([
       var answerID = parentDiv.attr("id");
       var self = this;
       this._attachAnnotationSubmissionHandlers(answerID, this.options.selectedText);
+
+      // Attach event to popover button.
+      $("#backToTooltipMenuBtn").on("click", function(event) {
+        self.onHighlight();
+      });
     },
 
     onHelp: function() {
