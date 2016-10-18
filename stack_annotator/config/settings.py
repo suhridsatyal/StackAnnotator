@@ -140,8 +140,9 @@ TWITTER_CONSUMER_SECRET = ""
 TWITTER_ACCESS_TOKEN = ""
 TWITTER_ACCESS_TOKEN_SECRET = ""
 
+POST_STATUS_TWITTER_URL = "https://api.twitter.com/1.1/statuses/update.json"
+
 # Goole URL Shortener Key
 GOOGLE_URL_SHORTENER_KEY = ""
-POST_GOOGLE_URLSHORTENER_URL = "https://www.googleapis.com/urlshortener/v1/url"
-POST_URLSHORTENER_GOOGLE_URL = ""
-POST_STATUS_TWITTER_URL = "https://api.twitter.com/1.1/statuses/update.json"
+
+POST_URLSHORTENER_GOOGLE_URL = "https://www.googleapis.com/urlshortener/v1/url"
