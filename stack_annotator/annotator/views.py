@@ -192,7 +192,7 @@ class TaskListView(APIView):
                     "{} #stackannotator"
 
         elif task_type == self.TASK_TYPE_USAGE:
-            tweet = "Help the community understand the usage of \"{}\" " +\
+            tweet = "Help the community find demonstrations of \"{}\" " +\
                     "by enriching #stackoverflow with youtube videos " +\
                     "{} #stackannotator"
 
