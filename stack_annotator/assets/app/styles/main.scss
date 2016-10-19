@@ -263,7 +263,17 @@ fieldset[disabled] .btn-success.active.focus
 /* questions */
 
 #questionview{
-  padding-bottom: 50px;
+  padding-bottom: 40px;
+}
+
+#question > h2 {
+  margin-bottom: 12px;
+}
+
+#questionTitleDivider{
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-top: 1px solid #e4e6e8;
 }
 
 .icon-link {
@@ -279,8 +289,9 @@ fieldset[disabled] .btn-success.active.focus
 }
 
 .answer-item {
-  margin-top: 18px;
+  margin-top: 15px;
   margin-bottom: 15px;
+  padding-top: 10px;
   background: beige none repeat scroll 0% 0%;
 }
 
@@ -334,6 +345,7 @@ fieldset[disabled] .btn-success.active.focus
 
 .answerContainer{
   border-bottom: 1px solid #e4e6e8;
+  margin-top: -17px;
 }
 .answerScore {
   text-align: center;
@@ -416,10 +428,14 @@ h3.videoScore{
 
 #tooltipMenu > .btn-success > .glyphicon {
   width: 12px;
-  margin-left: -5px;
+  margin-left: -3px;
   font-size: 1.4em;
-  margin-right: 9px;
+  margin-right: 10px;
   color: $theme_color_2;
+}
+
+#tooltipMenu > .btn-success > .glyphicon:hover {
+  color: $theme_color_1;
 }
 
 .form-group > #submitButton{
