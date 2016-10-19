@@ -5,7 +5,15 @@ define([
   'config'
 ], function($, _, Backbone, settings){
     var Annotation = Backbone.Model.extend({
-        idAttribute: "id"
+        idAttribute: "id",
+        incrementAttr: function(attrType) {
+            var self = this;
+            var postUrl = settings.stackannotator.api_url_root + settings.stackannotator.annotation_increment_resource_endpoint;
+            return $.post(postUrl + '/' + this.id +'/' + attrType).done(function(data) {
+                //self.set(attrType+'s', data[attrType+'s']);
+                self.set(data);
+            });
+        }
     });
 
     var Annotations = Backbone.Collection.extend({

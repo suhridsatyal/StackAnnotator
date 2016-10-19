@@ -496,6 +496,24 @@ define([
               });
           });
       });
+
+      //Report button
+      $("#reportButton").on("click", function(event) {
+          annotation_id = annotationID;
+          //var annotationNode = event.target.closest("div").parentNode;
+          var annotation = new AnnotationCollection()
+          annotationCollection.set({id: annotation_id});
+
+          $.when(annotationCollection.incrementAttr('understand_count')).done(function() {
+              self._cleanupPopover();
+              var buttonNode = event.target.closest("button");
+              $(buttonNode).prop('disabled', true);
+              $('#reportAnnotationModal').modal('show');
+              $('#reportAnnotationModalButton').on("click", function(){
+                  location.reload();
+              });
+          });
+      });
     }
 
   });

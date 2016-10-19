@@ -94,6 +94,18 @@ class AnnotationView(generics.RetrieveUpdateAPIView):
     serializer_class = AnnotationSerializer
 
 
+@api_view(['POST'])
+def flag_annotation(request, pk):
+    try:
+        annotation = Annotation.objects.get(pk=pk)
+        annotation.understand_count = annotation.understand_count + 1
+        annotation.save()
+        serializer = AnnotationSerializer(annotation)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    except Exception as e:
+        return Response({"message": e}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class VideoListView(generics.ListCreateAPIView):
     model = Video
     serializer_class = VideoSerializer
