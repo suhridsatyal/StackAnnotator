@@ -2,13 +2,13 @@ define([
   'jquery',
   'underscore',
   'backbone',
-], function($, _, Backbone){
+  'config'
+], function($, _, Backbone, settings){
     var Question = Backbone.Model.extend({
-        urlRoot:'https://api.stackexchange.com/2.2/questions/',
         url: function() {
-            var url = this.urlRoot +
+            var url = settings.stackoverflow.url_root +
               this.get("post") +
-              '?order=desc&sort=activity&site=stackoverflow&filter=withbody&key=L30zaZ1PnRBr57w8wAxBMQ(('
+              settings.stackoverflow.question_query + settings.stackoverflow.key;
             return url;
        },
         parse: function(response) {

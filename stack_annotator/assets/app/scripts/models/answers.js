@@ -1,15 +1,15 @@
 define([
   'jquery',
   'underscore',
-  'backbone'
-], function($, _, Backbone){
+  'backbone',
+  'config'
+], function($, _, Backbone, settings){
     var Answers = Backbone.Model.extend({
         //model: Answer,
-        urlRoot: 'https://api.stackexchange.com/2.2/questions/',
         url: function() {
-            var url = this.urlRoot +
+            var url = settings.stackoverflow.url_root +
               this.get("post") +
-              '/answers?order=desc&sort=activity&site=stackoverflow&filter=withbody&key=L30zaZ1PnRBr57w8wAxBMQ((';
+              settings.stackoverflow.answer_query + settings.stackoverflow.key;
             return url;
         }
         ,

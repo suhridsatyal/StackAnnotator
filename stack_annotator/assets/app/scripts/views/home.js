@@ -5,8 +5,9 @@ define([
   // Templates
   'text!../templates/home.html',
   // Utils
-  '../views/common_utils'
-], function($, _, Backbone, homeTemplate, CommonUtils){
+  '../views/common_utils',
+  'config'
+], function($, _, Backbone, homeTemplate, CommonUtils, settings){
   var HomeView = Backbone.View.extend({
       el: $('.container_load'),
       events: {
@@ -15,9 +16,8 @@ define([
           'keypress #urlField' : 'onKeyPressEvent',
           'input #urlField': 'onURLChange'
       },
-      urlRegex: new RegExp(
-                         '^(https?:\/\/)?stackoverflow\.com\/questions\/([0-9]+)(\/[-a-z\d%_.~+]*)*'
-                         ),
+      urlRegex: new RegExp(settings.regex.stackoverflow),
+
       onURLChange: function(e) {
         CommonUtils.onURLChange('#urlField', this.urlRegex);
       },

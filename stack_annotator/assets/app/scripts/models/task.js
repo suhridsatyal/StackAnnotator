@@ -1,16 +1,16 @@
 define([
   'jquery',
   'underscore',
-  'backbone'
-], function($, _, Backbone){
+  'backbone',
+  'config'
+], function($, _, Backbone, settings){
     var Task = Backbone.Model.extend({
         idAttribute: "id",
-        urlRoot: 'http://stackannotator.com/api',
         
         post: function() {
             var self = this;
-            
-            return $.post(this.urlRoot + '/tasks', self.attributes).done(
+            var postUrl = settings.stackannotator.api_url_root + settings.stackannotator.task_post_endpoint;
+            return $.post(postUrl, self.attributes).done(
                     function(data){
                         console.log(data);
                     }).fail(

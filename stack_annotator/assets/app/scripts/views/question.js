@@ -15,19 +15,19 @@ define([
   'text!../templates/annotations.html',
   'text!../templates/commentbox.html',
   // Utils
-  '../views/common_utils'
+  '../views/common_utils',
+  'config'
 ], function($, _, Backbone,
   QuestionModel, AnswerCollection, AnnotationCollection, TaskModel, VideoModel,
   questionTemplate, tooltipTemplate, taskRequestTemplate, annotationsTemplate, commentboxTemplate,
-  CommonUtils) {
+  CommonUtils, settings) {
 
   var QuestionView = Backbone.View.extend({
     el: $('.container_load'),
     initialize: function(options) {
       this.options = options || {};
       this.options.selectedText = "";
-      this.options.youtubeRegExp =
-          /^https?\:\/\/www\.youtube\.com\/watch\?v\=([\w-]+)(?:&t=(\w+))?$/g;
+      this.options.youtubeRegExp = settings.regex.youtube;
     },
 
     render: function() {

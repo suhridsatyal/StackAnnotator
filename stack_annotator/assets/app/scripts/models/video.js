@@ -2,20 +2,24 @@
 define([
   'jquery',
   'underscore',
-  'backbone'
-], function($, _, Backbone){
+  'backbone',
+  'config'
+], function($, _, Backbone, settings){
     var Video = Backbone.Model.extend({
         idAttribute: "id",
-        urlRoot: 'http://stackannotator.com/api',
         post: function() {
             var self = this;
-            return $.post(this.urlRoot + '/videos', self.attributes).done(function(data){
-                   console.log(data);
-            });
+            var postUrl = settings.stackannotator.api_url_root + settings.stackannotator.video_post_endpoint;
+            return $.post(postUrl, self.attributes).done(
+              function(data){
+                 console.log(data);
+              }
+            );
         },
         incrementAttr: function(attrType) {
             var self = this;
-            return $.post(this.urlRoot + '/video/' + this.id +'/' + attrType).done(function(data) {
+            var postUrl = settings.stackannotator.api_url_root + settings.stackannotator.video_increment_resource_endpoint;
+            return $.post(postUrl + '/' + this.id +'/' + attrType).done(function(data) {
                 //self.set(attrType+'s', data[attrType+'s']);
                 self.set(data);
             });

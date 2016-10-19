@@ -15,8 +15,9 @@ require.config({
     backboneValidation: '../bower_components/backbone-validation',
     bootstrap: '../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.min',
     'bootstrap/popover':    '../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/popover',
-    'bootstrap/tooltip':    '../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip'
-    }
+    'bootstrap/tooltip':    '../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip',
+    config: 'config'
+  }
 
 });
 
