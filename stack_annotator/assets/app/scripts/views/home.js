@@ -11,6 +11,8 @@ define([
       el: $('.container_load'),
       events: {
           'click #submitButton': 'onSubmitURL',
+          'keyup #urlField' : 'onKeyPressEvent',
+          'keypress #urlField' : 'onKeyPressEvent',
           'input #urlField': 'onURLChange'
       },
       urlRegex: new RegExp(
@@ -26,6 +28,14 @@ define([
         var nextURL = 'question/' + match[2];
         Backbone.history.navigate(nextURL, true);
       },
+      onKeyPressEvent: function(e){
+        if(e === null) return
+
+        var keyCode = e.keyCode || e.which;
+        if(keyCode == 13){
+            this.onSubmitURL(e);
+        }
+      },
       render: function() {
           this._cleanupPopover();
           var data = {};
@@ -36,6 +46,7 @@ define([
         $(".popover").remove();
         $("#annotate-tooltip").remove();
       },
+      
   });
 
 

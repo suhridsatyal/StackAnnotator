@@ -380,10 +380,13 @@ h3.videoScore{
 }
 
 .popover-content {
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 14px;
-  padding-top: 16px;
+  padding-left: 17px;
+  padding-right: 17px;
+  padding-bottom: 13px;
+  padding-top: 14px;
+}
+#tooltipMenu {
+  margin-top: 5px;
 }
 
 #taskTypeMenu {
@@ -396,27 +399,31 @@ h3.videoScore{
 }
 
 .buttonDivider {
-  width: 1px;
+  width: 3px;
   height: auto;
   display: inline-block;
 }
 
-.popover-content > .btn-success, 
+#tooltipMenu > .btn-success, 
 #taskTypeMenu > .btn-success,
-.popover-content >.btn-success:focus,
-.popover-content >.btn-success.focus,
+#tooltipMenu >.btn-success:focus,
+#tooltipMenu >.btn-success.focus,
 #taskTypeMenu >.btn-success:focus,
 #taskTypeMenu >.btn-success.focus {
   border-color: $theme_color_2;
   border-radius: 5px;
 }
 
-.popover-content > .btn-success > .glyphicon {
+#tooltipMenu > .btn-success > .glyphicon {
   width: 12px;
   margin-left: -5px;
-  font-size: 1.2em;
-  margin-right: 8px;
+  font-size: 1.4em;
+  margin-right: 9px;
   color: $theme_color_2;
+}
+
+.form-group > #submitButton{
+  margin-top: 4px;
 }
 
 .modal-content{
