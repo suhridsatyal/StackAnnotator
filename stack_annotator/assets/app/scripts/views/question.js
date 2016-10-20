@@ -351,13 +351,17 @@ define([
           if (answer.answer_id == annotation.answer_id) {
             if (annotation.videos.length) {
                 annotationClass = 'highlighted'
-            } else if (annotation.understand_count < REPORT_ANNOTATION_MAX_COUNT) { //Prob should change to a magic number
-                annotationClass = 'soft_highlighted'
-            }
-            answer.body = answer.body.replace(annotation.keyword,
+                answer.body = answer.body.replace(annotation.keyword,
                                               "<annotation class='"+ annotationClass + "'" +
                                               "id=" + annotation.id + ">" +
                                               annotation.keyword + "</annotation>");
+            } else if (annotation.understand_count < REPORT_ANNOTATION_MAX_COUNT) { //Prob should change to a magic number
+                annotationClass = 'soft_highlighted'
+                answer.body = answer.body.replace(annotation.keyword,
+                                              "<annotation class='"+ annotationClass + "'" +
+                                              "id=" + annotation.id + ">" +
+                                              annotation.keyword + "</annotation>");
+            }
           }
         });
       });
