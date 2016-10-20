@@ -3,7 +3,7 @@ define([], function() {
     var Config = {
         stackoverflow: {
             url_root:'https://api.stackexchange.com/2.2/questions/',
-            question_query: '?order=desc&sort=activity&site=stackoverflow&filter=withbody&key=',
+            question_query: '?order=desc&sort=activity&site=stackoverflow&filter=withbody',
             answer_query: '/answers?order=desc&sort=activity&site=stackoverflow&filter=withbody',
             //key: '' //provide a key if you want to access more than 300 stackOverflow requests per day
         },
