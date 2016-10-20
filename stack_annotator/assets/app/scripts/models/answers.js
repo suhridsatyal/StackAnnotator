@@ -3,13 +3,13 @@ define([
   'underscore',
   'backbone',
   'config'
-], function($, _, Backbone, settings){
+], function($, _, Backbone, Config){
     var Answers = Backbone.Model.extend({
         //model: Answer,
         url: function() {
-            var url = settings.stackoverflow.url_root +
+            var url = Config.stackoverflow.url_root +
               this.get("post") +
-              settings.stackoverflow.answer_query + settings.stackoverflow.key;
+              Config.stackoverflow.answer_query + Config.stackoverflow.key;
             return url;
         }
         ,

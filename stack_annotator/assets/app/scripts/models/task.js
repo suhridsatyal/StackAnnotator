@@ -3,13 +3,13 @@ define([
   'underscore',
   'backbone',
   'config'
-], function($, _, Backbone, settings){
+], function($, _, Backbone, Config){
     var Task = Backbone.Model.extend({
         idAttribute: "id",
         
         post: function() {
             var self = this;
-            var postUrl = settings.stackannotator.api_url_root + settings.stackannotator.task_post_endpoint;
+            var postUrl = Config.stackannotator.api_url_root + Config.stackannotator.task_post_endpoint;
             return $.post(postUrl, self.attributes).done(
                     function(data){
                         console.log(data);

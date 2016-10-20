@@ -3,7 +3,7 @@ define([
   'underscore',
   'backbone',
   'config'
-], function($, _, Backbone, settings){
+], function($, _, Backbone, Config){
     var Annotation = Backbone.Model.extend({
         idAttribute: "id"
     });
@@ -11,7 +11,7 @@ define([
     var Annotations = Backbone.Collection.extend({
         model: Annotation,
         url: function() {
-            var url = settings.stackannotator.api_url_root + settings.stackannotator.annotation_post_endpoint;
+            var url = Config.stackannotator.api_url_root + Config.stackannotator.annotation_post_endpoint;
             return url;
         },
         post: function(data) {

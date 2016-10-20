@@ -20,14 +20,14 @@ define([
 ], function($, _, Backbone,
   QuestionModel, AnswerCollection, AnnotationCollection, TaskModel, VideoModel,
   questionTemplate, tooltipTemplate, taskRequestTemplate, annotationsTemplate, commentboxTemplate,
-  CommonUtils, settings) {
+  CommonUtils, Config) {
 
   var QuestionView = Backbone.View.extend({
     el: $('.container_load'),
     initialize: function(options) {
       this.options = options || {};
       this.options.selectedText = "";
-      this.options.youtubeRegExp = settings.regex.youtube;
+      this.options.youtubeRegExp = Config.regex.youtube;
     },
 
     render: function() {
@@ -236,12 +236,12 @@ define([
       var parentDiv = $(range.commonAncestorContainer.parentNode).closest("div");
       var answerID = parentDiv.attr("id");
       var self = this;
-      this._attachAnnotationSubmissionHandlers(answerID, this.options.selectedText);
 
       // Attach event to popover button.
       $("#backToTooltipMenuBtn").on("click", function(event) {
         self.onHighlight();
       });
+      this._attachAnnotationSubmissionHandlers(answerID, this.options.selectedText);
     },
 
     onHelp: function() {
@@ -433,6 +433,9 @@ define([
     },
 
     _attachAnnotationSubmissionHandlers: function(answerID, keyword) {
+      console.log("answerId:" + answerID);
+      console.log("keyword:" + keyword);
+      
       // Attach events to popover buttons.
       var self=this;
       $("#urlField").on("input", function(event) {

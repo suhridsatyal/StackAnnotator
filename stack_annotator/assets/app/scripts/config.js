@@ -1,10 +1,11 @@
 define([], function() {
-    return {
+
+    var Config = {
         stackoverflow: {
             url_root:'https://api.stackexchange.com/2.2/questions/',
             question_query: '?order=desc&sort=activity&site=stackoverflow&filter=withbody&key=',
-            answer_query: '/answers?order=desc&sort=activity&site=stackoverflow&filter=withbody&key=',
-            key: 'L30zaZ1PnRBr57w8wAxBMQ(('
+            answer_query: '/answers?order=desc&sort=activity&site=stackoverflow&filter=withbody',
+            //key: '' //provide a key if you want to access more than 300 stackOverflow requests per day
         },
         stackannotator: {
             url_root: 'http://stackannotator.com',
@@ -18,6 +19,11 @@ define([], function() {
         regex: {
             stackoverflow: '^(https?:\/\/)?stackoverflow\.com\/questions\/([0-9]+)(\/[-a-z\d%_.~+]*)*',
             youtube: /^https?\:\/\/www\.youtube\.com\/watch\?v\=([\w-]+)(?:&t=(\w+))?$/g
+        },
+        keyboard_codes: {
+            enter: 13
         }
     };
+
+    return Config;
 });
