@@ -344,13 +344,14 @@ define([
 
     _annotateAnswers: function(answers, annotations) {
       // Surrounds annotated text with span, with id=annotation id
+      var REPORT_ANNOTATION_MAX_COUNT = 3;
       var annotationClass;
       _.each(annotations, function(annotation) {
         _.each(answers, function(answer) {
           if (answer.answer_id == annotation.answer_id) {
             if (annotation.videos.length) {
                 annotationClass = 'highlighted'
-            } else {
+            } else if (annotation.understand_count < REPORT_ANNOTATION_MAX_COUNT) { //Prob should change to a magic number
                 annotationClass = 'soft_highlighted'
             }
             answer.body = answer.body.replace(annotation.keyword,
