@@ -7,7 +7,7 @@
     <% } %>
   <% } %>
   
-  <% if (typeof message !== 'undefined' ) { %>
+  <% if (typeof message === 'string' ) { %>
     <label for="url" class="control-label"> <%= message %></label>
   <% } %>
   <div class="">
