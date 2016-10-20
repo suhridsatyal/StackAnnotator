@@ -13,7 +13,8 @@ define([], function() {
             video_get_endpoint: '/video',
             video_increment_resource_endpoint: '/video',    
             task_post_endpoint: '/tasks',   
-            annotation_post_endpoint: '/annotations'
+            annotation_post_endpoint: '/annotations',
+            annotation_increment_resource_endpoint: '/annotation',  
         },
         regex: {
             stackoverflow: '^(https?:\/\/)?stackoverflow\.com\/questions\/([0-9]+)(\/[-a-z\d%_.~+]*)*',
