@@ -42,6 +42,7 @@ define([
         post: this.options.post
       });
       var annotations = new AnnotationCollection();
+      
       $.when(question.fetch(),
           answers.fetch(),
           annotations.fetch({
@@ -58,12 +59,6 @@ define([
 
           var compiledTemplate = _.template(questionTemplate);
           self.$el.empty().append(compiledTemplate(data));
-
-          //
-          $("#helpButton").on("click", function(event) {
-            console.log("testing")
-            self.onHelp();
-          });
 
           if (self.options.answerID) {
             // Scroll to answer
@@ -95,7 +90,6 @@ define([
       'mouseup .answer-item': 'onHighlight',
       'mousedown #questionview': 'onDeselect',
       'mouseover annotation': 'onAnnotationHover'
-      //'click #helpButton': 'onHelp'
     },
 
     onHighlight: function() {
