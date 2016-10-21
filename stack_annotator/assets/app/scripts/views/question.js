@@ -58,6 +58,13 @@ define([
 
           var compiledTemplate = _.template(questionTemplate);
           self.$el.empty().append(compiledTemplate(data));
+
+          //
+          $("#helpButton").on("click", function(event) {
+            console.log("testing")
+            self.onHelp();
+          });
+
           if (self.options.answerID) {
             // Scroll to answer
             var answerElem = "#" + self.options.answerID;
@@ -87,7 +94,8 @@ define([
     events: {
       'mouseup .answer-item': 'onHighlight',
       'mousedown #questionview': 'onDeselect',
-      'mouseover annotation': 'onAnnotationHover'
+      'mouseover annotation': 'onAnnotationHover',
+      //'click #helpButton': 'onHelp'
     },
 
     onHighlight: function() {
@@ -242,7 +250,7 @@ define([
     },
 
     onHelp: function() {
-      console.log("TODO: show help");
+      $('#helpModal').modal('show');
     },
 
 
@@ -432,7 +440,7 @@ define([
     _attachAnnotationSubmissionHandlers: function(answerID, keyword) {
       console.log("answerId:" + answerID);
       console.log("keyword:" + keyword);
-      
+
       // Attach events to popover buttons.
       var self=this;
       $("#urlField").on("input", function(event) {

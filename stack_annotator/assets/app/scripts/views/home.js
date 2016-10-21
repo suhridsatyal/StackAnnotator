@@ -13,6 +13,7 @@ define([
       el: $('.container_load'),
       events: {
           'click #submitButton': 'onSubmitURL',
+          //'click #helpButton': 'onHelp',
           'keyup #urlField' : 'onKeyPressEvent',
           'keypress #urlField' : 'onKeyPressEvent', //we have both events due to possible browser differences
           'input #urlField': 'onURLChange'
@@ -37,10 +38,18 @@ define([
             this.onSubmitURL(e);
         }
       },
+      onHelp: function() {
+        console.log("TODO: show help");
+        $('#helpModal').modal('show');
+      },
       render: function() {
           this._cleanupPopover();
           var data = {};
           var compiledTemplate = _.template(homeTemplate, data);
+          //for some reason I cannot attach this to the events
+          $("#helpButton").on("click", function(event) {
+            self.onHelp();
+          });
           this.$el.empty().append(compiledTemplate);
       },
       _cleanupPopover: function() {
