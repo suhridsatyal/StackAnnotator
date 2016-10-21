@@ -27,7 +27,7 @@ define([
     initialize: function(options) {
       this.options = options || {};
       this.options.selectedText = "";
-      this.options.youtubeRegExp = Config.regex.youtube;
+      this.options.youtubeRegExp = '/^https?\:\/\/www\.youtube\.com\/watch\?v\=([\w-]+)(?:&t=(\w+))?$/g';
     },
 
     render: function() {
@@ -125,9 +125,6 @@ define([
         });
         $("#commentBtn").on("click", function(event) {
           self.onComment();
-        });
-        $("#helpBtn").on("click", function(event) {
-          self.onHelp();
         });
       } else {        
         this._cleanupPopover();

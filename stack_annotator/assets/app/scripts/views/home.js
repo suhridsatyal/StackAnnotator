@@ -9,6 +9,7 @@ define([
   'config'
 ], function($, _, Backbone, homeTemplate, CommonUtils, Config){
   var HomeView = Backbone.View.extend({
+      KEYBOARD_CODE_ENTER: 13,
       el: $('.container_load'),
       events: {
           'click #submitButton': 'onSubmitURL',
@@ -16,7 +17,7 @@ define([
           'keypress #urlField' : 'onKeyPressEvent', //we have both events due to possible browser differences
           'input #urlField': 'onURLChange'
       },
-      urlRegex: new RegExp(Config.regex.stackoverflow),
+      urlRegex: new RegExp('^(https?:\/\/)?stackoverflow\.com\/questions\/([0-9]+)(\/[-a-z\d%_.~+]*)*'),
 
       onURLChange: function(e) {
         CommonUtils.onURLChange('#urlField', this.urlRegex);
@@ -32,7 +33,7 @@ define([
         if(e === null) return
 
         var keyCode = e.keyCode || e.which;
-        if(keyCode == Config.keyboard_codes.enter){ 
+        if(keyCode == this.KEYBOARD_CODE_ENTER){ 
             this.onSubmitURL(e);
         }
       },

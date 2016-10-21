@@ -15,13 +15,6 @@ define([], function() {
             video_increment_resource_endpoint: '/video',    
             task_post_endpoint: '/tasks',   
             annotation_post_endpoint: '/annotations'
-        },
-        regex: {
-            stackoverflow: '^(https?:\/\/)?stackoverflow\.com\/questions\/([0-9]+)(\/[-a-z\d%_.~+]*)*',
-            youtube: /^https?\:\/\/www\.youtube\.com\/watch\?v\=([\w-]+)(?:&t=(\w+))?$/g
-        },
-        keyboard_codes: {
-            enter: 13
         }
     };
 
