@@ -27,7 +27,7 @@ define([
     initialize: function(options) {
       this.options = options || {};
       this.options.selectedText = "";
-      this.options.youtubeRegExp = '/^https?\:\/\/www\.youtube\.com\/watch\?v\=([\w-]+)(?:&t=(\w+))?$/g';
+      this.options.youtubeRegExp = /^https?\:\/\/www\.youtube\.com\/watch\?v\=([\w-]+)(?:&t=(\w+))?$/g;
     },
 
     render: function() {
@@ -94,7 +94,7 @@ define([
     events: {
       'mouseup .answer-item': 'onHighlight',
       'mousedown #questionview': 'onDeselect',
-      'mouseover annotation': 'onAnnotationHover',
+      'mouseover annotation': 'onAnnotationHover'
       //'click #helpButton': 'onHelp'
     },
 
