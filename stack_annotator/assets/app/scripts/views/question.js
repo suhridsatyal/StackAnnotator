@@ -261,6 +261,7 @@ define([
 
       var youtubeVideos = [];
       var videos = annotations.get(annotationID).get('videos');
+      var description = annotations.get(annotationID).get('description');
       var popoverTemplate;
 
       if (videos.length > 0) {
@@ -274,7 +275,8 @@ define([
         });
         var annotationData = {
           id: annotationID,
-          videos: videos
+          videos: videos,
+          description: description
         };
         popoverTemplate = _.template(annotationsTemplate)(annotationData);
         $("#annotate-tooltip").popover({
@@ -301,7 +303,8 @@ define([
 
      } else {
         // Show comment box
-        popoverTemplate = _.template(commentboxTemplate) ({message: "Annotate"});
+        var description = "Please Add " + annotations.get(annotationID).get('description') + " Videos";
+        popoverTemplate = _.template(commentboxTemplate) ({message: description});
         $("#annotate-tooltip").popover({
           trigger: 'focus', container: 'body', placement: 'right', content: popoverTemplate, html: true
         }).popover('show');

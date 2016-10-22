@@ -7,6 +7,7 @@ class Annotation(models.Model):
     answer_id = models.IntegerField(blank=False)
     keyword = models.CharField(max_length=20, blank=False)
     understand_count = models.IntegerField(default=0)
+    description = models.CharField(max_length=20, blank=False, default='Explanation')
 
     def __unicode__(self):
         return "<Annotation: %s>" % self.pk

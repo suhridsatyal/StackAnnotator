@@ -199,6 +199,18 @@ class TaskListView(APIView):
         tweet = tweet.format(keyword, url)
         return tweet
 
+    def create_annotation_description(self, task_type):
+        description = ""
+        if task_type == self.TASK_TYPE_DETAILS:
+            description = "Explanation"
+
+        elif task_type == self.TASK_TYPE_TUTORIAL:
+            description = "Tutorial"
+
+        elif task_type == self.TASK_TYPE_USAGE:
+            description = "Usage"
+
+        return description
 
     def post(self, request, format=None):
         required_fields = ['question_id', 'answer_id', 'annotation_url',
@@ -220,6 +232,7 @@ class TaskListView(APIView):
         newAnnotation.question_id = request.data['question_id']
         newAnnotation.answer_id = request.data['answer_id']
         newAnnotation.keyword = request.data['keyword']
+        newAnnotation.description = self.create_annotation_description(taskType)
         newAnnotation.save()
 
         # append and shorten url
