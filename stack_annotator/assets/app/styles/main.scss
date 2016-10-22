@@ -2,7 +2,7 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/assets/fonts/bootstr
 
 @import 'https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Lobster+Two|Open+Sans|Inconsolata|Dosis|Cantarell';
 @import 'bootstrap-sass-official/assets/stylesheets/bootstrap.scss';
-
+@import '//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css';
 //for easy experimentation
 
 //Theme 1 (Van Gough Museum)
@@ -159,7 +159,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 #helpButton{
-  align: bottom;
+  text-align: bottom;
 }
 
 .red, .red a {
@@ -290,7 +290,7 @@ fieldset[disabled] .btn-success.active.focus
 }
 
 .question {
-  margin-bottom: 55px;
+  margin-bottom: 45px;
 }
 
 .answers {
@@ -433,6 +433,13 @@ h3.videoScore{
 #taskTypeMenu >.btn-success.focus {
   border-color: $theme_color_2;
   border-radius: 5px;
+  text-align: left;
+}
+
+.tooltipHeader {
+  text-align: left;
+  margin-top: 5px;
+  padding-bottom: 5px;
 }
 
 #tooltipMenu > .btn-success > .glyphicon {
@@ -442,11 +449,11 @@ h3.videoScore{
   margin-right: 10px;
   color: $theme_color_2;
 }
-
+/*
 #tooltipMenu > .btn-success > .glyphicon:hover {
   color: $theme_color_1;
 }
-
+*/
 .form-group > #submitButton{
   margin-top: 4px;
 }
