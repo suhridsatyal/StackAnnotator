@@ -87,6 +87,40 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   padding-top: 14px;
 }
 
+#helpQuestionImageOne {
+  height: 250px;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+  float: left;
+  padding: 10px;
+  padding-top: 0px;
+}
+
+#helpQuestionImageTwo {
+  height: 60px;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+  float: left;
+  padding: 10px;
+  padding-top: 0px;
+}
+
+.helpModalHeader {
+  text-align: left;
+}
+
+.helpModalContainer {
+  float: left;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+.helpParagraph{
+  //float: left;
+}
+
 /* logo + navbar */
 #logoHighlight {
   background-color: $highlight_color;
