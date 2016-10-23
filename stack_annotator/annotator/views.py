@@ -47,11 +47,10 @@ class AnnotationListView(generics.ListCreateAPIView):
         request.POST._mutable = True
 
         video_data = request.data.get('videos', None)
-        print(video_data)
         videos = None
 
         if video_data:
-            videos = video_data
+            videos = json.loads(request.data.get('videos', None))
 
         request.data["videos"] = []
 
@@ -65,6 +64,7 @@ class AnnotationListView(generics.ListCreateAPIView):
         # Create video/videos
         if videos:
             annotation_id = int(serializer.data['id'])
+            videos_serialized = serializer.data['videos']
             # Can create multiple videos, may not be required
             for video in videos:
                 external_id = video["external_id"]
@@ -78,11 +78,11 @@ class AnnotationListView(generics.ListCreateAPIView):
                     new_video = {"annotation_id": annotation_id,
                                  "external_id": external_id}
 
-                videos = VideoSerializer(data=new_video)
-                if videos.is_valid():
-                    videos.save()
+                video_model = VideoSerializer(data=new_video)
+                if video_model.is_valid():
+                    video_model.save()
                 else:
-                    return Response(videos.errors,
+                    return Response(video_model.errors,
                                     status=status.HTTP_400_BAD_REQUEST)
         # Since it's a post, the data inside shouldn't matter too much
         # Will need to call get to return the correct data
