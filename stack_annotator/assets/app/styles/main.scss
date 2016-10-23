@@ -404,7 +404,7 @@ h4.acceptedAnswerSign{
 }
 
 h3.videoScore{
-  margin-top: 19px;
+  margin-top: 5px;
   margin-bottom: 5px;
 }
 
@@ -483,6 +483,15 @@ h3.videoScore{
   font-size: 1.4em;
   margin-right: 10px;
   color: $theme_color_2;
+}
+
+#annotationTypesMenu{
+  padding-bottom: 10px;
+}
+
+#annotationTypesMenu > .radio-inline > input[type="radio"]{
+  //padding: 5px;
+  margin-top: 0px;
 }
 /*
 #tooltipMenu > .btn-success > .glyphicon:hover {

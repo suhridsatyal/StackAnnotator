@@ -409,9 +409,6 @@ define([
     },
 
     _attachAnnotationSubmissionHandlers: function(answerID, keyword) {
-      console.log("answerId:" + answerID);
-      console.log("keyword:" + keyword);
-
       // Attach events to popover buttons.
       var self=this;
       $("#urlField").on("input", function(event) {
@@ -422,6 +419,18 @@ define([
       // Create an annotation with video
       $("#submitButton").on("click", function(event) {
           var youtubeURL =  $("#urlField").val();
+          var taskType = $("input:radio[name=annotationDescription]:checked").val();
+          var description;
+          //This is not strict, the user may insert inappropriate description  
+          //or using the API to add something different but this is handled with reporting annotations
+          if(taskType == 0){
+            description = "Explanation";
+          } else if (taskType == 1){
+            description = "Tutorial";
+          } else if (taskType == 2){
+            description = "Usage";
+          }
+
           var youtubeRegex = self.options.youtubeRegExp;
           var videoData = {}
           youtubeURL.replace(youtubeRegex, function (url, external_id, start_time) {
@@ -436,6 +445,7 @@ define([
           newAnnotation.question_id = self.options.post;
           newAnnotation.answer_id = answerID;
           newAnnotation.keyword = keyword;
+          newAnnotation.description = description;
           newAnnotation.videos = JSON.stringify([videoData]);
           $.when(annotationCollection.post(newAnnotation)).done(function() {
               self._cleanupPopover();
