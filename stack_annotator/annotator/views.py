@@ -50,7 +50,7 @@ class AnnotationListView(generics.ListCreateAPIView):
         videos = None
 
         if video_data:
-            videos = json.loads(request.data.get('videos', None))
+            videos = json.loads(video_data)
 
         request.data["videos"] = []
 
