@@ -16,7 +16,8 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 CORS_ORIGIN_WHITELIST = (
-    'www.stackannotator.com'
+    'www.stackannotator.com',
+    'stackannotator.com'
 )
 
 # Quick-start development settings - unsuitable for production

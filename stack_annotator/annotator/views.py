@@ -47,11 +47,14 @@ class AnnotationListView(generics.ListCreateAPIView):
         request.POST._mutable = True
 
         video_data = request.data.get('videos', None)
+<<<<<<< HEAD
         #print(video_data)
+=======
+>>>>>>> 101a13192ba16cccb809d693ce819a4eb2b20e62
         videos = None
 
         if video_data:
-            videos = video_data
+            videos = json.loads(video_data)
 
         request.data["videos"] = []
 
@@ -65,24 +68,31 @@ class AnnotationListView(generics.ListCreateAPIView):
         # Create video/videos
         if videos:
             annotation_id = int(serializer.data['id'])
+            videos_serialized = serializer.data['videos']
             # Can create multiple videos, may not be required
             for video in videos:
                 external_id = video["external_id"]
+
+                description = video["description"] if "description" in video \
+                              else "Explanation"
+
                 # Check if there is a start time
                 if "start_time" in video:
                     start_time = video["start_time"]
                     new_video = {"annotation_id": annotation_id,
                                  "external_id": external_id,
-                                 "start_time": start_time}
+                                 "start_time": start_time,
+                                 "description": description}
                 else:
                     new_video = {"annotation_id": annotation_id,
-                                 "external_id": external_id}
+                                 "external_id": external_id,
+                                 "description": description}
 
-                videos = VideoSerializer(data=new_video)
-                if videos.is_valid():
-                    videos.save()
+                video_model = VideoSerializer(data=new_video)
+                if video_model.is_valid():
+                    video_model.save()
                 else:
-                    return Response(videos.errors,
+                    return Response(video_model.errors,
                                     status=status.HTTP_400_BAD_REQUEST)
         # Since it's a post, the data inside shouldn't matter too much
         # Will need to call get to return the correct data
@@ -224,7 +234,10 @@ class TaskListView(APIView):
 
         # append and shorten url
         appended_url = request.data['annotation_url'] + "/" \
-                                                      + str(newAnnotation.id)
+                                                      + str(newAnnotation.id) \
+                                                      + "?taskType=" \
+                                                      + str(taskType)
+
         post_url_with_key = settings.POST_URLSHORTENER_GOOGLE_URL +\
                             "?key=" + settings.GOOGLE_URL_SHORTENER_KEY
         post_header = {'Content-Type': 'application/json'}
