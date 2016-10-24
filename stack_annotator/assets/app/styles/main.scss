@@ -2,7 +2,7 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/assets/fonts/bootstr
 
 @import 'https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Lobster+Two|Open+Sans|Inconsolata|Dosis|Cantarell';
 @import 'bootstrap-sass-official/assets/stylesheets/bootstrap.scss';
-
+@import '//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css';
 //for easy experimentation
 
 //Theme 1 (Van Gough Museum)
@@ -63,7 +63,7 @@ body {
   font-size: 14px;
   line-height: 1.42857143;
   color: black;
-  padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+  //padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
   margin-bottom: 150px;
 }
 
@@ -85,6 +85,40 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   padding-bottom: 2px;
   margin-right: 20px;
   padding-top: 14px;
+}
+
+#helpQuestionImageOne {
+  height: 250px;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+  float: left;
+  padding: 10px;
+  padding-top: 0px;
+}
+
+#helpQuestionImageTwo {
+  height: 60px;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+  float: left;
+  padding: 10px;
+  padding-top: 0px;
+}
+
+.helpModalHeader {
+  text-align: left;
+}
+
+.helpModalContainer {
+  float: left;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+.helpParagraph{
+  //float: left;
 }
 
 /* logo + navbar */
@@ -159,7 +193,7 @@ h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 }
 
 #helpButton{
-  align: bottom;
+  text-align: bottom;
 }
 
 .red, .red a {
@@ -290,7 +324,7 @@ fieldset[disabled] .btn-success.active.focus
 }
 
 .question {
-  margin-bottom: 55px;
+  margin-bottom: 45px;
 }
 
 .answers {
@@ -433,6 +467,13 @@ h3.videoScore{
 #taskTypeMenu >.btn-success.focus {
   border-color: $theme_color_2;
   border-radius: 5px;
+  text-align: left;
+}
+
+.tooltipHeader {
+  text-align: left;
+  margin-top: 5px;
+  padding-bottom: 5px;
 }
 
 #tooltipMenu > .btn-success > .glyphicon {
@@ -442,11 +483,11 @@ h3.videoScore{
   margin-right: 10px;
   color: $theme_color_2;
 }
-
+/*
 #tooltipMenu > .btn-success > .glyphicon:hover {
   color: $theme_color_1;
 }
-
+*/
 .form-group > #submitButton{
   margin-top: 4px;
 }

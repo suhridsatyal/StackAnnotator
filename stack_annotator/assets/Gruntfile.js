@@ -248,7 +248,7 @@ module.exports = function (grunt) {
           dest: '<%= yeoman.dist %>',
           src: [
             '*.{ico,txt}',
-            'images/{,*/}*.{webp,gif,jpg}',
+            'images/{,*/}*.{webp,gif,jpg,png}',
             'styles/fonts/{,*/}*.*',
             'bower_components/bootstrap-sass-official/assets/fonts/bootstrap/*.*'
           ]

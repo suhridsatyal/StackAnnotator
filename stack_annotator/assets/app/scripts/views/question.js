@@ -11,7 +11,6 @@ define([
   // Templates
   'text!../templates/question.html',
   'text!../templates/tooltip_menu.html',
-  'text!../templates/task_request_menu.html',
   'text!../templates/annotations.html',
   'text!../templates/commentbox.html',
   // Utils
@@ -19,7 +18,7 @@ define([
   'config'
 ], function($, _, Backbone,
   QuestionModel, AnswerCollection, AnnotationCollection, TaskModel, VideoModel,
-  questionTemplate, tooltipTemplate, taskRequestTemplate, annotationsTemplate, commentboxTemplate,
+  questionTemplate, tooltipTemplate, annotationsTemplate, commentboxTemplate,
   CommonUtils, Config) {
 
   var QuestionView = Backbone.View.extend({
@@ -122,9 +121,22 @@ define([
         $(".arrow").css({"visibility": "hidden"});
 
         // Attach events to popover buttons.
+        /*
         $("#crowdsourceBtn").on("click", function(event) {
           self.onCrowdsourceMenuSelect();
         });
+        */
+        //requests
+        $("#crowdsourceDetailsBtn").on("click", function(event) {
+          self.onCrowdsource(0); //TODO: remove magic numbers
+        });
+        $("#crowdsourceTutorialBtn").on("click", function(event) {
+          self.onCrowdsource(1);
+        });
+        $("#crowdsourceUsageBtn").on("click", function(event) {
+          self.onCrowdsource(2);
+        });
+
         $("#commentBtn").on("click", function(event) {
           self.onComment();
         });
@@ -141,44 +153,6 @@ define([
       var answerDiv = $(evt.target).closest("div")
       var answerID = answerDiv.attr("id");
       this._showYoutubeURL(evt.target.id, this.annotations, answerID);
-    },
-
-    onCrowdsourceMenuSelect: function() {
-      this._cleanupPopover();
-      var rects=this._getSelectionRects();
-      if (rects==undefined) {
-          return;
-      }
-
-      var self = this;
-      
-      $("#annotate-tooltip").popover({
-        trigger: 'focus',
-        container: 'body',
-        placement: 'bottom',
-        content: _.template(taskRequestTemplate)(),
-        html: true
-      }).popover('show');
-      $(".popover").css({
-        top: rects.bottom,
-        left: rects.left,
-        transform: ''
-      }).show();
-      $(".arrow").css({"visibility": "hidden"});
-
-      // Attach events to popover buttons.
-      $("#backToTooltipMenuBtn").on("click", function(event) {
-        self.onHighlight();
-      });
-      $("#crowdsourceDetailsBtn").on("click", function(event) {
-        self.onCrowdsource(0); //TODO: remove magic numbers
-      });
-      $("#crowdsourceTutorialBtn").on("click", function(event) {
-        self.onCrowdsource(1);
-      });
-      $("#crowdsourceUsageBtn").on("click", function(event) {
-        self.onCrowdsource(2);
-      });
     },
 
     onCrowdsource: function(task_type) {
