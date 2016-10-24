@@ -606,21 +606,31 @@ class TaskAPITests(TestCase):
 
     def test_get_task_by_id(self):
         """ Should get task by id """
-        url = '/api/tasks/' + str(self.firstTask.id)
-        response = self.client.get("/api/task/1/")
+        url = '/api/task/' + str(self.firstTask.pk) +'/'
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        expected_output = '{"id":%s,"tweet_id":"1","task_type":0,"annotation":1,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"}' % str(self.firstTask.id)
+        #expected_output = '{"id":%s,"tweet_id":"1","task_type":0,"annotation":1,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"}' % str(self.firstTask.id)
 
-        self.assertEqual(response.content, expected_output)
+        #Convert json to list
+        response_list = json.loads(response.content)
+
+        self.assertEqual(response_list['id'], self.firstTask.pk)
 
 
     def test_get_all_tasks(self):
         """ Should get all tasks """
         response = self.client.get('/api/tasks')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.content,
-                '[{"id":1,"tweet_id":"1","task_type":0,"annotation":1,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"},{"id":2,"tweet_id":"2","task_type":0,"annotation":2,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"},{"id":3,"tweet_id":"3","task_type":0,"annotation":3,"created_on":"2016-12-12T12:12:12Z","checked_on":"2016-12-12T12:12:12Z"}]')
 
+        #Convert json to list
+        response_list = json.loads(response.content)
+
+        #Check list size is 3
+        self.assertEqual(len(response_list), 3)
+
+        for items in response_list:
+            if not items['id']==self.firstTask.pk and not items['id']==self.secondTask.pk and not items['id']==self.thirdTask.pk:
+                assert False
 
     def test_get_fail_task(self):
         """ Should fail because bad ids are provided """
@@ -648,8 +658,22 @@ class TaskAPITests(TestCase):
 
         response = client.post('/api/tasks', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.content,
-               '{"id":4,"tweet_id":"1","task_type":0,"annotation":4,"created_on":"2012-08-29 17:12:58","checked_on":"2012-08-29 17:12:58"}' )
+        
+        #Convert json to list
+        response_list = json.loads(response.content)
+
+        new_item_id = response_list['id']
+
+        response = client.get('/api/task/'+str(new_item_id)+'/', data)
+
+        #Convert json to list
+        response_list = json.loads(response.content)
+        #print(response_list)
+        self.assertEqual(response_list['task_type'], 0)
+        self.assertEqual(response_list['created_on'], "2012-08-29T17:12:58Z")
+
+        #self.assertEqual(response.content,
+               #'{"id":4,"tweet_id":"1","task_type":0,"annotation":4,"created_on":"2012-08-29 17:12:58","checked_on":"2012-08-29 17:12:58"}' )
 
 
     def test_post_task_fail(self):

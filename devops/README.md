@@ -1,9 +1,18 @@
-Docker container setup
-----------------------
-
-Test, Demo, or Production
+Deployment
 -------------------------
-`TODO`
+Execute the following steps:
+
+ - `docker pull ubuntu:16.04`
+ - `cd devops; make`
+ - `./deploy.sh`
+
+To change settings (e.g. Access Tokens), enter the container's teminal with
+following command:
+
+`docker exec -i -t stackannotator /bin/bash`
+
+For troubleshooting, check `Dockerfile`
+
 
 Development Environment
 -----------------------
@@ -27,38 +36,23 @@ Development Environment
 
 
 Development Workflow
---------------------
+=====================
 
 - Start the container
 
-- Change code on your host
-
-- Perform general deployment operations inside container
-  e.g. `make`, `python manage.py collectstatic`
+- Change code on your host.
+  Use your keys to twitter, google, and stackoverflow in django and backbone
+  setting files.
 
 - Put the following line in `/etc/hosts`
   `127.0.1.1	stackannotator.com www.stackannotator.com`
   Then visit `stackannotator.com`.
 
-- If you want to work with django development server,
+- To work with django development server,
   run `stack_annotator/run_dev` inside container. Make sure that
-  nginx service is stopped. Using dev server is essential if you
-  want to work with front-end independently on your host.
+  nginx service is stopped. 
 
 - If you want to work on the front-end independently, go to
   `stack_annotator/assets` on your host, and execute `grunt serve`.
-
-
-Troubleshooting
----------------
-1. Application at **`0.0.0.0:8000` cannot be accessed.**
-     
-    Inside the container, execute `supervisord` then `service nginx start`
-
-
-TODOS
------
-- Postgres setup
-- Mechanism for db backup restoration
-- Upload image to docker registry
-
+  If you want to serve frontend from the container, execute 
+  `make` in `stack_annotator/assets` inside the container.

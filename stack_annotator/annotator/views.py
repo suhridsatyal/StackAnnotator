@@ -47,6 +47,10 @@ class AnnotationListView(generics.ListCreateAPIView):
         request.POST._mutable = True
 
         video_data = request.data.get('videos', None)
+<<<<<<< HEAD
+=======
+        #print(video_data)
+>>>>>>> switchtopost
         videos = None
 
         if video_data:

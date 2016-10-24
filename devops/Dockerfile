@@ -1,5 +1,7 @@
 FROM ubuntu:16.04
-
+LABEL "name" ="StackAnnotator"\
+      "version" ="1.0" \
+      "description" ="Video Enhancements for StackOverflow"
 
 RUN apt-get update && apt-get install -y\
     sudo python python-dev python-pip build-essential python3-dev \
@@ -31,6 +33,20 @@ RUN /etc/init.d/postgresql start &&\
     psql --command "CREATE USER django WITH SUPERUSER PASSWORD 'django';" &&\
     createdb -O django django
 
+# Adjust PostgreSQL configuration so that remote connections to the
+# database are possible.
+RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/9.5/main/pg_hba.conf
+
+# And add ``listen_addresses`` to ``/etc/postgresql/9.5/main/postgresql.conf``
+RUN echo "listen_addresses='*'" >> /etc/postgresql/9.5/main/postgresql.conf
+
+# Expose the PostgreSQL port
+EXPOSE 5432
+
+# Add VOLUMEs to allow backup of config, logs and databases
+RUN mkdir -p /var/run/postgresql && chown -R postgres /var/run/postgresql
+VOLUME  ["/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
+
 USER root
 RUN ln -sf /opt/StackAnnotator/devops/cmd_config/.vimrc ~/.vimrc
 
@@ -46,8 +62,13 @@ RUN mkdir /etc/uwsgi &&\
 RUN pip install supervisor &&\
     ln -sf /opt/StackAnnotator/devops/server_config/supervisord.conf /etc/supervisord.conf
 
+# Setup
+RUN cd /opt/StackAnnotator/stack_annotator/ && \
+    python manage.py migrate && \
+    python manage.py collectstatic --noinput
+
 EXPOSE 80
 
-CMD ["sudo service nginx start"]
-CMD ["sudo supervisord"]
-CMD ["/bin/bash"]
+ADD ["container_init.sh", "start.sh"] 
+CMD ["/bin/bash", "start.sh"]
+
