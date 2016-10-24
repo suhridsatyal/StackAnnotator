@@ -23,6 +23,7 @@ def index(request):
 
 
 class AnnotationListView(generics.ListCreateAPIView):
+    """Get and post endpoint for annotations"""
     model = Annotation
     serializer_class = AnnotationSerializer
     paginate_by = 50
@@ -67,6 +68,7 @@ class AnnotationListView(generics.ListCreateAPIView):
             annotation_id = int(serializer.data['id'])
             # Can create multiple videos, may not be required
             for video in videos:
+                #print("received " + video)
                 external_id = video["external_id"]
                 # Check if there is a start time
                 if "start_time" in video:
@@ -89,13 +91,15 @@ class AnnotationListView(generics.ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class AnnotationView(generics.RetrieveUpdateAPIView):
+class AnnotationView(generics.RetrieveAPIView):
+    """Get API endpoint for Annotation"""
     queryset = Annotation.objects.all()
     serializer_class = AnnotationSerializer
 
 
 @api_view(['POST'])
 def flag_annotation(request, pk):
+    """Post endpoint to increment understand_count"""
     try:
         annotation = Annotation.objects.get(pk=pk)
         annotation.understand_count = annotation.understand_count + 1
@@ -107,12 +111,14 @@ def flag_annotation(request, pk):
 
 
 class VideoListView(generics.ListCreateAPIView):
+    """Get and post endpoint for videos"""
     model = Video
     serializer_class = VideoSerializer
     paginate_by = 50
 
     def get_queryset(self, **kwargs):
         queryset = Video.objects.all()
+        #Allow filtering of videos by annotation id
         annotation_id = self.request.query_params.get('annotation_id', None)
         try:
             if annotation_id:
@@ -145,12 +151,14 @@ class VideoListView(generics.ListCreateAPIView):
 
 
 class VideoView(generics.RetrieveUpdateAPIView):
+    """Get and put endpoint for video"""
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
 
 
 @api_view(['POST'])
 def upvote_video(request, pk):
+    """Post endpoint to allow increment of upvote of video"""
     try:
         video = Video.objects.get(pk=pk)
         video.upvotes = video.upvotes + 1
@@ -163,6 +171,7 @@ def upvote_video(request, pk):
 
 @api_view(['POST'])
 def downvote_video(request, pk):
+    """Post endpoint to allow increment of downvote of video"""
     try:
         video = Video.objects.get(pk=pk)
         video.downvotes = video.downvotes + 1
@@ -175,6 +184,7 @@ def downvote_video(request, pk):
 
 @api_view(['POST'])
 def flag_video(request, pk):
+    """Post endpoint to allow increment of flag of video"""
     try:
         video = Video.objects.get(pk=pk)
         video.flags = video.flags + 1
@@ -186,6 +196,7 @@ def flag_video(request, pk):
 
 
 class TaskListView(APIView):
+    """Get and post endpoint for tasks"""
     TASK_TYPE_DETAILS = 0
     TASK_TYPE_TUTORIAL = 1
     TASK_TYPE_USAGE = 2
@@ -193,6 +204,13 @@ class TaskListView(APIView):
 
     def create_message(self, keyword, task_type, url):
         # Tweet V3
+        """Creates the tweet for twitter
+
+        Keyword arguments:
+        keyword -- the keyword of the task
+        task_type -- the type of task
+        url -- the url to redirect to
+        """
         if task_type == self.TASK_TYPE_DETAILS:
             tweet = "Help the community understand \"{}\" by " +\
                     "enriching #stackoverflow with youtube videos " +\
@@ -235,6 +253,7 @@ class TaskListView(APIView):
         newAnnotation.save()
 
         # append and shorten url
+        """
         appended_url = request.data['annotation_url'] + "/" \
                                                       + str(newAnnotation.id)
         post_url_with_key = settings.POST_URLSHORTENER_GOOGLE_URL +\
@@ -268,11 +287,11 @@ class TaskListView(APIView):
             # remove annotation we just created
             newAnnotation.delete()
             return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
-        
+        """
         # create a new task
         task = Task()
-        task.tweet_id = tweet_info['id']
-        #task.tweet_id = 5
+        #task.tweet_id = tweet_info['id']
+        task.tweet_id = 5
         task.annotation_id = newAnnotation.id
         task.task_type = taskType
         task.created_on = task.checked_on = timezone.now()
@@ -289,5 +308,6 @@ class TaskListView(APIView):
 
 
 class TaskView(generics.RetrieveAPIView):
+    """Get endpoint for task"""
     queryset = Task.objects.all()
     serializer_class = TaskSerializer

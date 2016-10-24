@@ -303,36 +303,25 @@ class AnnotationAPITests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
-    def test_update_understand_annotation(self):
+    def _test_annotation_metadata_increment(self):
         """
-        Should update annotations
+        Should update understand_count of an annotation
         """
+        first = create_annotation(1, 2, "fiesty")
         client = APIClient()
 
-        first = create_annotation(1, 1, "fiesty")
-        first_id = first.pk
-        response = self.client.get('/api/annotation/'+str(first_id)+'/', format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        #Convert json to dict
+        response_list = json.loads(response.content)
 
-        #Convert json to list
+        annotation_id = first.pk
+
+        response = client.post('/api/annotation/'+str(annotation_id)+'/understand_count', format='json')
         response_dict = json.loads(response.content)
-        #Check that it is initialized to 0
-        self.assertEqual(response_dict['understand_count'], 0)
+        self.assertEquals(response_dict[metadata_type], 1)
 
-        #Update the understand count
-        data = {"understand_count":"5"}
-        response = client.patch('/api/annotation/'+str(first_id)+'/', data, format='json')
-        #print(response.content)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        #Check that it is updated
-        response = self.client.get('/api/annotation/'+str(first_id)+'/', format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        #Convert json to list
+        response = client.post('/api/annotation/'+str(annotation_id)+'/understand_count', format='json')
         response_dict = json.loads(response.content)
-        #Check that it is updated
-        self.assertEqual(response_dict['understand_count'], 5)
+        self.assertEquals(response_dict[metadata_type], 2)
 
 
 class VideoAPITests(TestCase):

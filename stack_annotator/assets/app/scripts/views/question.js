@@ -515,6 +515,7 @@ define([
               return '';
           });
           videoData.annotation_id = annotationID;
+          //window(videoData.external_id)
           var annotationNode = event.target.closest("div").parentNode;
           var video = new VideoModel(videoData);
           $.when(video.post()).done(function() {
