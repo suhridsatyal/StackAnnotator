@@ -300,7 +300,7 @@ define([
      } else {
         // Show comment box
         var message = "Please Add Youtube Videos";
-        if(!isNaN(taskType)){
+        if(!isNaN(taskType) && taskType != null){
           var taskType = parseInt(taskType);
           var description;
           if(taskType == 0){
@@ -309,6 +309,8 @@ define([
             description = "Tutorial";
           } else if (taskType == 2){
             description = "Usage";
+          } else {
+            description = "Youtube";
           }
           message = "Please Add " + description + " Videos";
         } 

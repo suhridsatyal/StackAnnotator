@@ -9,7 +9,7 @@ define([
     routes: {
       // Define some URL routes
       '': 'showHome',
-      'question/:post(/:answerID)(/:highlightID)?(taskType=:taskTypeParam)': 'showQuestion', //#question
+      'question/:post(/:answerID)(/:highlightID)(?taskType=:taskTypeParam)': 'showQuestion', //#question
       'question/:post(/:answerID)(/:highlightID)': 'showQuestion', //#question,
 
       // Default

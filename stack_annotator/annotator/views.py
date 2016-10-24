@@ -69,10 +69,8 @@ class AnnotationListView(generics.ListCreateAPIView):
             for video in videos:
                 external_id = video["external_id"]
 
-                if "description" in video:
-                  description = video["description"]
-                else:
-                  description = "Explanation"
+                description = video["description"] if "description" in video \
+                              else "Explanation"
 
                 # Check if there is a start time
                 if "start_time" in video:
