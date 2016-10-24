@@ -1,4 +1,4 @@
- <form role="form"> 
+ <form role="form" id="videoSubmissionForm"> 
   <div class="form-group" id="urlFormGroup">
   <% if (typeof displayBackButton !== 'undefined' ) { %>
     <% if (displayBackButton == true) { %>
@@ -29,7 +29,7 @@
     <label class="radio-inline"><input type="radio" class="btn btn-success" name="annotationDescription" value="2">Usage</label>
   </div>
 
- <div class="form-group">
+  <div class="form-group">
       <button type="button" id="submitButton" disabled="true" class="btn btn-success commentbox">Submit</button>
   </div>
 </form>
