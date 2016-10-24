@@ -1,5 +1,7 @@
 FROM ubuntu:16.04
-
+LABEL "name" ="StackAnnotator"\
+      "version" ="1.0" \
+      "description" ="Video Enhancements for StackOverflow"
 
 RUN apt-get update && apt-get install -y\
     sudo python python-dev python-pip build-essential python3-dev \
@@ -60,12 +62,13 @@ RUN mkdir /etc/uwsgi &&\
 RUN pip install supervisor &&\
     ln -sf /opt/StackAnnotator/devops/server_config/supervisord.conf /etc/supervisord.conf
 
+# Setup
+RUN cd /opt/StackAnnotator/stack_annotator/ && \
+    python manage.py migrate && \
+    python manage.py collectstatic --noinput
+
 EXPOSE 80
 
-CMD ["sudo service nginx start"]
-CMD ["sudo supervisord"]
-CMD ["sudo etc/init.d/postgresql start"]
-# Set the default command to run when starting the container
-CMD ["/usr/lib/postgresql/9.5/bin/postgres", "-D", "/var/lib/postgresql/9.5/main", "-c", "config_file=/etc/postgresql/9.5/main/postgresql.conf"]
-CMD ["/bin/bash"]
+ADD ["container_init.sh", "start.sh"] 
+CMD ["/bin/bash", "start.sh"]
 
