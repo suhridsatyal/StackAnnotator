@@ -27,6 +27,9 @@ define([
       this.options = options || {};
       this.options.selectedText = "";
       this.options.youtubeRegExp = /^https?\:\/\/www\.youtube\.com\/watch\?v\=([\w-]+)(?:&t=(\w+))?$/g;
+      this.TASK_TYPE_EXPLANATION = 0;
+      this.TASK_TYPE_TUTORIAL = 1;
+      this.TASK_TYPE_USAGE = 2;
     },
 
     render: function() {
@@ -41,7 +44,6 @@ define([
         post: this.options.post
       });
       var annotations = new AnnotationCollection();
-      
       $.when(question.fetch(),
           answers.fetch(),
           annotations.fetch({
@@ -75,7 +77,7 @@ define([
                 scrollTop: annotationElemOffset.top
               }, "fast");
 
-              self._showYoutubeURL(self.options.highlightID, annotations, self.options.answerID);
+              self._showYoutubeURL(self.options.highlightID, annotations, self.options.answerID, self.options.taskType);
             }
           }
         });
@@ -128,13 +130,13 @@ define([
         */
         //requests
         $("#crowdsourceDetailsBtn").on("click", function(event) {
-          self.onCrowdsource(0); //TODO: remove magic numbers
+          self.onCrowdsource(self.TASK_TYPE_EXPLANATION); //TODO: remove magic numbers
         });
         $("#crowdsourceTutorialBtn").on("click", function(event) {
-          self.onCrowdsource(1);
+          self.onCrowdsource(self.TASK_TYPE_TUTORIAL);
         });
         $("#crowdsourceUsageBtn").on("click", function(event) {
-          self.onCrowdsource(2);
+          self.onCrowdsource(self.TASK_TYPE_USAGE);
         });
 
         $("#commentBtn").on("click", function(event) {
@@ -157,7 +159,7 @@ define([
 
     onCrowdsource: function(task_type) {
       if (task_type === undefined) {
-        task_type = 0;//default val
+        task_type = this.TASK_TYPE_EXPLANATION;//default val
       }
 
       var selection = window.getSelection();
@@ -251,7 +253,7 @@ define([
       };
     },
 
-    _showYoutubeURL: function(annotationID, annotations, answerID) {
+    _showYoutubeURL: function(annotationID, annotations, answerID, taskType) {
       // Shows Annotations (Youtube URLS) next to highlighted text
       this._cleanupPopover();
       var annotationElem = "annotation#" + annotationID;
@@ -263,6 +265,27 @@ define([
       var videos = annotations.get(annotationID).get('videos');
       var popoverTemplate;
 
+      var display_data = {};
+      var message = "Please Add Youtube Videos";
+      if(!isNaN(taskType) && taskType != null){
+        var taskType = parseInt(taskType);
+        var description;
+        if(taskType == this.TASK_TYPE_EXPLANATION){
+          description = "Explanation";
+          display_data.video_type = this.TASK_TYPE_EXPLANATION;
+        } else if (taskType == this.TASK_TYPE_TUTORIAL){
+          description = "Tutorial";
+          display_data.video_type = this.TASK_TYPE_TUTORIAL;
+        } else if (taskType == this.TASK_TYPE_USAGE){
+          description = "Usage";
+          display_data.video_type = this.TASK_TYPE_USAGE;
+        } else {
+          description = "Youtube";
+        }
+        message = "Please Add " + description + " Videos";
+      } 
+      display_data.message = message;
+
       if (videos.length > 0) {
         _.each(videos, function(video) {
             var youtubeURL =  "http://youtube.com/embed/" + video.external_id;
@@ -272,17 +295,16 @@ define([
             video.url = youtubeURL;
             video.score = video.upvotes - video.downvotes;
         });
-        var annotationData = {
-          id: annotationID,
-          videos: videos
-        };
-        popoverTemplate = _.template(annotationsTemplate)(annotationData);
+
+        display_data.id = annotationID;
+        display_data.videos = videos;
+        popoverTemplate = _.template(annotationsTemplate)(display_data);
         $("#annotate-tooltip").popover({
           trigger: 'focus', container: 'body', placement: 'right', content: popoverTemplate, html: true
         }).popover('show');
 
         $(".popover").css({
-          top: annotationElemOffset.top, left: annotationElemOffset.right, 'max-width': '640px', transform: ''
+          top: annotationElemOffset.top, left: annotationElemOffset.right, 'max-width': '640px', 'min-width': '608px', transform: ''
         }).show();
 
         $(".arrow").css({top: '2%'});
@@ -299,9 +321,9 @@ define([
             self._updateVideoMetaData(event, "flag");
         });
 
-     } else {
+      } else {
         // Show comment box
-        popoverTemplate = _.template(commentboxTemplate) ({message: "Annotate"});
+        popoverTemplate = _.template(commentboxTemplate)(display_data);
         $("#annotate-tooltip").popover({
           trigger: 'focus', container: 'body', placement: 'right', content: popoverTemplate, html: true
         }).popover('show');
@@ -406,9 +428,6 @@ define([
     },
 
     _attachAnnotationSubmissionHandlers: function(answerID, keyword) {
-      console.log("answerId:" + answerID);
-      console.log("keyword:" + keyword);
-
       // Attach events to popover buttons.
       var self=this;
       $("#urlField").on("input", function(event) {
@@ -419,6 +438,23 @@ define([
       // Create an annotation with video
       $("#submitButton").on("click", function(event) {
           var youtubeURL =  $("#urlField").val();
+          var taskType = parseInt($("input[name=videoDescription]:checked").val());
+          if(isNaN(taskType)){
+            taskType = parseInt($("input[name=videoDescription]").val());
+          }
+          var description;
+          //This is not strict, the user may insert inappropriate description
+          //video reporting should take care of this
+          if(taskType == self.TASK_TYPE_EXPLANATION){
+            description = "Explanation";
+          } else if (taskType == self.TASK_TYPE_TUTORIAL){
+            description = "Tutorial";
+          } else if (taskType == self.TASK_TYPE_USAGE){
+            description = "Usage";
+          } else {
+            description = "Explanation";
+          }
+
           var youtubeRegex = self.options.youtubeRegExp;
           var videoData = {}
           youtubeURL.replace(youtubeRegex, function (url, external_id, start_time) {
@@ -427,6 +463,7 @@ define([
               return '';
           });
           videoData.annotation_id = answerID;
+          videoData.description = description;
           var annotationNode = event.target.closest("div").parentNode;
           var annotationCollection = new AnnotationCollection();
           var newAnnotation = {};
@@ -456,12 +493,35 @@ define([
           var youtubeURL =  $("#urlField").val();
           var youtubeRegex = self.options.youtubeRegExp;
           var videoData = {}
+
+          var taskType = parseInt($("input[name=videoDescription]:checked").val());
+          if(isNaN(taskType)){
+            taskType = parseInt($("input[name=videoDescription]").val());
+          }
+          console.log("taskType");
+          console.log(taskType);
+          var description;
+          console.log("self.TASK_TYPE_EXPLANATION");
+          console.log(self.TASK_TYPE_EXPLANATION);
+          //This is not strict, the user may insert inappropriate description  
+          //or using the API to add something different but this is handled with reporting annotations
+          if(taskType == self.TASK_TYPE_EXPLANATION){
+            description = "Explanation";
+          } else if (taskType == self.TASK_TYPE_TUTORIAL){
+            description = "Tutorial";
+          } else if (taskType == self.TASK_TYPE_USAGE){
+            description = "Usage";
+          } else {
+            description = "Explanation";
+          }
+
           youtubeURL.replace(youtubeRegex, function (url, external_id, start_time) {
               videoData.external_id = external_id;
               videoData.start_time = start_time;
               return '';
           });
           videoData.annotation_id = annotationID;
+          videoData.description = description;
           var annotationNode = event.target.closest("div").parentNode;
           var video = new VideoModel(videoData);
           $.when(video.post()).done(function() {

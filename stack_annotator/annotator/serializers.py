@@ -8,14 +8,14 @@ class VideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Video
         fields = ('id', 'external_id', 'annotation_id', 'downvotes', 'upvotes',
-                  'flags', 'start_time')
+                  'flags', 'start_time', 'description')
 
 
 class EmbeddedVideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Video
         fields = ('id', 'external_id', 'downvotes', 'upvotes',
-                  'flags', 'start_time')
+                  'flags', 'start_time', 'description')
 
 
 class AnnotationSerializer(serializers.ModelSerializer):
