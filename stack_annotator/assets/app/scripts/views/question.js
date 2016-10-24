@@ -264,6 +264,28 @@ define([
       var youtubeVideos = [];
       var videos = annotations.get(annotationID).get('videos');
       var popoverTemplate;
+
+      var display_data = {};
+      var message = "Please Add Youtube Videos";
+      if(!isNaN(taskType) && taskType != null){
+        var taskType = parseInt(taskType);
+        var description;
+        if(taskType == this.TASK_TYPE_EXPLANATION){
+          description = "Explanation";
+          display_data.video_type = this.TASK_TYPE_EXPLANATION;
+        } else if (taskType == this.TASK_TYPE_TUTORIAL){
+          description = "Tutorial";
+          display_data.video_type = this.TASK_TYPE_TUTORIAL;
+        } else if (taskType == this.TASK_TYPE_USAGE){
+          description = "Usage";
+          display_data.video_type = this.TASK_TYPE_USAGE;
+        } else {
+          description = "Youtube";
+        }
+        message = "Please Add " + description + " Videos";
+      } 
+      display_data.message = message;
+
       if (videos.length > 0) {
         _.each(videos, function(video) {
             var youtubeURL =  "http://youtube.com/embed/" + video.external_id;
@@ -273,11 +295,10 @@ define([
             video.url = youtubeURL;
             video.score = video.upvotes - video.downvotes;
         });
-        var annotationData = {
-          id: annotationID,
-          videos: videos
-        };
-        popoverTemplate = _.template(annotationsTemplate)(annotationData);
+
+        display_data.id = annotationID;
+        display_data.videos = videos;
+        popoverTemplate = _.template(annotationsTemplate)(display_data);
         $("#annotate-tooltip").popover({
           trigger: 'focus', container: 'body', placement: 'right', content: popoverTemplate, html: true
         }).popover('show');
@@ -300,29 +321,8 @@ define([
             self._updateVideoMetaData(event, "flag");
         });
 
-     } else {
+      } else {
         // Show comment box
-        var display_data = {};
-        var message = "Please Add Youtube Videos";
-        if(!isNaN(taskType) && taskType != null){
-          var taskType = parseInt(taskType);
-          var description;
-          if(taskType == this.TASK_TYPE_EXPLANATION){
-            description = "Explanation";
-            display_data.video_type = this.TASK_TYPE_EXPLANATION;
-          } else if (taskType == this.TASK_TYPE_TUTORIAL){
-            description = "Tutorial";
-            display_data.video_type = this.TASK_TYPE_TUTORIAL;
-          } else if (taskType == this.TASK_TYPE_USAGE){
-            description = "Usage";
-            display_data.video_type = this.TASK_TYPE_USAGE;
-          } else {
-            description = "Youtube";
-          }
-          message = "Please Add " + description + " Videos";
-        } 
-        console.log(typeof display_data.video_type);
-        display_data.message = message;
         popoverTemplate = _.template(commentboxTemplate)(display_data);
         $("#annotate-tooltip").popover({
           trigger: 'focus', container: 'body', placement: 'right', content: popoverTemplate, html: true
