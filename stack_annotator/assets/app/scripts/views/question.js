@@ -41,7 +41,6 @@ define([
         post: this.options.post
       });
       var annotations = new AnnotationCollection();
-      
       $.when(question.fetch(),
           answers.fetch(),
           annotations.fetch({
@@ -75,7 +74,7 @@ define([
                 scrollTop: annotationElemOffset.top
               }, "fast");
 
-              self._showYoutubeURL(self.options.highlightID, annotations, self.options.answerID);
+              self._showYoutubeURL(self.options.highlightID, annotations, self.options.answerID, self.options.taskType);
             }
           }
         });
@@ -251,7 +250,7 @@ define([
       };
     },
 
-    _showYoutubeURL: function(annotationID, annotations, answerID) {
+    _showYoutubeURL: function(annotationID, annotations, answerID, taskType) {
       // Shows Annotations (Youtube URLS) next to highlighted text
       this._cleanupPopover();
       var annotationElem = "annotation#" + annotationID;
@@ -261,9 +260,7 @@ define([
 
       var youtubeVideos = [];
       var videos = annotations.get(annotationID).get('videos');
-      var description = annotations.get(annotationID).get('description');
       var popoverTemplate;
-
       if (videos.length > 0) {
         _.each(videos, function(video) {
             var youtubeURL =  "http://youtube.com/embed/" + video.external_id;
@@ -275,8 +272,7 @@ define([
         });
         var annotationData = {
           id: annotationID,
-          videos: videos,
-          description: description
+          videos: videos
         };
         popoverTemplate = _.template(annotationsTemplate)(annotationData);
         $("#annotate-tooltip").popover({
@@ -284,7 +280,7 @@ define([
         }).popover('show');
 
         $(".popover").css({
-          top: annotationElemOffset.top, left: annotationElemOffset.right, 'max-width': '640px', transform: ''
+          top: annotationElemOffset.top, left: annotationElemOffset.right, 'max-width': '640px', 'min-width': '608px', transform: ''
         }).show();
 
         $(".arrow").css({top: '2%'});
@@ -303,8 +299,21 @@ define([
 
      } else {
         // Show comment box
-        var description = "Please Add " + annotations.get(annotationID).get('description') + " Videos";
-        popoverTemplate = _.template(commentboxTemplate) ({message: description});
+        var message = "Please Add Youtube Videos";
+        if(!isNaN(taskType)){
+          var taskType = parseInt(taskType);
+          var description;
+          if(taskType == 0){
+            description = "Explanation";
+          } else if (taskType == 1){
+            description = "Tutorial";
+          } else if (taskType == 2){
+            description = "Usage";
+          }
+          message = "Please Add " + description + " Videos";
+        } 
+
+        popoverTemplate = _.template(commentboxTemplate) ({message: message});
         $("#annotate-tooltip").popover({
           trigger: 'focus', container: 'body', placement: 'right', content: popoverTemplate, html: true
         }).popover('show');
@@ -429,6 +438,8 @@ define([
             description = "Tutorial";
           } else if (taskType == 2){
             description = "Usage";
+          } else {
+            description = "Explanation";
           }
 
           var youtubeRegex = self.options.youtubeRegExp;
@@ -439,13 +450,13 @@ define([
               return '';
           });
           videoData.annotation_id = answerID;
+          videoData.description = description;
           var annotationNode = event.target.closest("div").parentNode;
           var annotationCollection = new AnnotationCollection();
           var newAnnotation = {};
           newAnnotation.question_id = self.options.post;
           newAnnotation.answer_id = answerID;
           newAnnotation.keyword = keyword;
-          newAnnotation.description = description;
           newAnnotation.videos = JSON.stringify([videoData]);
           $.when(annotationCollection.post(newAnnotation)).done(function() {
               self._cleanupPopover();
@@ -469,12 +480,28 @@ define([
           var youtubeURL =  $("#urlField").val();
           var youtubeRegex = self.options.youtubeRegExp;
           var videoData = {}
+
+          var taskType = $("input:radio[name=annotationDescription]:checked").val();
+          var description;
+          //This is not strict, the user may insert inappropriate description  
+          //or using the API to add something different but this is handled with reporting annotations
+          if(taskType == 0){
+            description = "Explanation";
+          } else if (taskType == 1){
+            description = "Tutorial";
+          } else if (taskType == 2){
+            description = "Usage";
+          } else {
+            description = "Explanation";
+          }
+
           youtubeURL.replace(youtubeRegex, function (url, external_id, start_time) {
               videoData.external_id = external_id;
               videoData.start_time = start_time;
               return '';
           });
           videoData.annotation_id = annotationID;
+          videoData.description = description;
           var annotationNode = event.target.closest("div").parentNode;
           var video = new VideoModel(videoData);
           $.when(video.post()).done(function() {

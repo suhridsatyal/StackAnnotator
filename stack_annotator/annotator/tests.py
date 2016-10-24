@@ -220,7 +220,7 @@ class AnnotationAPITests(TestCase):
         Should create an annotation
         """
         client = APIClient()
-        data = {"question_id":5, "answer_id":10, "videos":[], "keyword":"fiesty"}
+        data = {"question_id":5, "answer_id":10, "videos":"[]", "keyword":"fiesty"}
         response = client.post('/api/annotations', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -243,7 +243,7 @@ class AnnotationAPITests(TestCase):
         """
         Should create an annotation with a video
         """
-        data = {"question_id":5, "answer_id":10,"videos":[{"external_id":"newvideo"}],"keyword":"fiesty"}
+        data = {"question_id":5, "answer_id":10,"videos":"[{\"external_id\":\"newvideo\"}]","keyword":"fiesty"}
         response = client.post('/api/annotations', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -265,7 +265,7 @@ class AnnotationAPITests(TestCase):
         #Check pk of video is the same
         self.assertEqual(response_dict['videos'][0]['external_id'], "newvideo")
 
-        data = {"question_id":5, "answer_id":10,"videos":[{"external_id":"anothervideo","start_time":"0:15"}],"keyword":"fiesty"}
+        data = {"question_id":5, "answer_id":10,"videos":"[{\"external_id\":\"anothervideo\",\"start_time\":\"0:15\"}]","keyword":"fiesty"}
         response = client.post('/api/annotations', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 

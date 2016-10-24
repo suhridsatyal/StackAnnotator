@@ -9,7 +9,8 @@ define([
     routes: {
       // Define some URL routes
       '': 'showHome',
-      'question/:post(/:answerID)(/:highlightID)': 'showQuestion', //#question
+      'question/:post(/:answerID)(/:highlightID)?(taskType=:taskTypeParam)': 'showQuestion', //#question
+      'question/:post(/:answerID)(/:highlightID)': 'showQuestion', //#question,
 
       // Default
       '*actions': 'showHome'
@@ -24,9 +25,9 @@ define([
       homeView.render();
     });
 
-    appRouter.on('route:showQuestion', function(post, answerID, highlightID){
+    appRouter.on('route:showQuestion', function(post, answerID, highlightID, taskTypeParam){
       var questionView = new QuestionView({post: post, answerID:answerID,
-                                           highlightID:highlightID});
+                                           highlightID:highlightID, taskType:taskTypeParam});
       questionView.render();
     });
 

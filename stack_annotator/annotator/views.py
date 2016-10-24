@@ -68,15 +68,23 @@ class AnnotationListView(generics.ListCreateAPIView):
             # Can create multiple videos, may not be required
             for video in videos:
                 external_id = video["external_id"]
+
+                if "description" in video:
+                  description = video["description"]
+                else:
+                  description = "Explanation"
+
                 # Check if there is a start time
                 if "start_time" in video:
                     start_time = video["start_time"]
                     new_video = {"annotation_id": annotation_id,
                                  "external_id": external_id,
-                                 "start_time": start_time}
+                                 "start_time": start_time,
+                                 "description": description}
                 else:
                     new_video = {"annotation_id": annotation_id,
-                                 "external_id": external_id}
+                                 "external_id": external_id,
+                                 "description": description}
 
                 video_model = VideoSerializer(data=new_video)
                 if video_model.is_valid():
@@ -199,18 +207,6 @@ class TaskListView(APIView):
         tweet = tweet.format(keyword, url)
         return tweet
 
-    def create_annotation_description(self, task_type):
-        description = ""
-        if task_type == self.TASK_TYPE_DETAILS:
-            description = "Explanation"
-
-        elif task_type == self.TASK_TYPE_TUTORIAL:
-            description = "Tutorial"
-
-        elif task_type == self.TASK_TYPE_USAGE:
-            description = "Usage"
-
-        return description
 
     def post(self, request, format=None):
         required_fields = ['question_id', 'answer_id', 'annotation_url',
@@ -232,12 +228,14 @@ class TaskListView(APIView):
         newAnnotation.question_id = request.data['question_id']
         newAnnotation.answer_id = request.data['answer_id']
         newAnnotation.keyword = request.data['keyword']
-        newAnnotation.description = self.create_annotation_description(taskType)
         newAnnotation.save()
 
         # append and shorten url
         appended_url = request.data['annotation_url'] + "/" \
-                                                      + str(newAnnotation.id)
+                                                      + str(newAnnotation.id) \
+                                                      + "?taskType=" \
+                                                      + str(taskType)
+
         post_url_with_key = settings.POST_URLSHORTENER_GOOGLE_URL +\
                             "?key=" + settings.GOOGLE_URL_SHORTENER_KEY
         post_header = {'Content-Type': 'application/json'}

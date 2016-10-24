@@ -5,7 +5,7 @@
       <button type="button" title="Return to Annotation Options" class="button btn-link" id="backToTooltipMenuBtn"> <span class="glyphicon glyphicon-menu-up"></span></button>
       <hr class="verticalButtonDivider">
     <% } %>
-    <% } %>
+  <% } %>
     
     <% if (typeof message === 'string' ) { %>
       <label for="url" class="control-label"> <%= message %></label>
@@ -23,13 +23,11 @@
         <span id="inputSuccess2Status" class="sr-only">(success)</span>
     </div>
   </div>
-  <% if (typeof message !== 'string' ) { %>
-    <div id="annotationTypesMenu">
-      <label class="radio-inline"><input type="radio" name="annotationDescription" value="0" checked="">Explanation</label>
-      <label class="radio-inline"><input type="radio" name="annotationDescription" value="1">Tutorial</label>
-      <label class="radio-inline"><input type="radio" name="annotationDescription" value="2">Usage</label>
-    </div>
-  <% } %>
+  <div id="annotationTypesMenu">
+    <label class="radio-inline"><input type="radio" name="annotationDescription" value="0" checked="">Explanation</label>
+    <label class="radio-inline"><input type="radio" class="btn btn-success" name="annotationDescription" value="1">Tutorial</label>
+    <label class="radio-inline"><input type="radio" class="btn btn-success" name="annotationDescription" value="2">Usage</label>
+  </div>
 
  <div class="form-group">
       <button type="button" id="submitButton" disabled="true" class="btn btn-success commentbox">Submit</button>
