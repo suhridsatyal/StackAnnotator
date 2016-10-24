@@ -27,6 +27,9 @@ define([
       this.options = options || {};
       this.options.selectedText = "";
       this.options.youtubeRegExp = /^https?\:\/\/www\.youtube\.com\/watch\?v\=([\w-]+)(?:&t=(\w+))?$/g;
+      this.TASK_TYPE_EXPLANATION = 0;
+      this.TASK_TYPE_TUTORIAL = 1;
+      this.TASK_TYPE_USAGE = 2;
     },
 
     render: function() {
@@ -127,13 +130,13 @@ define([
         */
         //requests
         $("#crowdsourceDetailsBtn").on("click", function(event) {
-          self.onCrowdsource(0); //TODO: remove magic numbers
+          self.onCrowdsource(self.TASK_TYPE_EXPLANATION); //TODO: remove magic numbers
         });
         $("#crowdsourceTutorialBtn").on("click", function(event) {
-          self.onCrowdsource(1);
+          self.onCrowdsource(self.TASK_TYPE_TUTORIAL);
         });
         $("#crowdsourceUsageBtn").on("click", function(event) {
-          self.onCrowdsource(2);
+          self.onCrowdsource(self.TASK_TYPE_USAGE);
         });
 
         $("#commentBtn").on("click", function(event) {
@@ -156,7 +159,7 @@ define([
 
     onCrowdsource: function(task_type) {
       if (task_type === undefined) {
-        task_type = 0;//default val
+        task_type = this.TASK_TYPE_EXPLANATION;//default val
       }
 
       var selection = window.getSelection();
@@ -299,23 +302,28 @@ define([
 
      } else {
         // Show comment box
+        var display_data = {};
         var message = "Please Add Youtube Videos";
         if(!isNaN(taskType) && taskType != null){
           var taskType = parseInt(taskType);
           var description;
-          if(taskType == 0){
+          if(taskType == this.TASK_TYPE_EXPLANATION){
             description = "Explanation";
-          } else if (taskType == 1){
+            display_data.video_type = this.TASK_TYPE_EXPLANATION;
+          } else if (taskType == this.TASK_TYPE_TUTORIAL){
             description = "Tutorial";
-          } else if (taskType == 2){
+            display_data.video_type = this.TASK_TYPE_TUTORIAL;
+          } else if (taskType == this.TASK_TYPE_USAGE){
             description = "Usage";
+            display_data.video_type = this.TASK_TYPE_USAGE;
           } else {
             description = "Youtube";
           }
           message = "Please Add " + description + " Videos";
         } 
-
-        popoverTemplate = _.template(commentboxTemplate) ({message: message});
+        console.log(typeof display_data.video_type);
+        display_data.message = message;
+        popoverTemplate = _.template(commentboxTemplate)(display_data);
         $("#annotate-tooltip").popover({
           trigger: 'focus', container: 'body', placement: 'right', content: popoverTemplate, html: true
         }).popover('show');
@@ -430,15 +438,18 @@ define([
       // Create an annotation with video
       $("#submitButton").on("click", function(event) {
           var youtubeURL =  $("#urlField").val();
-          var taskType = $("input:radio[name=annotationDescription]:checked").val();
+          var taskType = parseInt($("input[name=videoDescription]:checked").val());
+          if(isNaN(taskType)){
+            taskType = parseInt($("input[name=videoDescription]").val());
+          }
           var description;
-          //This is not strict, the user may insert inappropriate description  
-          //or using the API to add something different but this is handled with reporting annotations
-          if(taskType == 0){
+          //This is not strict, the user may insert inappropriate description
+          //video reporting should take care of this
+          if(taskType == self.TASK_TYPE_EXPLANATION){
             description = "Explanation";
-          } else if (taskType == 1){
+          } else if (taskType == self.TASK_TYPE_TUTORIAL){
             description = "Tutorial";
-          } else if (taskType == 2){
+          } else if (taskType == self.TASK_TYPE_USAGE){
             description = "Usage";
           } else {
             description = "Explanation";
@@ -483,15 +494,22 @@ define([
           var youtubeRegex = self.options.youtubeRegExp;
           var videoData = {}
 
-          var taskType = $("input:radio[name=annotationDescription]:checked").val();
+          var taskType = parseInt($("input[name=videoDescription]:checked").val());
+          if(isNaN(taskType)){
+            taskType = parseInt($("input[name=videoDescription]").val());
+          }
+          console.log("taskType");
+          console.log(taskType);
           var description;
+          console.log("self.TASK_TYPE_EXPLANATION");
+          console.log(self.TASK_TYPE_EXPLANATION);
           //This is not strict, the user may insert inappropriate description  
           //or using the API to add something different but this is handled with reporting annotations
-          if(taskType == 0){
+          if(taskType == self.TASK_TYPE_EXPLANATION){
             description = "Explanation";
-          } else if (taskType == 1){
+          } else if (taskType == self.TASK_TYPE_TUTORIAL){
             description = "Tutorial";
-          } else if (taskType == 2){
+          } else if (taskType == self.TASK_TYPE_USAGE){
             description = "Usage";
           } else {
             description = "Explanation";
