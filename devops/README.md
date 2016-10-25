@@ -23,7 +23,6 @@ Development Environment
 **Setup**
 
  - `docker pull ubuntu:16.04`
- - `docker build -t comp9323/stackannotator .` 
  - `cd devops; make`
  - `./run-dev.sh`
 
