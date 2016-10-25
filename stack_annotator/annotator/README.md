@@ -7,7 +7,6 @@
 | annotations | GET | Gets a set of annotations. There options are to filter by question id or answer id | /api/annotations?answer_id=3|
 | annotations | POST | Creates a new annotation | /api/annotations |
 | annotation | GET | Gets a particular annotation based on id | /api/annotation/3 |
-| annotation | PATCH | Updates an annotation | /api/annotation |
 | videos | GET  | Gets a set of videos. Can filter by id | /api/videos |
 | videos | POST  | Creates a new video. | /api/videos |
 | video | GET  | Gets a particular of videos based on id  | /api/video/3 |
