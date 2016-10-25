@@ -259,6 +259,7 @@ class TaskListView(APIView):
         newAnnotation.save()
 
         # append and shorten url
+        """
         appended_url = request.data['annotation_url'] + "/" \
                                                       + str(newAnnotation.id) \
                                                       + "?taskType=" \
@@ -295,10 +296,11 @@ class TaskListView(APIView):
             # remove annotation we just created
             newAnnotation.delete()
             return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
-
+        """
         # create a new task
         task = Task()
-        task.tweet_id = tweet_info['id']
+        #task.tweet_id = tweet_info['id']
+        task.tweet_id = 5
         task.annotation_id = newAnnotation.id
         task.task_type = taskType
         task.created_on = task.checked_on = timezone.now()
