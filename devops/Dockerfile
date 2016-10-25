@@ -21,9 +21,7 @@ RUN apt-get install -y nodejs
 RUN npm install -g bower grunt 
 RUN cd /opt/StackAnnotator/stack_annotator/assets/ && \
     bower install --allow-root &&\ 
-    npm install &&\
-    grunt build &&\
-    cd /opt/ 
+    npm install
 
 
 # Create a PostgreSQL role named ``ubuntu`` with ``ubuntu`` as the password and
@@ -63,12 +61,8 @@ RUN pip install supervisor &&\
     ln -sf /opt/StackAnnotator/devops/server_config/supervisord.conf /etc/supervisord.conf
 
 # Setup
-RUN cd /opt/StackAnnotator/stack_annotator/ && \
-    python manage.py migrate && \
-    python manage.py collectstatic --noinput
 
 EXPOSE 80
 
 ADD ["container_init.sh", "start.sh"] 
 CMD ["/bin/bash", "start.sh"]
-
