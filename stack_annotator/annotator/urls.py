@@ -5,6 +5,7 @@ from annotator import views
 urlpatterns = [
     url(r'annotations$', views.AnnotationListView.as_view()),
     url(r'annotation/(?P<pk>[0-9]+)/$', views.AnnotationView.as_view()),
+    url(r'annotation/(?P<pk>[0-9]+)/understand_count$', views.flag_annotation),
     url(r'videos$', views.VideoListView.as_view()),
     url(r'video/(?P<pk>[0-9]+)/$', views.VideoView.as_view()),
     url(r'video/(?P<pk>[0-9]+)/upvote$', views.upvote_video),

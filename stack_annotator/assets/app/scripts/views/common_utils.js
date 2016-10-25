@@ -15,6 +15,7 @@ define([
           // Make Success Indicators invisible
           $('#urlFormGroup').removeClass('has-success');
           $('#submitButton').prop('disabled', true);
+          //$('#reportButton').prop('disabled', false);
           $('#urlSuccessIcon').addClass('hidden');
 
           // Make Error Indicators visible
@@ -26,6 +27,7 @@ define([
           $('#urlFormGroup').addClass('has-success');
           $('#urlSuccessIcon').removeClass('hidden');
           $('#submitButton').prop('disabled', false);
+          //$('#reportButton').prop('disabled', false);
 
           // Make Error Indicators invisible
           $('#urlFormGroup').removeClass('has-error');

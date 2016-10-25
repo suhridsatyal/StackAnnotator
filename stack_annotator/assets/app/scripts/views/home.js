@@ -13,6 +13,7 @@ define([
       el: $('.container_load'),
       events: {
           'click #submitButton': 'onSubmitURL',
+          //'click #reportButton': 'onReportAnnotation',
           'keyup #urlField' : 'onKeyPressEvent',
           'keypress #urlField' : 'onKeyPressEvent', //we have both events due to possible browser differences
           'input #urlField': 'onURLChange'
