@@ -7,7 +7,7 @@ Developer Guides
 ----------------
 [Setup] [1]
 
-[Fronend] [2]
+[Frontend] [2]
 
 [1]: https://github.com/suhridsatyal/StackAnnotator/tree/develop/devops/README.md
 [2]: https://github.com/suhridsatyal/StackAnnotator/tree/develop/stack_annotator/assets/README.md

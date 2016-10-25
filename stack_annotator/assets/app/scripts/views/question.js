@@ -286,6 +286,15 @@ define([
       } 
       display_data.message = message;
 
+      //Remove videos
+      for (var i = videos.length - 1; i >= 0; i--) {
+        //Formula to remove videos
+        //window.alert(i + " " + videos[i].flags)
+        if (videos[i].flags > 3 && videos[i].upvotes < videos[i].downvotes + 2*videos[i].flags) { 
+            videos.splice(i, 1);
+        }
+      }
+
       if (videos.length > 0) {
         _.each(videos, function(video) {
             var youtubeURL =  "http://youtube.com/embed/" + video.external_id;
@@ -339,19 +348,39 @@ define([
 
     _annotateAnswers: function(answers, annotations) {
       // Surrounds annotated text with span, with id=annotation id
+      var REPORT_ANNOTATION_MAX_COUNT = 3;
       var annotationClass;
       _.each(annotations, function(annotation) {
         _.each(answers, function(answer) {
           if (answer.answer_id == annotation.answer_id) {
+            //window.alert(annotation.keyword + " " + annotation.understand_count)
             if (annotation.videos.length) {
-                annotationClass = 'highlighted'
-            } else {
-                annotationClass = 'soft_highlighted'
-            }
-            answer.body = answer.body.replace(annotation.keyword,
+                var actual_video_count = annotation.videos.length
+                all_videos = annotation.videos;
+
+                for (var i = all_videos.length - 1; i >= 0; i--) {
+                  if (all_videos[i].flags > 3 && all_videos[i].upvotes < all_videos[i].downvotes + 2*all_videos[i].flags) { 
+                      actual_video_count--;
+                  }
+                }
+
+                if (actual_video_count > 0) {
+                  annotationClass = 'highlighted'
+                } else {
+                  annotationClass = 'soft_highlighted'
+                }
+                
+                answer.body = answer.body.replace(annotation.keyword,
                                               "<annotation class='"+ annotationClass + "'" +
                                               "id=" + annotation.id + ">" +
                                               annotation.keyword + "</annotation>");
+            } else if (annotation.understand_count < REPORT_ANNOTATION_MAX_COUNT) {
+                annotationClass = 'soft_highlighted'
+                answer.body = answer.body.replace(annotation.keyword,
+                                              "<annotation class='"+ annotationClass + "'" +
+                                              "id=" + annotation.id + ">" +
+                                              annotation.keyword + "</annotation>");
+            }
           }
         });
       });
@@ -528,6 +557,24 @@ define([
               self._cleanupPopover();
               $('#videoAnnotationModal').modal('show');
               $('#videoAnnotationModalButton').on("click", function(){
+                  location.reload();
+              });
+          });
+      });
+
+      //Report button
+      $("#reportButton").on("click", function(event) {
+          annotation_id = annotationID;
+          //var annotationNode = event.target.closest("div").parentNode;
+          var annotation = new AnnotationCollection()
+          //annotation.model.set({id: annotation_id});
+
+          $.when(annotation.incrementAttr(annotationID, 'understand_count')).done(function() {
+              self._cleanupPopover();
+              var buttonNode = event.target.closest("button");
+              $(buttonNode).prop('disabled', true);
+              $('#reportAnnotationModal').modal('show');
+              $('#reportAnnotationModalButton').on("click", function(){
                   location.reload();
               });
           });
