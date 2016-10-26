@@ -171,7 +171,6 @@ define([
               });
           });
       });
-
     },
 
     onCrowdsource: function(task_type) {

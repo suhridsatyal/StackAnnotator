@@ -9,7 +9,7 @@ define([
         idAttribute: "id",
         post: function() {
             var self = this;
-            var postUrl = Config.stackannotator.api_url_root + Config.stackannotator.video_post_endpoint;
+            var postUrl = Config.stackannotator.api_url_root + Config.stackannotator.videos_endpoint;
             return $.post(postUrl, self.attributes).done(
               function(data){
                  console.log(data);
@@ -18,9 +18,8 @@ define([
         },
         incrementAttr: function(attrType) {
             var self = this;
-            var postUrl = Config.stackannotator.api_url_root + Config.stackannotator.video_increment_resource_endpoint;
+            var postUrl = Config.stackannotator.api_url_root + Config.stackannotator.video_endpoint;
             return $.post(postUrl + '/' + this.id +'/' + attrType).done(function(data) {
-                //self.set(attrType+'s', data[attrType+'s']);
                 self.set(data);
             });
         }

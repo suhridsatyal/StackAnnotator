@@ -11,7 +11,7 @@ define([
     var Annotations = Backbone.Collection.extend({
         model: Annotation,
         url: function() {
-            var url = Config.stackannotator.api_url_root + Config.stackannotator.annotation_post_endpoint;
+            var url = Config.stackannotator.api_url_root + Config.stackannotator.annotations_endpoint;
             return url;
         },
 
@@ -25,10 +25,10 @@ define([
             return response;
         },
 
-        incrementAttr: function(annotationid, attrType) {
+        incrementAttr: function(annotationID, attrType) {
             var self = this;
-            var postUrl = Config.stackannotator.api_url_root + Config.stackannotator.annotation_increment_resource_endpoint;
-            return $.post(postUrl + '/' + annotationid +'/' + attrType).done(function(data) {
+            var postUrl = Config.stackannotator.api_url_root + Config.stackannotator.annotation_endpoint;
+            return $.post(postUrl + '/' + annotationID +'/' + attrType).done(function(data) {
                 self.set(data);
             });
         }
