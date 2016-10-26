@@ -287,8 +287,10 @@ define([
 
       var display_data = {};
       var message = "Please Add Youtube Videos";
+
+      // Construct message for user
       if(!isNaN(taskType) && taskType != null){
-        var taskType = parseInt(taskType);
+        taskType = parseInt(taskType);
         var description;
         if(taskType == this.TASK_TYPE_EXPLANATION){
           description = "Explanation";
@@ -306,6 +308,7 @@ define([
       }
       display_data.message = message;
 
+      // Construct youtube URL using the id
       if (videos.length > 0) {
         _.each(videos, function(video) {
             var youtubeURL =  "http://youtube.com/embed/" + video.external_id;
@@ -315,9 +318,10 @@ define([
             video.url = youtubeURL;
             video.score = video.upvotes - video.downvotes;
         });
-
         display_data.id = annotationID;
         display_data.videos = videos;
+
+        // Show tooltip
         popoverTemplate = _.template(annotationsTemplate)(display_data);
         $("#annotate-tooltip").popover({
           trigger: 'focus', container: 'body', placement: 'right', content: popoverTemplate, html: true
@@ -360,7 +364,6 @@ define([
     _annotateAnswers: function(answers, annotations) {
       /* Changes annotated keyword to DOM.
        * Using this DOM, we can hover and navigate to particular annotation */
-      var REPORT_ANNOTATION_MAX_COUNT = 3;
       var annotationClass;
       _.each(annotations, function(annotation) {
         _.each(answers, function(answer) {
@@ -419,9 +422,8 @@ define([
         this.options.selectedText = document.getSelection().toString();
         var box = document.getSelection().getRangeAt(0).getBoundingClientRect();
         return this._getHighlightOffset(box);
-      } else {
-        return;
       }
+      return 0;
     },
 
     _updateVideoMetaData: function(event, updateType) {
@@ -463,22 +465,7 @@ define([
       // Create an annotation with video
       $("#submitButton").on("click", function(event) {
           var youtubeURL =  $("#urlField").val();
-          var taskType = parseInt($("input[name=videoDescription]:checked").val());
-          if(isNaN(taskType)){
-            taskType = parseInt($("input[name=videoDescription]").val());
-          }
-
-          // Show description (video type)
-          var description;
-          if(taskType == self.TASK_TYPE_EXPLANATION){
-            description = "Explanation";
-          } else if (taskType == self.TASK_TYPE_TUTORIAL){
-            description = "Tutorial";
-          } else if (taskType == self.TASK_TYPE_USAGE){
-            description = "Usage";
-          } else {
-            description = "Explanation";
-          }
+          var description = this._getAnnotationDescription();
 
           var youtubeRegex = self.options.youtubeRegExp;
           var videoData = {}
@@ -487,10 +474,12 @@ define([
               videoData.start_time = start_time;
               return '';
           });
+
           videoData.annotation_id = answerID;
           videoData.description = description;
           var annotationNode = event.target.closest("div").parentNode;
           var annotationCollection = new AnnotationCollection();
+
           var newAnnotation = {};
           newAnnotation.question_id = self.options.post;
           newAnnotation.answer_id = answerID;
@@ -520,31 +509,18 @@ define([
           var youtubeURL =  $("#urlField").val();
           var youtubeRegex = self.options.youtubeRegExp;
           var videoData = {}
-
-          var taskType = parseInt($("input[name=videoDescription]:checked").val());
-          if(isNaN(taskType)){
-            taskType = parseInt($("input[name=videoDescription]").val());
-          }
-
-          var description;
-          if(taskType == self.TASK_TYPE_EXPLANATION){
-            description = "Explanation";
-          } else if (taskType == self.TASK_TYPE_TUTORIAL){
-            description = "Tutorial";
-          } else if (taskType == self.TASK_TYPE_USAGE){
-            description = "Usage";
-          } else {
-            description = "Explanation";
-          }
+          var description = self._getAnnotationDescription();
 
           youtubeURL.replace(youtubeRegex, function (url, external_id, start_time) {
               videoData.external_id = external_id;
               videoData.start_time = start_time;
               return '';
           });
+
           videoData.annotation_id = annotationID;
           videoData.description = description;
           var annotationNode = event.target.closest("div").parentNode;
+
           var video = new VideoModel(videoData);
           $.when(video.post()).done(function() {
               self._cleanupPopover();
@@ -554,6 +530,23 @@ define([
               });
           });
       });
+    },
+
+    _getAnnotationDescription: function() {
+        /* Gets Description of an annotation from Radio Buttons */
+        var taskType = parseInt($("input[name=videoDescription]:checked").val());
+        if(isNaN(taskType)){
+          taskType = parseInt($("input[name=videoDescription]").val());
+        }
+        var description;
+        if(taskType == this.TASK_TYPE_EXPLANATION){
+          return "Explanation";
+        } else if (taskType == this.TASK_TYPE_TUTORIAL){
+          return "Tutorial";
+        } else if (taskType == this.TASK_TYPE_USAGE){
+          return "Usage";
+        }
+        return "Explanation";
     }
 
   });
