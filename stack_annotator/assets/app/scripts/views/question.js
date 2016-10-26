@@ -188,7 +188,7 @@ define([
       var taskData = {}
       taskData.answer_id = parentDiv.attr("id");
       taskData.question_id = this.options.post;
-      taskData.keyword = this.options.selectedText;
+      taskData.phrase = this.options.selectedText;
       taskData.annotation_url = "stackannotator.com/#question/" + taskData.question_id + "/" + taskData.answer_id;
       taskData.task_type = task_type;
 
@@ -362,8 +362,9 @@ define([
     },
 
     _annotateAnswers: function(answers, annotations) {
-      /* Changes annotated keyword to DOM.
+      /* Changes annotated phrase to DOM.
        * Using this DOM, we can hover and navigate to particular annotation */
+      debugger;
       var annotationClass;
       _.each(annotations, function(annotation) {
         _.each(answers, function(answer) {
@@ -373,10 +374,10 @@ define([
             } else {
                 annotationClass = 'soft_highlighted'
             }
-            answer.body = answer.body.replace(annotation.keyword,
+            answer.body = answer.body.replace(annotation.phrase,
                                               "<annotation class='"+ annotationClass + "'" +
                                               "id=" + annotation.id + ">" +
-                                              annotation.keyword + "</annotation>");
+                                              annotation.phrase + "</annotation>");
           }
         });
       });
@@ -454,7 +455,7 @@ define([
       });
     },
 
-    _attachAnnotationSubmissionHandlers: function(answerID, keyword) {
+    _attachAnnotationSubmissionHandlers: function(answerID, phrase) {
       /* Attach events to popover buttons (Annotations). */
       var self=this;
       $("#urlField").on("input", function(event) {
@@ -483,7 +484,7 @@ define([
           var newAnnotation = {};
           newAnnotation.question_id = self.options.post;
           newAnnotation.answer_id = answerID;
-          newAnnotation.keyword = keyword;
+          newAnnotation.phrase = phrase;
           newAnnotation.videos = JSON.stringify([videoData]);
 
           $.when(annotationCollection.post(newAnnotation)).done(function() {

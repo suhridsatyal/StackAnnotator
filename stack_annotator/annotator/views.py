@@ -235,12 +235,12 @@ class TaskListView(APIView):
     TASK_TYPE_USAGE = 2
     paginate_by = 50
 
-    def create_message(self, keyword, task_type, url):
+    def create_message(self, phrase, task_type, url):
         # Tweet V3
         """Creates the tweet for twitter
 
-        Keyword arguments:
-        keyword -- the keyword of the task
+        Phrase arguments:
+        phrase -- the phrase of the task
         task_type -- the type of task
         url -- the url to redirect to
         """
@@ -259,14 +259,14 @@ class TaskListView(APIView):
                     "by enriching #stackoverflow with youtube videos " +\
                     "{} #stackannotator"
 
-        tweet = tweet.format(keyword, url)
+        tweet = tweet.format(phrase, url)
         return tweet
 
 
     def post(self, request, format=None):
         """Creates a new task"""
         required_fields = ['question_id', 'answer_id', 'annotation_url',
-                           'task_type', 'keyword']
+                           'task_type', 'phrase']
         if not all (param in request.data for param in required_fields):
             errorMsg = {'Error': "Input Error",
                         'Message': "Missing fields"}
@@ -283,7 +283,7 @@ class TaskListView(APIView):
         newAnnotation = Annotation()
         newAnnotation.question_id = request.data['question_id']
         newAnnotation.answer_id = request.data['answer_id']
-        newAnnotation.keyword = request.data['keyword']
+        newAnnotation.phrase = request.data['phrase']
         newAnnotation.save()
 
         # append and shorten url
@@ -306,7 +306,7 @@ class TaskListView(APIView):
             return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
 
         shortened_url = google_response['id']
-        message = self.create_message(str(request.data['keyword'][:6]+".."),
+        message = self.create_message(str(request.data['phrase'][:6]+".."),
                                       taskType,
                                       shortened_url)
 
