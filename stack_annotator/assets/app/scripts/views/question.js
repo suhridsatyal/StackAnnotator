@@ -23,16 +23,21 @@ define([
 
   var QuestionView = Backbone.View.extend({
     el: $('.container_load'),
+
     initialize: function(options) {
+      /* Initialize variables and constants for this view */
       this.options = options || {};
       this.options.selectedText = "";
       this.options.youtubeRegExp = /^https?\:\/\/www\.youtube\.com\/watch\?v\=([\w-]+)(?:&t=(\w+))?$/g;
+
       this.TASK_TYPE_EXPLANATION = 0;
       this.TASK_TYPE_TUTORIAL = 1;
       this.TASK_TYPE_USAGE = 2;
     },
 
     render: function() {
+      /* Renders the View */
+
       var self = this;
       self.options = this.options;
       var data = {};
@@ -44,6 +49,7 @@ define([
         post: this.options.post
       });
       var annotations = new AnnotationCollection();
+
       $.when(question.fetch(),
           answers.fetch(),
           annotations.fetch({
@@ -84,9 +90,11 @@ define([
       this.annotations = annotations;
     },
 
-    //
-    // Events and Listeners
-    //
+
+    /************************/
+    /* Events and Listeners */
+    /************************/
+
     events: {
       'mouseup .answer-item': 'onHighlight',
       'mousedown #questionview': 'onDeselect',
@@ -123,14 +131,8 @@ define([
         $(".arrow").css({"visibility": "hidden"});
 
         // Attach events to popover buttons.
-        /*
-        $("#crowdsourceBtn").on("click", function(event) {
-          self.onCrowdsourceMenuSelect();
-        });
-        */
-        //requests
         $("#crowdsourceDetailsBtn").on("click", function(event) {
-          self.onCrowdsource(self.TASK_TYPE_EXPLANATION); //TODO: remove magic numbers
+          self.onCrowdsource(self.TASK_TYPE_EXPLANATION);
         });
         $("#crowdsourceTutorialBtn").on("click", function(event) {
           self.onCrowdsource(self.TASK_TYPE_TUTORIAL);
@@ -142,7 +144,7 @@ define([
         $("#commentBtn").on("click", function(event) {
           self.onComment();
         });
-      } else {        
+      } else {
         this._cleanupPopover();
       };
     },
@@ -154,7 +156,22 @@ define([
     onAnnotationHover: function(evt) {
       var answerDiv = $(evt.target).closest("div")
       var answerID = answerDiv.attr("id");
-      this._showYoutubeURL(evt.target.id, this.annotations, answerID);
+      var annotationID = evt.target.id;
+      this._showYoutubeURL(annotationID, this.annotations, answerID);
+
+      var self = this;
+      // Attach handler for report button
+      $("#reportButton").on("click", function(event) {
+          var annotationCollection = new AnnotationCollection();
+          $.when(annotationCollection.incrementAttr(annotationID, 'understand_count')).done(function() {
+              self._cleanupPopover();
+              $('#reportAnnotationModal').modal('show');
+              $('#reportAnnotationModalButton').on("click", function(){
+                  location.reload();
+              });
+          });
+      });
+
     },
 
     onCrowdsource: function(task_type) {
@@ -216,6 +233,7 @@ define([
       $("#backToTooltipMenuBtn").on("click", function(event) {
         self.onHighlight();
       });
+
       this._attachAnnotationSubmissionHandlers(answerID, this.options.selectedText);
     },
 
@@ -224,9 +242,10 @@ define([
     },
 
 
-    //
-    // Helper Functions
-    //
+    /********************/
+    /* Helper Functions */
+    /********************/
+
     _getHighlightOffset: function(box) {
       /* Returns offset of selected text.
        * Code adapted from this tutorial:
@@ -254,7 +273,7 @@ define([
     },
 
     _showYoutubeURL: function(annotationID, annotations, answerID, taskType) {
-      // Shows Annotations (Youtube URLS) next to highlighted text
+      /* Shows Youtube URLS and metadata next to highlighted text */
       this._cleanupPopover();
       var annotationElem = "annotation#" + annotationID;
       var annotationElemOffset = $(annotationElem).offset();
@@ -283,14 +302,12 @@ define([
           description = "Youtube";
         }
         message = "Please Add " + description + " Videos";
-      } 
+      }
       display_data.message = message;
 
-      //Remove videos
+      // Filter videos by votes and reports
       for (var i = videos.length - 1; i >= 0; i--) {
-        //Formula to remove videos
-        //window.alert(i + " " + videos[i].flags)
-        if (videos[i].flags > 3 && videos[i].upvotes < videos[i].downvotes + 2*videos[i].flags) { 
+        if (videos[i].flags > 3 && videos[i].upvotes < videos[i].downvotes + 2 * videos[i].flags) {
             videos.splice(i, 1);
         }
       }
@@ -347,19 +364,20 @@ define([
     },
 
     _annotateAnswers: function(answers, annotations) {
-      // Surrounds annotated text with span, with id=annotation id
+      /* Changes annotated keyword to DOM.
+       * Using this DOM, we can hover and navigate to particular annotation */
       var REPORT_ANNOTATION_MAX_COUNT = 3;
       var annotationClass;
       _.each(annotations, function(annotation) {
         _.each(answers, function(answer) {
           if (answer.answer_id == annotation.answer_id) {
-            //window.alert(annotation.keyword + " " + annotation.understand_count)
             if (annotation.videos.length) {
                 var actual_video_count = annotation.videos.length
                 all_videos = annotation.videos;
 
                 for (var i = all_videos.length - 1; i >= 0; i--) {
-                  if (all_videos[i].flags > 3 && all_videos[i].upvotes < all_videos[i].downvotes + 2*all_videos[i].flags) { 
+                  if (all_videos[i].flags > 3 &&
+                      all_videos[i].upvotes < all_videos[i].downvotes + 2*all_videos[i].flags) {
                       actual_video_count--;
                   }
                 }
@@ -369,7 +387,7 @@ define([
                 } else {
                   annotationClass = 'soft_highlighted'
                 }
-                
+
                 answer.body = answer.body.replace(annotation.keyword,
                                               "<annotation class='"+ annotationClass + "'" +
                                               "id=" + annotation.id + ">" +
@@ -388,6 +406,7 @@ define([
     },
 
     _sortAnswers: function(unsortedAnswers) {
+      /* Sorts answers in the same order as StackOverflow */
       var sortedEntries = [];
 
       var acceptedAnswer = _.find(unsortedAnswers, function(answer) {
@@ -415,6 +434,7 @@ define([
     },
 
     _getSelectionRects: function() {
+      /* Reutns offset of selected text */
       var selectedText;
       if (window.getSelection) {
         this.options.selectedText = window.getSelection().toString().trim();
@@ -430,6 +450,7 @@ define([
     },
 
     _updateVideoMetaData: function(event, updateType) {
+      /* Updates upvotes, downvotes, and reports of a video */
       var self = this;
 
       var videoNode = event.target.closest("div").parentNode;
@@ -457,7 +478,7 @@ define([
     },
 
     _attachAnnotationSubmissionHandlers: function(answerID, keyword) {
-      // Attach events to popover buttons.
+      /* Attach events to popover buttons (Annotations). */
       var self=this;
       $("#urlField").on("input", function(event) {
         var urlRegex= self.options.youtubeRegExp;
@@ -471,9 +492,9 @@ define([
           if(isNaN(taskType)){
             taskType = parseInt($("input[name=videoDescription]").val());
           }
+
+          // Show description (video type)
           var description;
-          //This is not strict, the user may insert inappropriate description
-          //video reporting should take care of this
           if(taskType == self.TASK_TYPE_EXPLANATION){
             description = "Explanation";
           } else if (taskType == self.TASK_TYPE_TUTORIAL){
@@ -500,7 +521,9 @@ define([
           newAnnotation.answer_id = answerID;
           newAnnotation.keyword = keyword;
           newAnnotation.videos = JSON.stringify([videoData]);
+
           $.when(annotationCollection.post(newAnnotation)).done(function() {
+              // Give feedback if video was submitted
               self._cleanupPopover();
               $('#videoAnnotationModal').modal('show');
               $('#videoAnnotationModalButton').on("click", function(){
@@ -511,7 +534,7 @@ define([
     },
 
     _attachVideoSubmissionHandlers: function(annotationID) {
-      // Attach events to popover buttons.
+      /* Attach events to popover buttons. (Video) */
       var self=this;
       $("#urlField").on("input", function(event) {
         var urlRegex= self.options.youtubeRegExp;
@@ -527,13 +550,8 @@ define([
           if(isNaN(taskType)){
             taskType = parseInt($("input[name=videoDescription]").val());
           }
-          console.log("taskType");
-          console.log(taskType);
+
           var description;
-          console.log("self.TASK_TYPE_EXPLANATION");
-          console.log(self.TASK_TYPE_EXPLANATION);
-          //This is not strict, the user may insert inappropriate description  
-          //or using the API to add something different but this is handled with reporting annotations
           if(taskType == self.TASK_TYPE_EXPLANATION){
             description = "Explanation";
           } else if (taskType == self.TASK_TYPE_TUTORIAL){
@@ -557,24 +575,6 @@ define([
               self._cleanupPopover();
               $('#videoAnnotationModal').modal('show');
               $('#videoAnnotationModalButton').on("click", function(){
-                  location.reload();
-              });
-          });
-      });
-
-      //Report button
-      $("#reportButton").on("click", function(event) {
-          annotation_id = annotationID;
-          //var annotationNode = event.target.closest("div").parentNode;
-          var annotation = new AnnotationCollection()
-          //annotation.model.set({id: annotation_id});
-
-          $.when(annotation.incrementAttr(annotationID, 'understand_count')).done(function() {
-              self._cleanupPopover();
-              var buttonNode = event.target.closest("button");
-              $(buttonNode).prop('disabled', true);
-              $('#reportAnnotationModal').modal('show');
-              $('#reportAnnotationModalButton').on("click", function(){
                   location.reload();
               });
           });
