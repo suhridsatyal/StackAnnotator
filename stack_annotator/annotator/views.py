@@ -18,8 +18,24 @@ import json
 import re
 import requests
 
+MAX_FLAG_COUNT = 3
+
 def index(request):
     return render(request, 'index.html')
+
+
+def remove_flagged_videos(query):
+    """Checks if a video should be removed"""
+    if query.flags > MAX_FLAG_COUNT and query.upvotes < query.downvotes + 2*query.flags:
+        return True
+    return False
+
+
+def remove_flagged_annotations(query):
+    """Checks if an annotation should be removed"""
+    if query.understand_count > MAX_FLAG_COUNT:
+        return True
+    return False
 
 
 class AnnotationListView(generics.ListCreateAPIView):
@@ -29,9 +45,12 @@ class AnnotationListView(generics.ListCreateAPIView):
     paginate_by = 50
 
     def get_queryset(self, **kwargs):
+        """Gets the set of annotations to be returned based on filtering"""
         queryset = Annotation.objects.all()
+
         question_id = self.request.query_params.get('question_id', None)
         answer_id = self.request.query_params.get('answer_id', None)
+
         try:
             if question_id:
                 queryset = queryset.filter(question_id=int(question_id))
@@ -39,11 +58,14 @@ class AnnotationListView(generics.ListCreateAPIView):
                 queryset = queryset.filter(answer_id=int(answer_id))
         except ValueError:
             raise Http404
+
+        #Filter out annotations with a more than 3 flags
+        queryset = [x for x in queryset if not remove_flagged_annotations(x)]
+
         return queryset
 
-
     def post(self, request, format=None):
-
+        """Post for annotations"""
         # Remember video data if a video needs to be created
         request.POST._mutable = True
 
@@ -123,19 +145,24 @@ class VideoListView(generics.ListCreateAPIView):
     paginate_by = 50
 
     def get_queryset(self, **kwargs):
+        """gets the query set for videos"""
         queryset = Video.objects.all()
         #Allow filtering of videos by annotation id
         annotation_id = self.request.query_params.get('annotation_id', None)
+
         try:
             if annotation_id:
                 queryset = queryset.filter(annotation_id_id=int(annotation_id))
         except ValueError:
             raise Http404
+
+        #Filter out videos with a more than 3 flags
+        queryset = [x for x in queryset if not remove_flagged_videos(x)]
+
         return queryset
 
-
     def post(self, request, format=None):
-
+        """creates a new video"""
         serializer = VideoSerializer(data=request.data)
 
         # Create Video
@@ -237,6 +264,7 @@ class TaskListView(APIView):
 
 
     def post(self, request, format=None):
+        """Creates a new task"""
         required_fields = ['question_id', 'answer_id', 'annotation_url',
                            'task_type', 'keyword']
         if not all (param in request.data for param in required_fields):
@@ -310,6 +338,7 @@ class TaskListView(APIView):
 
 
     def get(self, request, format=None):
+        """Gets a list of tasks"""
         tasks = Task.objects.all()
         serializer = TaskSerializer(tasks, many=True)
         return Response(serializer.data)

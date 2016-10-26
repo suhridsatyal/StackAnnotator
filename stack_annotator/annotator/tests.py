@@ -317,11 +317,26 @@ class AnnotationAPITests(TestCase):
 
         response = client.post('/api/annotation/'+str(annotation_id)+'/understand_count', format='json')
         response_dict = json.loads(response.content)
-        self.assertEquals(response_dict[metadata_type], 1)
+        self.assertEquals(response_dict[understand_count], 1)
 
         response = client.post('/api/annotation/'+str(annotation_id)+'/understand_count', format='json')
         response_dict = json.loads(response.content)
-        self.assertEquals(response_dict[metadata_type], 2)
+        self.assertEquals(response_dict[understand_count], 2)
+
+        response = client.post('/api/annotation/'+str(annotation_id)+'/understand_count', format='json')
+        response_dict = json.loads(response.content)
+        self.assertEquals(response_dict[understand_count], 3)
+
+        response = client.post('/api/annotation/'+str(annotation_id)+'/understand_count', format='json')
+        response_dict = json.loads(response.content)
+        self.assertEquals(response_dict[understand_count], 4)
+
+        #See if report works
+        response = client.get('/api/annotations/')
+        #response_dict = json.loads(response.content)
+        print(response.content)
+        self.assertEquals(response.content, "[]")
+
 
 
 class VideoAPITests(TestCase):
@@ -575,6 +590,40 @@ class VideoAPITests(TestCase):
         response_dict = json.loads(response.content)
         self.assertEquals(response_dict[metadata_type+'s'], 2)
 
+    def test_filter_bad_video(self):
+        """
+        Should test if the filtering for a bad video
+        """
+        first = create_annotation(1, 2, "fiesty")
+        first_vid = create_video_with_details("3BxYqjzMz", first, 4, 2, 0, "1:14")
+        vid_id = first_vid.pk
+        client = APIClient()
+        response = client.get('/api/videos')
+        
+        #print(response.content)
+        #Convert json to list
+        response_list = json.loads(response.content)
+
+        self.assertEqual(response_list[0]['annotation_id'], first.pk)
+        self.assertEqual(response_list[0]['external_id'], "3BxYqjzMz")
+        self.assertEqual(response_list[0]['start_time'], "1:14")
+
+        response = client.post('/api/video/'+str(vid_id)+'/flag', format='json')
+        response_dict = json.loads(response.content)
+        self.assertEquals(response_dict['flags'], 1)
+        response = client.post('/api/video/'+str(vid_id)+'/flag', format='json')
+        response_dict = json.loads(response.content)
+        self.assertEquals(response_dict['flags'], 2)
+        response = client.post('/api/video/'+str(vid_id)+'/flag', format='json')
+        response_dict = json.loads(response.content)
+        self.assertEquals(response_dict['flags'], 3)
+        response = client.post('/api/video/'+str(vid_id)+'/flag', format='json')
+        response_dict = json.loads(response.content)
+        self.assertEquals(response_dict['flags'], 4)
+        
+        response = client.get('/api/videos')
+        self.assertEquals(response.content, "[]")
+        
 
 class TaskAPITests(TestCase):
     firstTask = ""
