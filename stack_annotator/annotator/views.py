@@ -316,6 +316,7 @@ class TaskListView(APIView):
         if 'id' not in google_response:
             errorMsg = {'Error': "Google URL Shortener Error",
                         'Google Response': google_response.pop('error')}
+            newAnnotation.delete()
             return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
 
         shortened_url = google_response['id']
@@ -334,14 +335,12 @@ class TaskListView(APIView):
         if 'id' not in tweet_info:
             errorMsg = {'Error': "Twitter Error",
                         'Twitter Response': tweet_info.pop('errors')}
-            # remove annotation we just created
             newAnnotation.delete()
             return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
 
         # create a new task
         task = Task()
         task.tweet_id = tweet_info['id']
-        #task.tweet_id = 5
         task.annotation_id = newAnnotation.id
         task.task_type = taskType
         task.created_on = task.checked_on = timezone.now()
