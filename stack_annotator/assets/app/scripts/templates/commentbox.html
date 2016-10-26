@@ -38,6 +38,9 @@
   
 </form>
 
+<% if (typeof display_report_button === 'boolean') { %>
 <div class="form-group">
-  <button type="button" id="reportButton" class="btn btn-success commentbox">Report</button>
+  <button type="button" id="reportButton" class="button btn btn-success flagBtn">
+  <span class="glyphicon glyphicon-exclamation-sign" style="color:red"></span> Report</button>
 </div>
+<% } %>

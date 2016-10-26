@@ -347,6 +347,7 @@ define([
 
       } else {
         // Show comment box
+        display_data.display_report_button = true;
         popoverTemplate = _.template(commentboxTemplate)(display_data);
         $("#annotate-tooltip").popover({
           trigger: 'focus', container: 'body', placement: 'right', content: popoverTemplate, html: true
