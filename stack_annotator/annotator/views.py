@@ -323,7 +323,7 @@ class TaskListView(APIView):
             # remove annotation we just created
             newAnnotation.delete()
             return Response(errorMsg, status=status.HTTP_400_BAD_REQUEST)
-        
+
         # create a new task
         task = Task()
         task.tweet_id = tweet_info['id']
