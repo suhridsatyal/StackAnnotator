@@ -537,9 +537,7 @@ define([
       //Report button
       $("#reportButton").on("click", function(event) {
           annotation_id = annotationID;
-          //var annotationNode = event.target.closest("div").parentNode;
           var annotation = new AnnotationCollection()
-          //annotation.model.set({id: annotation_id});
 
           $.when(annotation.incrementAttr(annotationID, 'understand_count')).done(function() {
               self._cleanupPopover();

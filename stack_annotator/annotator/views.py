@@ -26,14 +26,14 @@ def index(request):
 
 def remove_flagged_videos(query):
     """Checks if a video should be removed"""
-    if query.flags > 3 and query.upvotes < query.downvotes + 2*query.flags:
+    if query.flags > MAX_FLAG_COUNT and query.upvotes < query.downvotes + 2*query.flags:
         return True
     return False
 
 
 def remove_flagged_annotations(query):
     """Checks if an annotation should be removed"""
-    if query.understand_count > 3:
+    if query.understand_count > MAX_FLAG_COUNT:
         return True
     return False
 
