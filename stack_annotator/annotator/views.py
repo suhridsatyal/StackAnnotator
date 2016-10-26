@@ -24,21 +24,21 @@ def index(request):
     return render(request, 'index.html')
 
 
-def remove_flagged_videos(query):
+def _remove_flagged_videos(query):
     """Checks if a video should be removed"""
     if query.flags > MAX_FLAG_COUNT and query.upvotes < query.downvotes + 2*query.flags:
         return True
     return False
 
 
-def remove_flagged_annotations(query):
+def _remove_flagged_annotations(query):
     """Checks if an annotation should be removed"""
     if query.understand_count > MAX_FLAG_COUNT:
         return True
     return False
 
 
-def cleanupvideos():
+def _cleanupvideos():
     """Removes videos that are bad"""
     queryset = Video.objects.all()
     remove = []
@@ -58,7 +58,6 @@ class AnnotationListView(generics.ListCreateAPIView):
 
     def get_queryset(self, **kwargs):
         """Gets the set of annotations to be returned based on filtering"""
-        cleanupvideos()
         queryset = Annotation.objects.all()
 
         question_id = self.request.query_params.get('question_id', None)
@@ -73,7 +72,7 @@ class AnnotationListView(generics.ListCreateAPIView):
             raise Http404
 
         #Filter out annotations with a more than 3 flags
-        queryset = [x for x in queryset if not remove_flagged_annotations(x)]
+        queryset = [x for x in queryset if not _remove_flagged_annotations(x)]
 
         return queryset
 
@@ -171,7 +170,7 @@ class VideoListView(generics.ListCreateAPIView):
             raise Http404
 
         #Filter out videos with a more than 3 flags
-        queryset = [x for x in queryset if not remove_flagged_videos(x)]
+        queryset = [x for x in queryset if not _remove_flagged_videos(x)]
 
         return queryset
 
@@ -220,6 +219,7 @@ def upvote_video(request, pk):
 def downvote_video(request, pk):
     """Post endpoint to allow increment of downvote of video"""
     try:
+        _cleanupvideos()
         video = Video.objects.get(pk=pk)
         video.downvotes = video.downvotes + 1
         video.save()
@@ -233,6 +233,7 @@ def downvote_video(request, pk):
 def flag_video(request, pk):
     """Post endpoint to allow increment of flag of video"""
     try:
+        _cleanupvideos()
         video = Video.objects.get(pk=pk)
         video.flags = video.flags + 1
         video.save()

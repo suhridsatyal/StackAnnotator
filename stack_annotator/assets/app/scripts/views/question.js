@@ -364,7 +364,6 @@ define([
     _annotateAnswers: function(answers, annotations) {
       /* Changes annotated phrase to DOM.
        * Using this DOM, we can hover and navigate to particular annotation */
-      debugger;
       var annotationClass;
       _.each(annotations, function(annotation) {
         _.each(answers, function(answer) {
@@ -466,7 +465,7 @@ define([
       // Create an annotation with video
       $("#submitButton").on("click", function(event) {
           var youtubeURL =  $("#urlField").val();
-          var description = this._getAnnotationDescription();
+          var description = self._getAnnotationDescription();
 
           var youtubeRegex = self.options.youtubeRegExp;
           var videoData = {}
