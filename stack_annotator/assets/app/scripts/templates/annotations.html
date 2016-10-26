@@ -2,7 +2,7 @@
   <% _.each(videos, function(video){ %>
     <div id="<%= video.id %>" class="annotationVideo">
       <div class="col-md-2 col-xs-2 col-lg-2 form-group videoMeta">
-        <div> <h4> <%= video.description %> </h4> </div>
+        <div> <h5 class="videoDescriptionLabel"> <%= video.description %> </h5> </div>
         <button type="button" class="button btn btn-link upvoteBtn" title="Upvote">
             <span class="glyphicon glyphicon-triangle-top icon-link"></span> </button>
         <div> <h3 class="videoScore"> <%= video.score %> </h3> </div>

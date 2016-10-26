@@ -382,6 +382,28 @@ fieldset[disabled] .btn-success.active.focus
   border-radius: 6px;
 }
 
+.videoDescriptionLabel {
+  border: solid;
+  border-color: beige;
+  background-color: beige;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.reportForm {
+  margin-bottom: 5px;
+}
+
+.verticalReportButtonDivider {
+  margin-bottom: 15px;
+}
+
+.flagBtn, .flagBtn:hover, .flagBtn:active, .flagBtn:active:hover, .flagBtn:focus {
+  border-color: #fb0000;
+}
+
 #answersHeading{
   margin-bottom: -20px;
   border-bottom: 1px solid #e4e6e8;
@@ -513,7 +535,8 @@ h3.videoScore{
 #annotationTypesMenu > .radio-inline > input[type="radio"]{
   //padding: 5px;
   margin-top: 2px;
-  margin-left: -17px;
+  margin-left: -20px;
+  appearance:none;
 }
 
 #videoSubmissionForm{
@@ -525,11 +548,7 @@ h3.videoScore{
 #videoSubmissionForm > .form-group {
   margin-bottom: 10px;
 }
-/*
-#tooltipMenu > .btn-success > .glyphicon:hover {
-  color: $theme_color_1;
-}
-*/
+
 .form-group > #submitButton{
   margin-top: 4px;
 }

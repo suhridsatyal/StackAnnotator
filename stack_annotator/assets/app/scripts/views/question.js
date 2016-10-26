@@ -86,6 +86,17 @@ define([
               }, "fast");
 
               self._showYoutubeURL(self.options.highlightID, annotations, self.options.answerID, self.options.taskType);
+              // Attach handler for report button
+              $("#reportButton").on("click", function(event) {
+                  var annotationCollection = new AnnotationCollection();
+                  $.when(annotationCollection.incrementAttr(self.options.highlightID, 'understand_count')).done(function() {
+                      self._cleanupPopover();
+                      $('#reportAnnotationModal').modal('show');
+                      $('#reportAnnotationModalButton').on("click", function(){
+                          location.reload();
+                      });
+                  });
+              });
             }
           }
         });
