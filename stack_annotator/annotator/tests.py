@@ -10,10 +10,10 @@ from mock import call, patch, Mock
 import json
 
 
-def create_annotation(question_id, answer_id, keyword):
+def create_annotation(question_id, answer_id, phrase):
     return Annotation.objects.create(question_id=question_id,
                                      answer_id=answer_id,
-                                     keyword=keyword)
+                                     phrase=phrase)
 
 
 def create_video(external_id, annotation_id):
@@ -220,7 +220,7 @@ class AnnotationAPITests(TestCase):
         Should create an annotation
         """
         client = APIClient()
-        data = {"question_id":5, "answer_id":10, "videos":"[]", "keyword":"fiesty"}
+        data = {"question_id":5, "answer_id":10, "videos":"[]", "phrase":"fiesty"}
         response = client.post('/api/annotations', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -230,7 +230,7 @@ class AnnotationAPITests(TestCase):
         #Get id from post
         first_id = response_dict['id']
 
-        data = {"question_id":5, "answer_id":10,"keyword":"fiesty","position":15}
+        data = {"question_id":5, "answer_id":10,"phrase":"fiesty","position":15}
         response = client.post('/api/annotations', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -243,7 +243,7 @@ class AnnotationAPITests(TestCase):
         """
         Should create an annotation with a video
         """
-        data = {"question_id":5, "answer_id":10,"videos":"[{\"external_id\":\"newvideo\"}]","keyword":"fiesty"}
+        data = {"question_id":5, "answer_id":10,"videos":"[{\"external_id\":\"newvideo\"}]","phrase":"fiesty"}
         response = client.post('/api/annotations', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -265,7 +265,7 @@ class AnnotationAPITests(TestCase):
         #Check pk of video is the same
         self.assertEqual(response_dict['videos'][0]['external_id'], "newvideo")
 
-        data = {"question_id":5, "answer_id":10,"videos":"[{\"external_id\":\"anothervideo\",\"start_time\":\"0:15\"}]","keyword":"fiesty"}
+        data = {"question_id":5, "answer_id":10,"videos":"[{\"external_id\":\"anothervideo\",\"start_time\":\"0:15\"}]","phrase":"fiesty"}
         response = client.post('/api/annotations', data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -599,7 +599,7 @@ class VideoAPITests(TestCase):
         vid_id = first_vid.pk
         client = APIClient()
         response = client.get('/api/videos')
-        
+
         #print(response.content)
         #Convert json to list
         response_list = json.loads(response.content)
@@ -620,14 +620,14 @@ class VideoAPITests(TestCase):
         response = client.post('/api/video/'+str(vid_id)+'/flag', format='json')
         response_dict = json.loads(response.content)
         self.assertEquals(response_dict['flags'], 4)
-        
+
         response = client.get('/api/videos')
         self.assertEquals(response.content, "[]")
 
         response = client.get('/api/annotations')
         response_list = json.loads(response.content)
         self.assertEquals(response_list[0]['videos'], [])
-        
+
 
 class TaskAPITests(TestCase):
     firstTask = ""
@@ -696,11 +696,11 @@ class TaskAPITests(TestCase):
         mock_time.return_value = "2012-08-29 17:12:58"
 
         client = APIClient()
-        data = {"question_id": 5, "answer_id": 10, "task_type": 0, "annotation_url": "fake.com", "keyword": "fiesty"}
+        data = {"question_id": 5, "answer_id": 10, "task_type": 0, "annotation_url": "fake.com", "phrase": "fiesty"}
 
         response = client.post('/api/tasks', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        
+
         #Convert json to list
         response_list = json.loads(response.content)
 
@@ -722,7 +722,7 @@ class TaskAPITests(TestCase):
         """ Should fail because of missing parameter """
 
         client = APIClient()
-        data = {"question_id": 5, "task_type": 0, "answer_id": 10, "keyword": "fiesty"}
+        data = {"question_id": 5, "task_type": 0, "answer_id": 10, "phrase": "fiesty"}
 
         response = client.post('/api/tasks', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -735,7 +735,7 @@ class TaskAPITests(TestCase):
         mock_post.side_effect = iter([MockGoogleShortenURLReturnSuccess(), MockTweetReturnFail()])
 
         client = APIClient()
-        data = {"question_id": 5, "answer_id": 10, "task_type": 0, "annotation_url": "fake.com", "keyword": "fiesty"}
+        data = {"question_id": 5, "answer_id": 10, "task_type": 0, "annotation_url": "fake.com", "phrase": "fiesty"}
 
         response = client.post('/api/tasks', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -749,7 +749,7 @@ class TaskAPITests(TestCase):
         mock_post.side_effect = iter([MockGoogleShortenURLReturnFail(), MockTweetReturnSuccess()])
 
         client = APIClient()
-        data = {"question_id": 5, "answer_id": 10, "task_type": 0, "annotation_url": "fake.com", "keyword": "fiesty"}
+        data = {"question_id": 5, "answer_id": 10, "task_type": 0, "annotation_url": "fake.com", "phrase": "fiesty"}
 
         response = client.post('/api/tasks', data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

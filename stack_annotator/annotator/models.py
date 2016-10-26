@@ -5,7 +5,7 @@ from django.contrib.postgres.fields import ArrayField
 class Annotation(models.Model):
     question_id = models.IntegerField(blank=False)
     answer_id = models.IntegerField(blank=False)
-    keyword = models.CharField(max_length=20, blank=False)
+    phrase = models.TextField(blank=False)
     understand_count = models.IntegerField(default=0)
 
     def __unicode__(self):
