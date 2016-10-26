@@ -624,6 +624,10 @@ class VideoAPITests(TestCase):
         response = client.get('/api/videos')
         self.assertEquals(response.content, "[]")
 
+        response = client.get('/api/annotations')
+        response_list = json.loads(response.content)
+        self.assertEquals(response_list[0]['videos'], [])
+
 
 class TaskAPITests(TestCase):
     firstTask = ""

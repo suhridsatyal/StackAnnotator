@@ -38,6 +38,18 @@ def remove_flagged_annotations(query):
     return False
 
 
+def cleanupvideos():
+    """Removes videos that are bad"""
+    queryset = Video.objects.all()
+    remove = []
+    for query in queryset:
+        if query.flags > MAX_FLAG_COUNT and query.upvotes < query.downvotes + 2*query.flags:
+            remove.append(query)
+
+    for item in remove:
+        Video.objects.filter(id=item.pk).delete()
+
+
 class AnnotationListView(generics.ListCreateAPIView):
     """Get and post endpoint for annotations"""
     model = Annotation
@@ -46,6 +58,7 @@ class AnnotationListView(generics.ListCreateAPIView):
 
     def get_queryset(self, **kwargs):
         """Gets the set of annotations to be returned based on filtering"""
+        cleanupvideos()
         queryset = Annotation.objects.all()
 
         question_id = self.request.query_params.get('question_id', None)
@@ -63,6 +76,7 @@ class AnnotationListView(generics.ListCreateAPIView):
         queryset = [x for x in queryset if not remove_flagged_annotations(x)]
 
         return queryset
+
 
     def post(self, request, format=None):
         """Post for annotations"""
