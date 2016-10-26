@@ -1,91 +1,649 @@
 $icon-font-path: "/bower_components/bootstrap-sass-official/assets/fonts/bootstrap/";
 
+@import 'https://fonts.googleapis.com/css?family=Gentium+Book+Basic|Lobster+Two|Open+Sans|Inconsolata|Dosis|Cantarell';
 @import 'bootstrap-sass-official/assets/stylesheets/bootstrap.scss';
+@import '//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css';
+//for easy experimentation
 
-.browsehappy {
-    margin: 0.2em 0;
-    background: #ccc;
-    color: #000;
-    padding: 0.2em 0;
+//Theme 1 (Van Gough Museum)
+$highlight_color: #EBCA44;
+$highlight_font_color: #262228;
+$theme_color_3: #F0F1F5; //font color
+$theme_color_1: #FFCE00; //font color (highlight)
+$theme_color_2: #0375B4; //menu color
+$theme_color_4: #007849; //menu color (rarely used)
+$theme_color_5: #262228; //menu color (rarely used)
+/*
+//Theme 2 (42. Polished $ Inviting)
+$highlight_color: #E1B80D;
+$highlight_font_color: #262228;
+$theme_color_3: #F0F1F5; //font color
+$theme_color_1: #E1B80D; //font color (highlight)
+$theme_color_2: #867666; //menu color
+*/
+
+/*
+//Theme 3 (21. Warm Naturals)
+$highlight_color: #DB9501;
+$highlight_font_color: #262228;
+$theme_color_3: #F0F1F5; //font color
+$theme_color_1: #DB9501; //font color (highlight)
+$theme_color_2: #C05805; //menu color
+*/
+
+/*
+//Theme 4 (VWhite)
+$highlight_color: #EBCA44;
+$highlight_font_color: #262228;
+$theme_color_3: black; //font color
+$theme_color_1: #FFCE00; //font color (highlight)
+$theme_color_2: white; //menu color
+*/
+
+//other colors
+$view_button_enabled_color: #6DB356;
+$soft_highlight_color: #C2C2C2;
+
+//logocs
+$logo_font: 'Lobster Two', cursive;
+//$first_font: 'Gentium Book Basic', serif;
+//$first_font: 'Inconsolata', monospace;
+//$first_font: 'Dosis', sans-serif;
+$first_font: 'Cantarell', sans-serif;
+$second_font: 'Open Sans', sans-serif;
+
+html {
+  //for the sticky footer
+  position: relative;
+  min-height: 100%;
 }
 
-/* Space out content a bit */
 body {
-    padding-top: 20px;
-    padding-bottom: 20px;
+  font-family: $second_font;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: black;
+  //padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+  margin-bottom: 150px;
 }
 
-/* Everything but the jumbotron gets side spacing for mobile first views */
-.header,
-.marketing,
+footer {
+  margin: 50px 0;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.1;
+  color: inherit;
+}
+#helpButton > .glyphicon-question-sign {
+  font-size: 1.5em;
+}
+
+#helpButton {
+  padding-bottom: 2px;
+  margin-right: 20px;
+  padding-top: 14px;
+}
+
+#helpQuestionImageOne {
+  height: 250px;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+  float: left;
+  padding: 10px;
+  padding-top: 0px;
+}
+
+#helpQuestionImageTwo {
+  height: 60px;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+  float: left;
+  padding: 10px;
+  padding-top: 0px;
+}
+
+.helpModalHeader {
+  text-align: left;
+}
+
+.helpModalContainer {
+  float: left;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.helpParagraph{
+  //float: left;
+  padding-left: 4px;
+}
+
+/* logo + navbar */
+#logoHighlight {
+  background-color: $highlight_color;
+  border: 2px solid $highlight_color;
+  border-radius: 1px;
+  color: $highlight_font_color;
+  padding: unset;
+}
+
+.navbar-brand, .navbar-inverse .navbar-brand{
+  font-family: $logo_font;
+  color: $theme_color_3;
+}
+
+.navbar-nav {
+  font-family: $first_font;
+}
+
+.navbar-inverse {
+  border-color: $theme_color_2;
+  background-color: $theme_color_2;
+}
+
+//hover for navbar menu
+.navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus, .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
+  color: $theme_color_1;
+}
+//non hover for navbar menu
+.navbar-inverse .navbar-nav > li > a {
+  color: $theme_color_3;
+}
+
+//hover for navbar compact menu icon
+.navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {
+  background-color: $theme_color_1;
+  border-color: $theme_color_1;
+}
+
+//non hover navbar compact menu icon
+.navbar-inverse .navbar-toggle {
+  border-color: $theme_color_1;
+}
+
+.container > .navbar-collapse, .container-fluid > .navbar-collapse {
+  margin-right: -15px;
+  margin-left: -15px;
+  background-color: $theme_color_2;
+  color: $theme_color_2;
+}
+
+/* all else */
+
+
+/* home menu */
+#home {
+  margin: auto;
+  text-align: center;
+  width: 87%;
+  padding-bottom: 150px;
+}
+
+.homePageForm {
+  margin-top: 62px;
+}
+
+#searchPageLogo{
+  width: 231px;
+  height: auto;
+  padding-bottom: 6px;
+}
+
+#helpButton{
+  text-align: bottom;
+}
+
+.red, .red a {
+  color: red;
+}
+//Make the "View" Button more unique
+//disabled and default (unactivated)
+.btn-success {
+  border-radius:0;
+  color: black;
+  border-width: 2px;
+  border-color: #6DB356;
+  background-color: white;
+}
+
+.btn-success[disabled] {
+  border-width: 1px;
+  background-color: white;
+  border-color: grey;
+}
+
+.btn-success.disabled:hover,
+.btn-success[disabled]:hover,
+fieldset[disabled] .btn-success:hover,
+.btn-success.disabled:focus,
+.btn-success[disabled]:focus,
+fieldset[disabled] .btn-success:focus,
+.btn-success.disabled.focus,
+.btn-success[disabled].focus,
+fieldset[disabled] .btn-success.focus,
+.btn-success.disabled:active:hover,
+.btn-success.disabled.active:hover,
+.btn-success[disabled]:active:hover,
+.btn-success[disabled].active:hover,
+fieldset[disabled] .btn-success:active:hover,
+fieldset[disabled] .btn-success.active:hover,
+.btn-success.disabled:active:focus,
+.btn-success.disabled.active:focus,
+.btn-success.disabled:active.focus,
+.btn-success.disabled.active.focus,
+.btn-success[disabled]:active:focus,
+.btn-success[disabled].active:focus,
+.btn-success[disabled]:active.focus,
+.btn-success[disabled].active.focus,
+fieldset[disabled] .btn-success:active:focus,
+fieldset[disabled] .btn-success:active.focus,
+fieldset[disabled] .btn-success.active:focus,
+fieldset[disabled] .btn-success.active.focus
+{
+  background-color: white;
+  border-color: grey;
+}
+
+//disabled, clicked and pulled outside the button
+.btn-success:active,
+.btn-success.active,
+.open > .dropdown-toggle.btn-success {
+  color: black;
+  background-color: white;
+  border-color: grey;
+}
+
+//for selected
+.btn-success:focus,
+.btn-success.focus {
+  color: black;
+  background-color: #F0F0F0;
+  border-color: #6DB356;
+}
+
+.btn-success:active:hover,
+.btn-success.active:hover,
+.open > .dropdown-toggle.btn-success:hover,
+.btn-success:active:focus,
+.btn-success.active:focus,
+.open > .dropdown-toggle.btn-success:focus,
+.btn-success:active.focus,
+.btn-success.active.focus,
+.open > .dropdown-toggle.btn-success.focus {
+  color: black;
+  background-color: white;
+  border-color: $view_button_enabled_color;
+}
+
+.btn-success:hover {
+  color: black;
+  background-color: #F0F0F0;
+  border-color: $view_button_enabled_color;
+}
+
+.btn-link[disabled] {
+  background-color: white;
+  color: grey;
+}
+
+///////////////////
+/*
+.btn-success:active,
+.btn-success.active,
+.open > .dropdown-toggle.btn-success {
+  background-image: none;
+}
+
+.btn-success .badge {
+  color: #5cb85c;
+  background-color: #fff;
+}
+*/
+
+/* questions */
+
+#questionview{
+  padding-bottom: 40px;
+}
+
+#question > h2 {
+  margin-top: 15px;
+  margin-bottom: 0px;
+}
+
+#questionTitleDivider{
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.icon-link {
+  font-size:25px;
+}
+
+.question {
+  margin-bottom: 45px;
+}
+
+.answers {
+  margin-top:25px;
+}
+
+.answer-item {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding-top: 10px;
+  background: beige none repeat scroll 0% 0%;
+}
+
+.highlighted {
+  background-color:yellow;
+}
+
+.soft_highlighted {
+  //background-color:lightgray;
+  background-color: $soft_highlight_color;
+  border: 2px solid $soft_highlight_color;
+  border-radius: 1px;
+  color: black;
+  padding: unset;
+}
+
+.highlighted {
+  //background-color:lightgray;
+  background-color: $highlight_color;
+  border: 2px solid $highlight_color;
+  border-radius: 1px;
+  color: black;
+  padding: unset;
+}
+
+.annotation_text:hover {
+  background-color:lightgreen;
+}
+
+.annotationVideo {
+  margin-top:25px;
+  padding-bottom: 19px;
+  border-bottom: 1px solid #e4e6e8;
+}
+
+.annotationVideo > .videoMeta {
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-top: 27px;
+  padding-bottom: 70px;
+  border: double;
+  border-color: white;
+  margin-top: 13px;
+  border-radius: 6px;
+  margin-right: -5px;
+  margin-left: 3px;
+}
+
+.videoDescriptionLabel {
+  border: solid;
+  border-color: beige;
+  background-color: beige;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.reportForm {
+  margin-bottom: 5px;
+}
+
+.verticalReportButtonDivider {
+  margin-bottom: 15px;
+}
+
+.flagBtn, .flagBtn:hover, .flagBtn:active, .flagBtn:active:hover, .flagBtn:focus {
+  border-color: #fb0000;
+}
+
+#answersHeading{
+  margin-bottom: -20px;
+  border-bottom: 1px solid #e4e6e8;
+}
+
+.answerContainer{
+  border-bottom: 1px solid #e4e6e8;
+  //margin-top: -17px;
+}
+.answerScore {
+  text-align: center;
+}
+
+.videoFormContainer{
+  margin: auto;
+}
+
+h4.acceptedAnswerSign{
+  text-align: center;
+}
+
+h3.videoScore{
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+#urlField {
+  width: 92%;
+  margin: auto;
+}
+
+.answerMetaData{
+  margin-top: 18px;
+  margin-bottom: 15px;
+}
+
+#urlFormGroup > .control-label {
+  margin-top:27px;
+}
+
+.glyphicon-flag {
+  color:rosybrown;
+}
+
+.glyphicon-flag:hover {
+  color:firebrick;
+}
+
+.popover {
+  text-align: center;
+  max-width: 290px;
+}
+
+.popover-content {
+  padding-left: 17px;
+  padding-right: 17px;
+  padding-bottom: 14px;
+  padding-top: 14px;
+}
+#tooltipMenu {
+  margin-top: 5px;
+}
+
+#taskTypeMenu {
+  padding-bottom: 5px;
+}
+
+.verticalButtonDivider{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.buttonDivider {
+  width: 3px;
+  height: auto;
+  display: inline-block;
+}
+
+#tooltipMenu > .btn-success, 
+#taskTypeMenu > .btn-success,
+#tooltipMenu >.btn-success:focus,
+#tooltipMenu >.btn-success.focus,
+#taskTypeMenu >.btn-success:focus,
+#taskTypeMenu >.btn-success.focus {
+  border-color: $theme_color_2;
+  border-radius: 5px;
+  text-align: left;
+}
+
+.tooltipHeader {
+  text-align: left;
+  margin-top: 5px;
+  padding-bottom: 5px;
+}
+
+#tooltipMenu > .btn-success > .glyphicon {
+  width: 12px;
+  margin-left: -3px;
+  font-size: 1.4em;
+  margin-right: 10px;
+  color: $theme_color_2;
+}
+
+#tooltipMenu > .requestTypeButton {
+  margin-top: -2px;
+  border-radius: 0px;
+}
+
+#tooltipMenu > .requestTypeButtonTop {
+  border-top-left-radius: 5px; 
+  border-top-right-radius: 5px; 
+}
+
+#tooltipMenu > .requestTypeButtonBottom {
+  border-bottom-left-radius: 5px; 
+  border-bottom-right-radius: 5px; 
+}
+
+#annotationTypesMenu{
+  padding-bottom: 18px;
+  margin-left: -8px;
+  margin-top: -2px;
+}
+
+#annotationTypesMenu > .radio-inline {
+  margin-left: 4px;
+}
+
+#annotationTypesMenu > .radio-inline > input[type="radio"]{
+  //padding: 5px;
+  margin-top: 2px;
+  margin-left: -20px;
+  appearance:none;
+}
+
+#videoSubmissionForm{
+  padding-top:5px;
+  padding-left:5px;
+  padding-right:5px;
+  padding-bottom:0px;
+}
+#videoSubmissionForm > .form-group {
+  margin-bottom: 10px;
+}
+
+.form-group > #submitButton{
+  margin-top: 4px;
+}
+
+.modal-content{
+  max-width: 400px;
+  margin-left:100px;
+  border-radius: 0px;
+}
+
+.modal-header-info {
+  font:$second_font;
+  color:#fff;
+  padding:9px 15px;
+  border-bottom:1px solid #eee;
+  background-color: $theme_color_2;
+}
+
+.modalSuccessHeading {
+  margin-top: 10px;
+}
+
+.modalSuccessHeading > .glyphicon {
+  color:#FFCE00;
+}
+
+.modal-footer > .btn {
+  border-radius:0;
+}
+
+.modal-footer  {
+  border-top: 0px;
+}
+
+.crowdsourcingMenu {
+  border-left: thick solid #ff0000;
+}
+
+/* footer stuff */
 .footer {
-    padding-left: 15px;
-    padding-right: 15px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  min-width: 900px;
+  /* Set the fixed height of the footer here */
+  height: 130px;
+  padding-top: 15px;
+  background-color:$theme_color_4;
+  color: white;
+  font-family: $first_font;
 }
 
-/* Custom page header */
-.header {
-    border-bottom: 1px solid #e5e5e5;
+.social:hover {
+  -webkit-transform: scale(1.1);
+  -moz-transform: scale(1.1);
+  -o-transform: scale(1.1);
 }
 
-/* Make the masthead heading the same height as the navigation */
-.header h3 {
-    margin-top: 0;
-    margin-bottom: 0;
-    line-height: 40px;
-    padding-bottom: 19px;
+.social {
+  -webkit-transform: scale(0.8);
+  /* Browser Variations: */
+
+  -moz-transform: scale(0.8);
+  -o-transform: scale(0.8);
+  -webkit-transition-duration: 0.5s;
+  -moz-transition-duration: 0.5s;
+  -o-transition-duration: 0.5s;
 }
 
-/* Custom page footer */
-.footer {
-    padding-top: 19px;
-    color: #777;
-    border-top: 1px solid #e5e5e5;
+#aboutInfo {
+  padding-bottom: 0px;
 }
 
-.container-narrow > hr {
-    margin: 30px 0;
+.socialMediaMenu {
+  margin-bottom: 0px;
 }
 
-/* Main marketing message and sign up button */
-.jumbotron {
-    text-align: center;
-    border-bottom: 1px solid #e5e5e5;
+.socialMediaButton {
+  color: $theme_color_5;
 }
-
-.jumbotron .btn {
-  font-size: 21px;
-  padding: 14px 24px;
-}
-
-/* Supporting marketing content */
-.marketing {
-  margin: 40px 0;
-}
-
-.marketing p + h4 {
-  margin-top: 28px;
-}
-
-/* Responsive: Portrait tablets and up */
-@media screen and (min-width: 768px) {
-  .container {
-    max-width: 730px;
-  }
-
-  /* Remove the padding we set earlier */
-  .header,
-  .marketing,
-  .footer {
-    padding-left: 0;
-    padding-right: 0;
-  }
-  /* Space out the masthead */
-  .header {
-    margin-bottom: 30px;
-  }
-  /* Remove the bottom border on the jumbotron for visual effect */
-  .jumbotron {
-    border-bottom: 0;
-  }
-}
+/*
+    Multicoloured Hover Variations
+*/
+ 
+ #social-fb:hover {
+     color: #3B5998;
+ }
+ #social-tw:hover {
+     color: #4099FF;
+ }
+ #social-gp:hover {
+     color: #d34836;
+ }
+ #social-em:hover {
+     color: #f39c12;
+ }

@@ -2,71 +2,67 @@
 <html class="no-js" lang="">
   <head>
     <meta charset="utf-8">
-    <title>Static</title>
+    <title>StackAnnotator - Video Enhancements for StackOverflow</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(.tmp) styles/main.css -->
-    <link rel="stylesheet" href="styles/main.css">
+
+    <link rel="stylesheet" href="styles/main.css">    
     <!-- endbuild -->
   </head>
   <body>
     <!--[if lt IE 10]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
+       <!-- Navigation -->
+      <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="container">                      
+          <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#"><mark id="logoHighlight">StackA</mark>nnotator</a>
+          </div>
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav">
+                  <li>
+                      <a href="" id="homeButton">Home</a>
+                  </li>
+                  <li>
+                      <a href="https://twitter.com/stackannotator" target="_blank">About</a>
+                  </li>
+              </ul>
+              <ul class="nav navbar-nav navbar-right">
+                <li><a type="button" href="#" data-toggle="modal" data-target="#helpModal" id="helpButton"><span class="glyphicon glyphicon-question-sign"></span></a></li>
+              </ul>
+          </div>
+        </div>
+      </nav>
+
     <div class="container">
-      <div class="header">
-        <ul class="nav nav-pills pull-right">
-          <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-        <h3 class="text-muted">Static</h3>
-      </div>
-
-      <div class="jumbotron">
-        <h1>'Allo, 'Allo!</h1>
-        <p class="lead">Always a pleasure scaffolding your apps.</p>
-        <p><a class="btn btn-lg btn-success" href="#">Splendid!</a></p>
-      </div>
-
-      <div class="row text-left">
-        <div class="col-md-offset-4">
-          <h2>Now Try,</h2>
-          <h4><b>yo backbone:router</b> &lt;router&gt;</h4>
-          <h4><b>yo backbone:collection</b> &lt;collection&gt;</h4>
-          <h4><b>yo backbone:model </b> &lt;model&gt;</h4>
-          <h4><b>yo backbone:view </b> &lt;view&gt;</h4>
-        </div>
-      </div>
-
-      <div class="row marketing">
-        <div class="col-lg-6">
-          <h4>HTML5 Boilerplate</h4>
-          <p>HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.</p>
-
-          <h4>Bootstrap</h4>
-          <p>Sleek, intuitive, and powerful mobile first front-end framework for faster and easier web development.</p>
-
-        </div>
-        <div class="col-lg-6">
-          <h4>Backbone.js</h4>
-          <p>Backbone.js gives structure to web applications by providing models, collections, views and connects it all to your existing API over a RESTful JSON interface.</p>
-
-          <h4>Lodash.js</h4>
-          <p>A utility library delivering consistency, customization, performance, & extras. </p>
-
-          <h4>RequireJS</h4>
-          <p>RequireJS is a JavaScript file and module loader. It is optimized for in-browser use, but it can be used in other JavaScript environments, like Rhino and Node.</p>
-        </div>
-      </div>
-
-      <div class="footer">
-        <p>♥ from the Yeoman team</p>
+    
+      <div class="container_load">
       </div>
 
     </div>
 
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <div class="footer text-center center-block">
+      <h5 class="txt-railway"><b>About us</b></h5>
+      <p id="aboutInfo">We are a UNSW COMP9323 project group aiming to build an online community to enrich StackOverflow answers with Youtube videos.</p>
+      <p class="txt-railway socialMediaMenu">
+        <a class="socialMediaButton" href="https://www.facebook.com/StackAnnotator-1084154931680866/?fref=ts" target="_blank"><i id="social-fb" class="fa fa-facebook-square fa-3x social"></i></a>
+        <a class="socialMediaButton" href="https://twitter.com/stackannotator" target="_blank"><i id="social-tw" class="fa fa-twitter-square fa-3x social"></i></a>
+        <a class="socialMediaButton" href="https://plus.google.com/112368623934560071388" target="_blank"><i id="social-gp" class="fa fa-google-plus-square fa-3x social"></i></a>
+        <a class="socialMediaButton" href="mailto:stackannotator@mail.com" target="_blank"><i id="social-em" class="fa fa-envelope-square fa-3x social"></i></a>
+      </p>
+    </div>
     <script data-main="scripts/main" src="bower_components/requirejs/require.js"></script>
   </body>
 </html>

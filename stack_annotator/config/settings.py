@@ -15,6 +15,10 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+CORS_ORIGIN_WHITELIST = (
+    'www.stackannotator.com',
+    'stackannotator.com'
+)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
@@ -23,25 +27,35 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'qznd!vuj8@v9z4#vo1zu6!6*x63pm7+p^9bq4)#k=a7pr$4pz9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['stackannotator.com', 'www.stackannotator.com']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    # Default
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Plugins
+    'django_extensions',
+    'rest_framework',
+    'corsheaders',
+
+    # App
+    'annotator.apps.AnnotatorConfig',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -55,8 +69,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         # Use html templates from compiled backbone app. Need to build UI every time a template is changed.
-        'DIRS': [ os.path.join(BASE_DIR, "static") ], 
-        'APP_DIRS': False,
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -74,10 +88,22 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'django',
+        'USER': 'django',
+        'PASSWORD': 'django',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -119,7 +145,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, "static")
-]
+# Twitter Authentication
+TWITTER_CONSUMER_KEY = ""
+TWITTER_CONSUMER_SECRET = ""
+TWITTER_ACCESS_TOKEN = ""
+TWITTER_ACCESS_TOKEN_SECRET = ""
+
+POST_STATUS_TWITTER_URL = "https://api.twitter.com/1.1/statuses/update.json"
+
+# Goole URL Shortener Key
+GOOGLE_URL_SHORTENER_KEY = ""
+
+POST_URLSHORTENER_GOOGLE_URL = "https://www.googleapis.com/urlshortener/v1/url"

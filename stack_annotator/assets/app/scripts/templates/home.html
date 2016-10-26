@@ -1,0 +1,43 @@
+<div id="home">
+  <form class="form-horizontal homePageForm" role="form">
+    <div class="form-group" id="urlFormGroup">
+      <img src="images/logo.jpg" class="img-rounded" alt="StackAnnotator" id="searchPageLogo"> 
+      
+      <input type="text" class="form-control" id="urlField" name="urlField" aria-describedby="inputErrorStatus" placeholder="StackOverflow URL... e.g. http://stackoverflow.com/questions/1234567/how-do-I-use-stackannotator"/>
+
+      <!-- Failure Indicators -->
+      <span class="glyphicon glyphicon-remove form-control-feedback hidden" id="urlErrorIcon" aria-hidden="true"></span>
+      <span id="inputErrorStatus" class="sr-only">(error)</span>
+      <span class="help-block hidden" id="urlHelpBlock">Enter a Valid StackOverflow Post URL and Click View Button</span>
+
+      <!-- Success Indicators -->
+      <span class="glyphicon glyphicon-ok form-control-feedback hidden" id="urlSuccessIcon" aria-hidden="true"></span>
+      <span id="inputSuccess2Status" class="sr-only">(success)</span>
+    
+    </div>
+    <div class="form-group">
+        <button type="button" id="submitButton" disabled="true" class="btn btn-success">View</button>
+    </div>
+  </form>
+</div>
+
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header modal-header-info">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modalSuccessHeading"><i class="glyphicon glyphicon-question-sign"></i> Page Help</h4>
+      </div>
+      <div class="modal-body">
+        <p><b>How to View a Stack Overflow Question</b></p>
+        <p>Simply enter in a valid stackOverflow question url (by copy/pasting) into the text box; it's that simple!</p>
+        <br>
+        <p><b>What next?</b></p>
+        <p>To see what you can do on the next page, click the ? button on the top right hand corner.</p>
+      </div>
+      <div class="modal-footer">
+          <button type="button" id="videoAnnotationModalButton" class="btn btn-default pull-right" data-dismiss="modal">Ok</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

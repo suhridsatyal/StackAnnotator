@@ -1,0 +1,46 @@
+ <form role="form" id="videoSubmissionForm"> 
+  <div class="form-group" id="urlFormGroup">
+  <% if (typeof displayBackButton !== 'undefined' ) { %>
+    <% if (displayBackButton == true) { %>
+      <button type="button" title="Return to Annotation Options" class="button btn-link" id="backToTooltipMenuBtn"> <span class="glyphicon glyphicon-menu-up"></span></button>
+      <hr class="verticalButtonDivider">
+    <% } %>
+  <% } %>
+    
+    <% if (typeof message === 'string' ) { %>
+      <label for="url" class="control-label"> <%= message %></label>
+    <% } %>
+    <div class="">
+        <input type="text" class="form-control commentbox" id="urlField" name="urlField" aria-describedby="inputErrorStatus" placeholder="Youtube Video URL... e.g. https://www.youtube.com/watch?v=cq1q2rFVF10"/>
+
+        <!-- Failure Indicators -->
+        <span class="glyphicon glyphicon-remove form-control-feedback hidden" id="urlErrorIcon" aria-hidden="true"></span>
+        <span id="inputErrorStatus" class="sr-only">(error)</span>
+        <span class="help-block hidden" id="urlHelpBlock">Enter a valid Youtube URL and click Submit Button</span>
+
+        <!-- Success Indicators -->
+        <span class="glyphicon glyphicon-ok form-control-feedback hidden" id="urlSuccessIcon" aria-hidden="true"></span>
+        <span id="inputSuccess2Status" class="sr-only">(success)</span>
+    </div>
+  </div>
+  <% if (typeof video_type === 'number') { %>
+    <input type="hidden" name="videoDescription" value="<%= video_type %>" checked="">
+  <% } else { %>
+    <div id="annotationTypesMenu">
+      <label class="radio-inline"><input type="radio" name="videoDescription" value="0" checked="">Explanation</label>
+      <label class="radio-inline"><input type="radio" class="btn btn-success" name="videoDescription" value="1">Tutorial</label>
+      <label class="radio-inline"><input type="radio" class="btn btn-success" name="videoDescription" value="2">Usage</label>
+    </div>
+  <% } %>
+  <div class="form-group">
+      <button type="button" id="submitButton" disabled="true" class="btn btn-success commentbox">Submit</button>
+  </div>
+  
+</form>
+<% if (typeof display_report_button === 'boolean') { %>
+<hr class="verticalReportButtonDivider">
+<div class="form-group reportForm">
+  <button type="button" title="Report spam annotations for removal" id="reportButton" class="button btn btn-success flagBtn">
+  <span class="glyphicon glyphicon-exclamation-sign" style="color:red"></span> Report</button>
+</div>
+<% } %>

@@ -1,0 +1,104 @@
+<div id="questionview">
+  <div id="question" class="question">
+    <h2 id="questionTitle"> <%= question %> </h2>
+    <hr id="questionTitleDivider">
+    <p> <%= questionBody %> </p>
+  </div>
+  <h3 id="answersHeading"> Answers </h3>
+  <div id="answers" class="answers">
+    <% _.each(answers, function(answer){ %>
+      <% if(!(typeof answer === "string")) { %> <!-- Ignore post id. Better approach than using 'delete' in view. -->
+        <div class="row answerContainer">
+          <div class="col-md-1 col-xs-1 col-lg-1 answerMetaData" >
+            <% if(answer.is_accepted === true) { %>
+              <h4 class="acceptedAnswerSign"> <span class="glyphicon glyphicon-ok"></span> </h4>
+            <% }; %>
+            <h4 class="answerScore"> Score <br> <%= answer.score %></h4>
+          </div>
+          <div id="<%= answer.answer_id %>" class="col-md-11 col-xs-11 col-lg-11 answer-item"> <%= answer.body %> </div>
+        </div>
+      <% }; %>
+    <% }); %>
+  </div>
+  <div id="annotate-tooltip" data-toggle="popover"> </div>
+</div>
+
+<div class="modal fade" id="tweetSuccess" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header modal-header-info">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modalSuccessHeading"><i class="glyphicon glyphicon-thumbs-up"></i> Success</h4>
+      </div>
+      <div class="modal-body">
+        <p>We have asked the community for a Youtube video.</p>
+      </div>
+      <div class="modal-footer">
+          <button type="button" id="tweetSuccessButton" class="btn btn-default pull-right" data-dismiss="modal">Ok</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" id="videoAnnotationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header modal-header-info">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modalSuccessHeading"><i class="glyphicon glyphicon-thumbs-up"></i> Success</h4>
+      </div>
+      <div class="modal-body">
+        <p>Thank you for the annotation.</p>
+        <p>Your contribution is highly appreciated by the community.</p>
+      </div>
+      <div class="modal-footer">
+          <button type="button" id="videoAnnotationModalButton" class="btn btn-default pull-right" data-dismiss="modal">Ok</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header modal-header-info">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modalSuccessHeading"><i class="glyphicon glyphicon-question-sign"></i> Page Help</h4>
+      </div>
+      <div class="modal-body">
+        <div class="helpModalContainer">
+          <h5 class="helpModalHeader"><b>How to Ask for a Youtube Video</b></h5>
+          <p class="helpParagraph"><img src="images/popup_menu.png" class="img-rounded" alt="StackAnnotator" id="helpQuestionImageOne">Simply highlight with your mouse any Answer text to activate our annotation menu. In the menu you can select from a few video types; details (ie. explanations, descriptions), tutorials (ie. "how to videos", walkthroughs) and usages (ie. demonstrations, examples).</p>
+        </div>
+        <br><br><br>
+        <div class="helpModalContainer">
+          <h5 class="helpModalHeader"><b>How to Annotate with a Youtube Video</b></h5>
+          <p class="helpParagraph"><img src="images/popup_menu_2.png" class="img-rounded" alt="StackAnnotator" id="helpQuestionImageTwo">At the bottom of the annotation menu is a button that will direct you to the annotation form. Enter in a valid youtube video (by copy/pasting) into the form, select video type and submit.</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+          <button type="button" id="videoAnnotationModalButton" class="btn btn-default pull-right" data-dismiss="modal">Ok</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- modal for report on task since the task might contain a silly keyword -->
+<div class="modal fade" id="reportAnnotationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header modal-header-info">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modalSuccessHeading"><i class="glyphicon glyphicon-thumbs-up"></i> Success</h4>
+      </div>
+      <div class="modal-body">
+        <p>Thank you for your report.</p>
+        <p>Your contribution is highly appreciated by the community.</p>
+      </div>
+      <div class="modal-footer">
+          <button type="button" id="reportAnnotationModalButton" class="btn btn-default pull-right" data-dismiss="modal">Ok</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
